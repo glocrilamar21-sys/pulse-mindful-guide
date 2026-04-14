@@ -1,4 +1,5 @@
-import { Task, vibrateCritical, vibrateFlexible, stopVibration } from "@/lib/tasks";
+import { useEffect, useRef } from "react";
+import { Task, startAlert, stopAlert } from "@/lib/tasks";
 import { AlertTriangle, Clock, Check, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,22 +13,37 @@ interface TaskCardProps {
 
 export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) {
   const isCritical = task.category === "critical";
+  const alertingRef = useRef(false);
+
+  useEffect(() => {
+    if (isActive && !task.done) {
+      if (!alertingRef.current) {
+        alertingRef.current = true;
+        startAlert(task.category);
+      }
+    } else {
+      if (alertingRef.current) {
+        alertingRef.current = false;
+        stopAlert();
+      }
+    }
+    return () => {
+      if (alertingRef.current) {
+        alertingRef.current = false;
+        stopAlert();
+      }
+    };
+  }, [isActive, task.done, task.category]);
 
   const handleDone = () => {
-    stopVibration();
+    stopAlert();
     onDone(task.id);
   };
 
-  const handleVibrate = () => {
-    if (isCritical) vibrateCritical();
-    else vibrateFlexible();
+  const handlePostpone = () => {
+    stopAlert();
+    onPostpone(task.id);
   };
-
-  // Auto-vibrate when active and not done
-  if (isActive && !task.done) {
-    // We trigger vibration on render for active tasks
-    handleVibrate();
-  }
 
   return (
     <div
@@ -81,7 +97,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
             </Button>
             {!isCritical && (
               <Button
-                onClick={() => onPostpone(task.id)}
+                onClick={handlePostpone}
                 size="lg"
                 variant="outline"
                 className="h-14 w-14 rounded-full border-flexible text-flexible hover:bg-flexible/10 cursor-pointer"
