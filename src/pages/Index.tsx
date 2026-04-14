@@ -1,19 +1,33 @@
 import { useState, useEffect, useCallback } from "react";
-import { Task, loadTasks, saveTasks } from "@/lib/tasks";
+import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { SettingsPanel } from "@/components/SettingsPanel";
-import { Trash2 } from "lucide-react";
+import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { format, addDays, subDays } from "date-fns";
+import { es } from "date-fns/locale";
 
 function getCurrentTime() {
   const now = new Date();
   return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 }
 
+function dateToStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export default function Index() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadTasks());
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const loaded = loadTasks();
+    // Migrate old tasks without date
+    return loaded.map((t) => ({ ...t, date: t.date || todayStr() }));
+  });
   const [currentTime, setCurrentTime] = useState(getCurrentTime);
+  const [viewDate, setViewDate] = useState<Date>(new Date());
+
+  const viewDateStr = dateToStr(viewDate);
+  const isToday = viewDateStr === todayStr();
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(getCurrentTime()), 30000);
@@ -24,8 +38,10 @@ export default function Index() {
     saveTasks(tasks);
   }, [tasks]);
 
+  const filteredTasks = tasks.filter((t) => t.date === viewDateStr);
+
   const addTask = useCallback((task: Task) => {
-    setTasks((prev) => [...prev, task].sort((a, b) => a.time.localeCompare(b.time)));
+    setTasks((prev) => [...prev, task].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
   }, []);
 
   const markDone = useCallback((id: string) => {
@@ -43,15 +59,15 @@ export default function Index() {
           const newTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
           return { ...t, time: newTime };
         })
-        .sort((a, b) => a.time.localeCompare(b.time))
+        .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
     );
   }, []);
 
   const clearDone = useCallback(() => {
-    setTasks((prev) => prev.filter((t) => !t.done));
-  }, []);
+    setTasks((prev) => prev.filter((t) => !(t.done && t.date === viewDateStr)));
+  }, [viewDateStr]);
 
-  const hasDone = tasks.some((t) => t.done);
+  const hasDone = filteredTasks.some((t) => t.done);
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-background pb-28 sm:pb-32">
@@ -77,28 +93,60 @@ export default function Index() {
         </div>
       </header>
 
+      {/* Date navigator */}
+      <div className="mx-auto max-w-lg px-4 pt-4 sm:pt-6 md:max-w-2xl lg:max-w-4xl">
+        <div className="flex items-center justify-between rounded-lg border bg-card p-2 sm:p-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setViewDate((d) => subDays(d, 1))}
+            className="cursor-pointer hover:bg-accent"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <div className="text-center">
+            <button
+              onClick={() => setViewDate(new Date())}
+              className="cursor-pointer hover:underline text-lg font-bold capitalize"
+            >
+              {isToday ? "Hoy" : format(viewDate, "EEEE d 'de' MMMM", { locale: es })}
+            </button>
+            {!isToday && (
+              <p className="text-xs text-muted-foreground mt-0.5 cursor-pointer hover:underline" onClick={() => setViewDate(new Date())}>
+                Volver a hoy
+              </p>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setViewDate((d) => addDays(d, 1))}
+            className="cursor-pointer hover:bg-accent"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+
       {/* Timeline */}
       <main className="mx-auto max-w-lg px-4 pt-4 sm:pt-6 md:max-w-2xl lg:max-w-4xl">
-        {tasks.length === 0 ? (
+        {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
               <span className="text-4xl">📋</span>
             </div>
-            <p className="text-lg font-bold">Sin tareas para hoy</p>
+            <p className="text-lg font-bold">Sin tareas para {isToday ? "hoy" : "este día"}</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Agrega tu primera tarea con el botón de abajo
             </p>
           </div>
         ) : (
           <div className="relative space-y-4">
-            {/* Vertical timeline line */}
             <div className="absolute left-[29px] top-0 bottom-0 w-0.5 bg-border" />
-
-            {tasks.map((task) => {
-              const isActive = !task.done && task.time <= currentTime;
+            {filteredTasks.map((task) => {
+              const isActive = isToday && !task.done && task.time <= currentTime;
               return (
                 <div key={task.id} className="relative pl-14">
-                  {/* Timeline dot */}
                   <div
                     className={`absolute left-[23px] top-7 h-3.5 w-3.5 rounded-full border-2 border-background ${
                       task.done
@@ -125,7 +173,7 @@ export default function Index() {
             <Button
               variant="outline"
               onClick={clearDone}
-              className="w-full gap-2 text-muted-foreground"
+              className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-accent"
             >
               <Trash2 className="h-4 w-4" />
               Limpiar completadas

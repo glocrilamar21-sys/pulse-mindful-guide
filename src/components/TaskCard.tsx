@@ -75,7 +75,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
             <Button
               onClick={handleDone}
               size="lg"
-              className="h-14 w-14 rounded-full bg-success hover:bg-success/80 text-success-foreground"
+              className="h-14 w-14 rounded-full bg-success hover:bg-success/80 text-success-foreground cursor-pointer"
             >
               <Check className="h-7 w-7" />
             </Button>
@@ -84,7 +84,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
                 onClick={() => onPostpone(task.id)}
                 size="lg"
                 variant="outline"
-                className="h-14 w-14 rounded-full border-flexible text-flexible hover:bg-flexible/10"
+                className="h-14 w-14 rounded-full border-flexible text-flexible hover:bg-flexible/10 cursor-pointer"
               >
                 <Timer className="h-6 w-6" />
               </Button>

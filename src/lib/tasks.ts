@@ -5,8 +5,14 @@ export interface Task {
   name: string;
   category: TaskCategory;
   time: string; // HH:MM
+  date: string; // YYYY-MM-DD
   done: boolean;
   postponedUntil?: string; // ISO string
+}
+
+export function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 const STORAGE_KEY = "pulso-diario-tasks";
