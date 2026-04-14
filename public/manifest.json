@@ -1,0 +1,22 @@
+{
+  "name": "Pulso Diario",
+  "short_name": "Pulso",
+  "description": "Asistente de memoria por vibración para gestionar tu día a día",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131926",
+  "theme_color": "#131926",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
