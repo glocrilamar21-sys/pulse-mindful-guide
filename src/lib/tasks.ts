@@ -59,13 +59,13 @@ let alertInterval: ReturnType<typeof setInterval> | null = null;
 let activeCtx: AudioContext | null = null;
 
 function playCriticalBeep(ctx: AudioContext) {
-  const times = [0, 0.4, 0.8, 1.2];
+  const times = [0, 0.35, 0.7, 1.05, 1.4];
   times.forEach((start) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "square";
-    osc.frequency.value = 800;
-    gain.gain.value = 0.7; // Loud
+    osc.frequency.value = 900;
+    gain.gain.value = 1.0; // Maximum volume
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(ctx.currentTime + start);
@@ -76,14 +76,14 @@ function playCriticalBeep(ctx: AudioContext) {
 function playFlexibleBeep(ctx: AudioContext) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  osc.type = "sine";
-  osc.frequency.value = 520;
-  gain.gain.value = 0.35; // Moderate
-  gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+  osc.type = "triangle";
+  osc.frequency.value = 600;
+  gain.gain.value = 0.8; // High volume
+  gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.5);
   osc.connect(gain);
   gain.connect(ctx.destination);
   osc.start();
-  osc.stop(ctx.currentTime + 0.4);
+  osc.stop(ctx.currentTime + 0.5);
 }
 
 /** Start a looping alert sound + vibration that repeats until stopAlert() is called */
