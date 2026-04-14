@@ -32,7 +32,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
   return (
     <div
       className={cn(
-        "relative flex items-start gap-4 rounded-lg border-2 p-5 transition-all",
+        "relative flex items-start gap-3 sm:gap-4 rounded-lg border-2 p-4 sm:p-5 transition-all",
         task.done && "task-done",
         !task.done && isCritical && "task-critical pulse-critical",
         !task.done && !isCritical && "task-flexible"

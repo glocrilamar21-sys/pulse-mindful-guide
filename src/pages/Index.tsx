@@ -54,10 +54,10 @@ export default function Index() {
   const hasDone = tasks.some((t) => t.done);
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen min-h-[100dvh] bg-background pb-28 sm:pb-32">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-4">
+        <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3 sm:py-4 md:max-w-2xl lg:max-w-4xl">
           <div>
             <h1 className="text-2xl font-black tracking-tight">Pulso Diario</h1>
             <p className="text-sm text-muted-foreground font-medium">
@@ -78,7 +78,7 @@ export default function Index() {
       </header>
 
       {/* Timeline */}
-      <main className="mx-auto max-w-lg px-4 pt-6">
+      <main className="mx-auto max-w-lg px-4 pt-4 sm:pt-6 md:max-w-2xl lg:max-w-4xl">
         {tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
@@ -135,8 +135,8 @@ export default function Index() {
       </main>
 
       {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur-md p-4">
-        <div className="mx-auto max-w-lg">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur-md p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-lg md:max-w-2xl lg:max-w-4xl">
           <AddTaskDialog onAdd={addTask} />
         </div>
       </div>
