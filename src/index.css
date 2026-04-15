@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 97%;
+    --background: 220 16% 96%;
     --foreground: 220 20% 14%;
 
     --card: 0 0% 100%;
@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 14%;
 
-    --primary: 220 90% 52%;
+    --primary: 217 91% 48%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14% 94%;
@@ -24,40 +24,43 @@
     --muted: 220 14% 92%;
     --muted-foreground: 220 10% 46%;
 
-    --accent: 220 14% 92%;
-    --accent-foreground: 220 20% 14%;
+    --accent: 217 91% 95%;
+    --accent-foreground: 217 91% 48%;
 
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 88%;
-    --input: 220 14% 88%;
-    --ring: 220 90% 52%;
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
+    --ring: 217 91% 48%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
     /* Custom tokens */
-    --critical: 0 80% 52%;
+    --critical: 4 80% 52%;
     --critical-foreground: 0 0% 100%;
-    --critical-glow: 0 80% 52%;
+    --critical-glow: 4 80% 52%;
 
-    --flexible: 220 90% 52%;
+    --flexible: 217 91% 48%;
     --flexible-foreground: 0 0% 100%;
-    --flexible-glow: 220 90% 52%;
+    --flexible-glow: 217 91% 48%;
 
-    --success: 145 65% 42%;
+    --success: 152 60% 45%;
     --success-foreground: 0 0% 100%;
+
+    --hero-start: 217 91% 48%;
+    --hero-end: 217 80% 58%;
 
     --timeline-line: 220 14% 86%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 220 20% 14%;
-    --sidebar-primary: 220 90% 52%;
+    --sidebar-primary: 217 91% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 14% 94%;
     --sidebar-accent-foreground: 220 20% 14%;
-    --sidebar-border: 220 14% 88%;
-    --sidebar-ring: 220 90% 52%;
+    --sidebar-border: 220 14% 90%;
+    --sidebar-ring: 217 91% 48%;
   }
 }
 
@@ -78,25 +81,29 @@
 }
 
 @layer utilities {
+  .hero-gradient {
+    background: linear-gradient(135deg, hsl(var(--hero-start)), hsl(var(--hero-end)));
+  }
   .task-critical {
-    background-color: hsl(var(--critical) / 0.08);
-    border-color: hsl(var(--critical) / 0.4);
-    box-shadow: 0 2px 12px hsl(var(--critical-glow) / 0.1);
+    border-left: 4px solid hsl(var(--critical));
   }
   .task-flexible {
-    background-color: hsl(var(--flexible) / 0.06);
-    border-color: hsl(var(--flexible) / 0.3);
-    box-shadow: 0 2px 12px hsl(var(--flexible-glow) / 0.08);
+    border-left: 4px solid hsl(var(--flexible));
   }
   .task-done {
-    opacity: 0.5;
-    filter: grayscale(0.4);
+    opacity: 0.55;
   }
   .pulse-critical {
     animation: pulse-red 2s ease-in-out infinite;
   }
   @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 2px 12px hsl(var(--critical-glow) / 0.15); }
-    50% { box-shadow: 0 4px 24px hsl(var(--critical-glow) / 0.3); }
+    0%, 100% { box-shadow: 0 0 0 0 hsl(var(--critical-glow) / 0); }
+    50% { box-shadow: 0 0 0 6px hsl(var(--critical-glow) / 0.15); }
+  }
+  .bottom-nav-active {
+    color: hsl(var(--primary));
+  }
+  .bottom-nav-inactive {
+    color: hsl(var(--muted-foreground));
   }
 }

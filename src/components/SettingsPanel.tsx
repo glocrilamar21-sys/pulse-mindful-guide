@@ -1,16 +1,24 @@
 import { playDemoSound } from "@/lib/tasks";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Settings, Volume2 } from "lucide-react";
+import { AlertTriangle, Clock, Volume2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
-export function SettingsPanel() {
+interface SettingsPanelProps {
+  trigger?: React.ReactNode;
+}
+
+export function SettingsPanel({ trigger }: SettingsPanelProps) {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full cursor-pointer hover:bg-accent">
-          <Settings className="h-5 w-5 text-muted-foreground" />
-        </Button>
-      </SheetTrigger>
+      {trigger ? (
+        <SheetTrigger asChild>{trigger}</SheetTrigger>
+      ) : (
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full cursor-pointer">
+            <Volume2 className="h-4 w-4" />
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="text-lg font-bold">Configuración</SheetTitle>
@@ -22,28 +30,28 @@ export function SettingsPanel() {
               Probar Alertas
             </h3>
             <p className="text-xs text-muted-foreground mb-3">
-              Escucha y siente cada tipo de alerta. En tareas activas, se repite hasta completarla.
+              Escucha y siente cada tipo de alerta. Se repite hasta completar la tarea.
             </p>
             <div className="space-y-2">
               <Button
                 onClick={() => playDemoSound("critical")}
                 size="lg"
-                className="h-14 w-full gap-2 bg-critical hover:bg-critical/80 text-critical-foreground text-sm font-bold cursor-pointer rounded-xl"
+                className="h-12 w-full gap-2 bg-critical hover:bg-critical/80 text-critical-foreground text-sm font-bold cursor-pointer rounded-lg"
               >
-                <AlertTriangle className="h-5 w-5" />
+                <AlertTriangle className="h-4 w-4" />
                 🔊 Alerta Crítica
               </Button>
               <Button
                 onClick={() => playDemoSound("flexible")}
                 size="lg"
-                className="h-14 w-full gap-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm font-bold cursor-pointer rounded-xl"
+                className="h-12 w-full gap-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm font-bold cursor-pointer rounded-lg"
               >
-                <Clock className="h-5 w-5" />
+                <Clock className="h-4 w-4" />
                 🔔 Alerta Flexible
               </Button>
             </div>
           </div>
-          <div className="rounded-xl border p-4 bg-card">
+          <div className="rounded-lg border p-4 bg-background">
             <h4 className="font-bold text-sm mb-1">Acerca de Memory Help</h4>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Asistente de memoria que usa vibraciones y sonidos para recordarte tus tareas importantes del día.
