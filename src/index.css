@@ -6,58 +6,58 @@
 
 @layer base {
   :root {
-    --background: 220 20% 8%;
-    --foreground: 0 0% 96%;
+    --background: 0 0% 97%;
+    --foreground: 220 20% 14%;
 
-    --card: 220 18% 12%;
-    --card-foreground: 0 0% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
 
-    --popover: 220 18% 14%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 14%;
 
-    --primary: 0 0% 96%;
-    --primary-foreground: 220 20% 8%;
+    --primary: 220 90% 52%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 18%;
-    --secondary-foreground: 0 0% 90%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 20% 30%;
 
-    --muted: 220 14% 16%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 220 14% 20%;
-    --accent-foreground: 0 0% 96%;
+    --accent: 220 14% 92%;
+    --accent-foreground: 220 20% 14%;
 
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 22%;
-    --input: 220 14% 22%;
-    --ring: 0 0% 96%;
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 220 90% 52%;
 
-    --radius: 1rem;
+    --radius: 0.875rem;
 
     /* Custom tokens */
-    --critical: 0 85% 55%;
+    --critical: 0 80% 52%;
     --critical-foreground: 0 0% 100%;
-    --critical-glow: 0 85% 55%;
+    --critical-glow: 0 80% 52%;
 
-    --flexible: 200 80% 55%;
+    --flexible: 220 90% 52%;
     --flexible-foreground: 0 0% 100%;
-    --flexible-glow: 200 80% 55%;
+    --flexible-glow: 220 90% 52%;
 
-    --success: 145 70% 45%;
+    --success: 145 65% 42%;
     --success-foreground: 0 0% 100%;
 
-    --timeline-line: 220 14% 25%;
+    --timeline-line: 220 14% 86%;
 
-    --sidebar-background: 220 18% 10%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 0 0% 96%;
-    --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 14% 18%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 220 14% 22%;
-    --sidebar-ring: 0 0% 96%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 14%;
+    --sidebar-primary: 220 90% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 20% 14%;
+    --sidebar-border: 220 14% 88%;
+    --sidebar-ring: 220 90% 52%;
   }
 }
 
@@ -79,24 +79,24 @@
 
 @layer utilities {
   .task-critical {
-    background-color: hsl(var(--critical) / 0.15);
-    border-color: hsl(var(--critical));
-    box-shadow: 0 0 20px hsl(var(--critical-glow) / 0.25);
+    background-color: hsl(var(--critical) / 0.08);
+    border-color: hsl(var(--critical) / 0.4);
+    box-shadow: 0 2px 12px hsl(var(--critical-glow) / 0.1);
   }
   .task-flexible {
-    background-color: hsl(var(--flexible) / 0.1);
-    border-color: hsl(var(--flexible));
-    box-shadow: 0 0 15px hsl(var(--flexible-glow) / 0.15);
+    background-color: hsl(var(--flexible) / 0.06);
+    border-color: hsl(var(--flexible) / 0.3);
+    box-shadow: 0 2px 12px hsl(var(--flexible-glow) / 0.08);
   }
   .task-done {
     opacity: 0.5;
-    filter: grayscale(0.5);
+    filter: grayscale(0.4);
   }
   .pulse-critical {
-    animation: pulse-red 1.5s ease-in-out infinite;
+    animation: pulse-red 2s ease-in-out infinite;
   }
   @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 0 15px hsl(var(--critical-glow) / 0.3); }
-    50% { box-shadow: 0 0 35px hsl(var(--critical-glow) / 0.6); }
+    0%, 100% { box-shadow: 0 2px 12px hsl(var(--critical-glow) / 0.15); }
+    50% { box-shadow: 0 4px 24px hsl(var(--critical-glow) / 0.3); }
   }
 }

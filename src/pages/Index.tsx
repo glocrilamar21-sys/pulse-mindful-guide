@@ -20,7 +20,6 @@ function dateToStr(d: Date): string {
 export default function Index() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     const loaded = loadTasks();
-    // Migrate old tasks without date
     return loaded.map((t) => ({ ...t, date: t.date || todayStr() }));
   });
   const [currentTime, setCurrentTime] = useState(getCurrentTime);
@@ -39,6 +38,8 @@ export default function Index() {
   }, [tasks]);
 
   const filteredTasks = tasks.filter((t) => t.date === viewDateStr);
+  const completedCount = filteredTasks.filter((t) => t.done).length;
+  const totalCount = filteredTasks.length;
 
   const addTask = useCallback((task: Task) => {
     setTasks((prev) => [...prev, task].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
@@ -72,11 +73,13 @@ export default function Index() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-background pb-28 sm:pb-32">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-10 border-b border-border/60 bg-card shadow-sm">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3 sm:py-4 md:max-w-2xl lg:max-w-4xl">
           <div>
-            <h1 className="text-2xl font-black tracking-tight">Pulso Diario</h1>
-            <p className="text-sm text-muted-foreground font-medium">
+            <h1 className="text-xl font-extrabold tracking-tight text-foreground">
+              Memory Help
+            </h1>
+            <p className="text-xs text-muted-foreground font-medium capitalize">
               {new Date().toLocaleDateString("es-ES", {
                 weekday: "long",
                 day: "numeric",
@@ -85,7 +88,7 @@ export default function Index() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold tabular-nums">
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold tabular-nums text-primary">
               {currentTime}
             </span>
             <SettingsPanel />
@@ -94,25 +97,25 @@ export default function Index() {
       </header>
 
       {/* Date navigator */}
-      <div className="mx-auto max-w-lg px-4 pt-4 sm:pt-6 md:max-w-2xl lg:max-w-4xl">
-        <div className="flex items-center justify-between rounded-lg border bg-card p-2 sm:p-3">
+      <div className="mx-auto max-w-lg px-4 pt-4 sm:pt-5 md:max-w-2xl lg:max-w-4xl">
+        <div className="flex items-center justify-between rounded-xl bg-card border border-border/60 p-2 sm:p-3 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setViewDate((d) => subDays(d, 1))}
-            className="cursor-pointer hover:bg-accent"
+            className="cursor-pointer hover:bg-accent h-10 w-10 rounded-full"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div className="text-center">
             <button
               onClick={() => setViewDate(new Date())}
-              className="cursor-pointer hover:underline text-lg font-bold capitalize"
+              className="cursor-pointer hover:text-primary text-base font-bold capitalize transition-colors"
             >
               {isToday ? "Hoy" : format(viewDate, "EEEE d 'de' MMMM", { locale: es })}
             </button>
             {!isToday && (
-              <p className="text-xs text-muted-foreground mt-0.5 cursor-pointer hover:underline" onClick={() => setViewDate(new Date())}>
+              <p className="text-xs text-primary mt-0.5 cursor-pointer hover:underline font-medium" onClick={() => setViewDate(new Date())}>
                 Volver a hoy
               </p>
             )}
@@ -121,59 +124,65 @@ export default function Index() {
             variant="ghost"
             size="icon"
             onClick={() => setViewDate((d) => addDays(d, 1))}
-            className="cursor-pointer hover:bg-accent"
+            className="cursor-pointer hover:bg-accent h-10 w-10 rounded-full"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
+      {/* Progress bar */}
+      {totalCount > 0 && (
+        <div className="mx-auto max-w-lg px-4 pt-3 md:max-w-2xl lg:max-w-4xl">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-500"
+                style={{ width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%` }}
+              />
+            </div>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {completedCount}/{totalCount}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Timeline */}
-      <main className="mx-auto max-w-lg px-4 pt-4 sm:pt-6 md:max-w-2xl lg:max-w-4xl">
+      <main className="mx-auto max-w-lg px-4 pt-4 sm:pt-5 md:max-w-2xl lg:max-w-4xl">
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
+            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
               <span className="text-4xl">📋</span>
             </div>
-            <p className="text-lg font-bold">Sin tareas para {isToday ? "hoy" : "este día"}</p>
+            <p className="text-lg font-bold text-foreground">Sin tareas para {isToday ? "hoy" : "este día"}</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Agrega tu primera tarea con el botón de abajo
             </p>
           </div>
         ) : (
-          <div className="relative space-y-4">
-            <div className="absolute left-[29px] top-0 bottom-0 w-0.5 bg-border" />
+          <div className="space-y-3">
             {filteredTasks.map((task) => {
               const isActive = isToday && !task.done && task.time <= currentTime;
               return (
-                <div key={task.id} className="relative pl-14">
-                  <div
-                    className={`absolute left-[23px] top-7 h-3.5 w-3.5 rounded-full border-2 border-background ${
-                      task.done
-                        ? "bg-success"
-                        : task.category === "critical"
-                        ? "bg-critical"
-                        : "bg-flexible"
-                    }`}
-                  />
-                  <TaskCard
-                    task={task}
-                    isActive={isActive}
-                    onDone={markDone}
-                    onPostpone={postpone}
-                  />
-                </div>
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  isActive={isActive}
+                  onDone={markDone}
+                  onPostpone={postpone}
+                />
               );
             })}
           </div>
         )}
 
         {hasDone && (
-          <div className="mt-6">
+          <div className="mt-4">
             <Button
               variant="outline"
               onClick={clearDone}
-              className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-accent"
+              className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-accent rounded-xl h-11"
             >
               <Trash2 className="h-4 w-4" />
               Limpiar completadas
@@ -183,7 +192,7 @@ export default function Index() {
       </main>
 
       {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur-md p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-card/95 backdrop-blur-md p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
         <div className="mx-auto max-w-lg md:max-w-2xl lg:max-w-4xl">
           <AddTaskDialog onAdd={addTask} />
         </div>
