@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Task, startAlert, stopAlert } from "@/lib/tasks";
-import { AlertTriangle, Clock, Check, Timer } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Check, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TaskCardProps {
@@ -48,77 +47,67 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
   return (
     <div
       className={cn(
-        "relative flex items-center gap-3 sm:gap-4 rounded-xl border bg-card p-4 sm:p-5 transition-all shadow-sm",
+        "flex items-center gap-3 px-4 py-3.5 transition-all",
         task.done && "task-done",
-        !task.done && isCritical && "task-critical pulse-critical",
-        !task.done && !isCritical && "border-border/60"
+        !task.done && isCritical && "task-critical",
+        !task.done && !isCritical && "task-flexible",
+        isActive && !task.done && "pulse-critical bg-critical/5"
       )}
     >
-      {/* Icon */}
+      {/* Dot indicator */}
       <div
         className={cn(
-          "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
+          "h-3 w-3 rounded-full shrink-0",
           task.done
-            ? "bg-success/15"
+            ? "bg-success"
             : isCritical
-            ? "bg-critical/12"
-            : "bg-primary/10"
+            ? "bg-critical"
+            : "bg-primary"
         )}
-      >
-        {task.done ? (
-          <Check className="h-5 w-5 text-success" />
-        ) : isCritical ? (
-          <AlertTriangle className="h-5 w-5 text-critical" />
-        ) : (
-          <Clock className="h-5 w-5 text-primary" />
-        )}
-      </div>
+      />
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
-          <span className="text-xs font-semibold text-muted-foreground tabular-nums">
-            {task.time}
-          </span>
-          {isCritical && !task.done && (
-            <span className="inline-flex items-center rounded-full bg-critical/10 px-2 py-0.5 text-[10px] font-bold text-critical uppercase tracking-wide">
-              Crítica
-            </span>
-          )}
-        </div>
         <p className={cn(
-          "text-base font-semibold leading-tight text-foreground",
+          "text-sm font-semibold leading-tight text-foreground",
           task.done && "line-through text-muted-foreground"
         )}>
           {task.name}
         </p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {task.time}
+          </span>
+          {isCritical && !task.done && (
+            <span className="text-[10px] font-bold text-critical uppercase">
+              Crítica
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 shrink-0">
         {!task.done ? (
           <>
-            <Button
+            <button
               onClick={handleDone}
-              size="icon"
-              className="h-11 w-11 rounded-full bg-success hover:bg-success/80 text-success-foreground cursor-pointer shadow-sm"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-success/15 text-success hover:bg-success/25 cursor-pointer transition-colors"
             >
-              <Check className="h-5 w-5" />
-            </Button>
+              <Check className="h-4 w-4" />
+            </button>
             {!isCritical && (
-              <Button
+              <button
                 onClick={handlePostpone}
-                size="icon"
-                variant="outline"
-                className="h-11 w-11 rounded-full border-primary/30 text-primary hover:bg-primary/10 cursor-pointer"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer transition-colors"
               >
-                <Timer className="h-5 w-5" />
-              </Button>
+                <Timer className="h-4 w-4" />
+              </button>
             )}
           </>
         ) : (
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-success/15">
-            <Check className="h-5 w-5 text-success" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-success/15">
+            <Check className="h-4 w-4 text-success" />
           </div>
         )}
       </div>
