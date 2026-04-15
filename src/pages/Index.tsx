@@ -3,6 +3,7 @@ import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { CalendarView } from "@/components/CalendarView";
 import { Trash2, ChevronLeft, ChevronRight, CalendarDays, Plus, ListTodo, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format, addDays, subDays } from "date-fns";
@@ -87,13 +88,19 @@ export default function Index() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-2xl font-extrabold leading-tight">
-                {isToday ? "Hoy" : format(viewDate, "EEEE d", { locale: es })}
+                {activeTab === "calendario"
+                  ? "Calendario"
+                  : activeTab === "config"
+                  ? "Configuración"
+                  : isToday
+                  ? "Hoy"
+                  : format(viewDate, "EEEE d", { locale: es })}
               </p>
               <p className="text-sm opacity-80 capitalize mt-0.5">
                 {format(viewDate, "MMMM yyyy", { locale: es })}
               </p>
             </div>
-            {totalCount > 0 && (
+            {activeTab === "hoy" && totalCount > 0 && (
               <div className="flex flex-col items-center">
                 <div className="relative h-14 w-14">
                   <svg className="h-14 w-14 -rotate-90" viewBox="0 0 56 56">
@@ -117,95 +124,121 @@ export default function Index() {
         </div>
       </header>
 
-      {/* Date Navigator */}
-      <div className="mx-auto max-w-lg px-4 -mt-3 md:max-w-2xl lg:max-w-4xl">
-        <div className="flex items-center justify-between rounded-xl bg-card p-2 shadow-md">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setViewDate((d) => subDays(d, 1))}
-            className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <button
-            onClick={() => setViewDate(new Date())}
-            className="cursor-pointer text-sm font-semibold capitalize hover:text-primary transition-colors"
-          >
-            {isToday ? "Hoy" : format(viewDate, "EEEE d 'de' MMMM", { locale: es })}
-          </button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setViewDate((d) => addDays(d, 1))}
-            className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Section label */}
-      <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl lg:max-w-4xl">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">
-            Tareas del día
-          </h2>
-          {totalCount > 0 && (
-            <span className="text-xs font-semibold text-muted-foreground">
-              {completedCount} de {totalCount}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Task List */}
-      <main className="mx-auto max-w-lg px-4 md:max-w-2xl lg:max-w-4xl">
-        {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
-              <ListTodo className="h-7 w-7 text-primary" />
+      {/* TAB: Hoy */}
+      {activeTab === "hoy" && (
+        <>
+          {/* Date Navigator */}
+          <div className="mx-auto max-w-lg px-4 -mt-3 md:max-w-2xl lg:max-w-4xl">
+            <div className="flex items-center justify-between rounded-xl bg-card p-2 shadow-md">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setViewDate((d) => subDays(d, 1))}
+                className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <button
+                onClick={() => setViewDate(new Date())}
+                className="cursor-pointer text-sm font-semibold capitalize hover:text-primary transition-colors"
+              >
+                {isToday ? "Hoy" : format(viewDate, "EEEE d 'de' MMMM", { locale: es })}
+              </button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setViewDate((d) => addDays(d, 1))}
+                className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
-            <p className="text-base font-bold text-foreground">Sin tareas para {isToday ? "hoy" : "este día"}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Toca + para agregar tu primera tarea
-            </p>
           </div>
-        ) : (
-          <div className="rounded-xl bg-card shadow-sm overflow-hidden divide-y divide-border">
-            {filteredTasks.map((task) => {
-              const isActive = isToday && !task.done && task.time <= currentTime;
-              return (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  isActive={isActive}
-                  onDone={markDone}
-                  onPostpone={postpone}
-                />
-              );
-            })}
-          </div>
-        )}
 
-        {hasDone && (
-          <div className="mt-3">
-            <Button
-              variant="ghost"
-              onClick={clearDone}
-              className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-card text-xs h-9"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Limpiar completadas
-            </Button>
+          {/* Section label */}
+          <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl lg:max-w-4xl">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">
+                Tareas del día
+              </h2>
+              {totalCount > 0 && (
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {completedCount} de {totalCount}
+                </span>
+              )}
+            </div>
           </div>
-        )}
-      </main>
+
+          {/* Task List */}
+          <main className="mx-auto max-w-lg px-4 md:max-w-2xl lg:max-w-4xl">
+            {filteredTasks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
+                  <ListTodo className="h-7 w-7 text-primary" />
+                </div>
+                <p className="text-base font-bold text-foreground">Sin tareas para {isToday ? "hoy" : "este día"}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Toca + para agregar tu primera tarea
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-xl bg-card shadow-sm overflow-hidden divide-y divide-border">
+                {filteredTasks.map((task) => {
+                  const isActive = isToday && !task.done && task.time <= currentTime;
+                  return (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      isActive={isActive}
+                      onDone={markDone}
+                      onPostpone={postpone}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {hasDone && (
+              <div className="mt-3">
+                <Button
+                  variant="ghost"
+                  onClick={clearDone}
+                  className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-card text-xs h-9"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Limpiar completadas
+                </Button>
+              </div>
+            )}
+          </main>
+        </>
+      )}
+
+      {/* TAB: Calendario */}
+      {activeTab === "calendario" && (
+        <div className="-mt-3">
+          <CalendarView
+            tasks={tasks}
+            viewDate={viewDate}
+            onChangeDate={setViewDate}
+            onDone={markDone}
+            onPostpone={postpone}
+            currentTime={currentTime}
+          />
+        </div>
+      )}
+
+      {/* TAB: Config */}
+      {activeTab === "config" && (
+        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl lg:max-w-4xl">
+          <SettingsPanel inline />
+        </div>
+      )}
 
       {/* FAB */}
       <button
         onClick={() => setAddDialogOpen(true)}
-        className="fixed right-4 bottom-20 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+        className="fixed right-4 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
         style={{ bottom: "max(5rem, calc(4rem + env(safe-area-inset-bottom)))" }}
       >
         <Plus className="h-7 w-7" />
@@ -221,13 +254,13 @@ export default function Index() {
             icon={<ListTodo className="h-5 w-5" />}
             label="Hoy"
             active={activeTab === "hoy"}
-            onClick={() => setActiveTab("hoy")}
+            onClick={() => { setActiveTab("hoy"); setViewDate(new Date()); }}
           />
           <NavTab
             icon={<CalendarDays className="h-5 w-5" />}
             label="Calendario"
             active={activeTab === "calendario"}
-            onClick={() => { setActiveTab("calendario"); }}
+            onClick={() => setActiveTab("calendario")}
           />
           <NavTab
             icon={<Plus className="h-5 w-5" />}
