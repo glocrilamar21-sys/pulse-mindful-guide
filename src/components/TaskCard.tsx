@@ -48,67 +48,77 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
   return (
     <div
       className={cn(
-        "relative flex items-start gap-3 sm:gap-4 rounded-lg border-2 p-4 sm:p-5 transition-all",
+        "relative flex items-center gap-3 sm:gap-4 rounded-xl border bg-card p-4 sm:p-5 transition-all shadow-sm",
         task.done && "task-done",
         !task.done && isCritical && "task-critical pulse-critical",
-        !task.done && !isCritical && "task-flexible"
+        !task.done && !isCritical && "border-border/60"
       )}
     >
       {/* Icon */}
       <div
         className={cn(
-          "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-          isCritical ? "bg-critical/20" : "bg-flexible/20"
+          "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
+          task.done
+            ? "bg-success/15"
+            : isCritical
+            ? "bg-critical/12"
+            : "bg-primary/10"
         )}
       >
-        {isCritical ? (
-          <AlertTriangle className="h-6 w-6 text-critical" />
+        {task.done ? (
+          <Check className="h-5 w-5 text-success" />
+        ) : isCritical ? (
+          <AlertTriangle className="h-5 w-5 text-critical" />
         ) : (
-          <Clock className="h-6 w-6 text-flexible" />
+          <Clock className="h-5 w-5 text-primary" />
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-          {task.time}
-        </p>
+        <div className="flex items-center gap-2 mb-0.5">
+          <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+            {task.time}
+          </span>
+          {isCritical && !task.done && (
+            <span className="inline-flex items-center rounded-full bg-critical/10 px-2 py-0.5 text-[10px] font-bold text-critical uppercase tracking-wide">
+              Crítica
+            </span>
+          )}
+        </div>
         <p className={cn(
-          "text-lg font-bold leading-tight",
-          task.done && "line-through"
+          "text-base font-semibold leading-tight text-foreground",
+          task.done && "line-through text-muted-foreground"
         )}>
-          Hacer {task.name}
+          {task.name}
         </p>
-        {task.category === "critical" && !task.done && (
-          <p className="text-sm text-critical font-medium mt-1">⚠ Tarea crítica</p>
-        )}
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col gap-2 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         {!task.done ? (
           <>
             <Button
               onClick={handleDone}
-              size="lg"
-              className="h-14 w-14 rounded-full bg-success hover:bg-success/80 text-success-foreground cursor-pointer"
+              size="icon"
+              className="h-11 w-11 rounded-full bg-success hover:bg-success/80 text-success-foreground cursor-pointer shadow-sm"
             >
-              <Check className="h-7 w-7" />
+              <Check className="h-5 w-5" />
             </Button>
             {!isCritical && (
               <Button
                 onClick={handlePostpone}
-                size="lg"
+                size="icon"
                 variant="outline"
-                className="h-14 w-14 rounded-full border-flexible text-flexible hover:bg-flexible/10 cursor-pointer"
+                className="h-11 w-11 rounded-full border-primary/30 text-primary hover:bg-primary/10 cursor-pointer"
               >
-                <Timer className="h-6 w-6" />
+                <Timer className="h-5 w-5" />
               </Button>
             )}
           </>
         ) : (
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-success/20">
-            <Check className="h-7 w-7 text-success" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-success/15">
+            <Check className="h-5 w-5 text-success" />
           </div>
         )}
       </div>
