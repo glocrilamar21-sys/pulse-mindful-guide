@@ -109,7 +109,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       {/* Results header */}
       <div className="flex items-center justify-between px-1">
         <span className="text-xs text-muted-foreground font-semibold">
-          {filtered.length} {filtered.length === 1 ? "mascota" : "mascotas"}
+          {filtered.length} {filtered.length === 1 ? t("galleryCountOne") : t("galleryCountMany")}
         </span>
       </div>
 
@@ -117,8 +117,8 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Search className="h-8 w-8 text-muted-foreground mb-2 opacity-50" />
-          <p className="text-sm text-muted-foreground font-semibold">Sin resultados</p>
-          <p className="text-xs text-muted-foreground/70">Prueba otra búsqueda</p>
+          <p className="text-sm text-muted-foreground font-semibold">{t("galleryNoResults")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("galleryNoResultsHint")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-2.5">
