@@ -30,6 +30,7 @@ const CATEGORIES: CategoryDef[] = [
   { id: "business", labelKey: "catBusiness", emoji: "📊" },
   { id: "education", labelKey: "catEducation", emoji: "🎓" },
   { id: "seasons", labelKey: "catSeasons", emoji: "🌸" },
+  { id: "festive", labelKey: "catFestive", emoji: "🎃" },
   { id: "accessories", labelKey: "catAccessories", emoji: "🕶️" },
 ];
 
