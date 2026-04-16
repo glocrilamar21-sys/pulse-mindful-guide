@@ -6,7 +6,7 @@ import {
   eachDayOfInterval, isSameMonth, isSameDay, format, addMonths, subMonths
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, ListTodo } from "lucide-react";
+import { ChevronLeft, ChevronRight, CalendarDays, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -24,13 +24,10 @@ function dateToStr(d: Date): string {
 }
 
 export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone, currentTime }: CalendarViewProps) {
-  const [calMonth, setCalMonth] = [viewDate, onChangeDate];
-
   const today = new Date();
   const todayStr = dateToStr(today);
   const selectedStr = dateToStr(viewDate);
 
-  // Build task count map for the visible month
   const taskMap = useMemo(() => {
     const map: Record<string, { total: number; critical: number; done: number }> = {};
     tasks.forEach((t) => {
@@ -42,7 +39,6 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
     return map;
   }, [tasks]);
 
-  // Calendar grid
   const monthStart = startOfMonth(viewDate);
   const monthEnd = endOfMonth(viewDate);
   const calStart = startOfWeek(monthStart, { weekStartsOn: 1 });
@@ -53,45 +49,45 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
     .filter((t) => t.date === selectedStr)
     .sort((a, b) => a.time.localeCompare(b.time));
 
-  const weekDays = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+  const weekDays = ["L", "M", "M", "J", "V", "S", "D"];
 
   return (
-    <div className="mx-auto max-w-lg px-4 pt-4 pb-4 md:max-w-2xl lg:max-w-4xl">
+    <div className="mx-auto max-w-lg px-4 pt-4 pb-4 md:max-w-2xl">
       {/* Month navigator */}
-      <div className="rounded-xl bg-card shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3">
+      <div className="rounded-2xl bg-card shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onChangeDate(subMonths(viewDate, 1))}
-            className="cursor-pointer h-8 w-8 rounded-full hover:bg-accent"
+            className="cursor-pointer h-9 w-9 rounded-full hover:bg-muted"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <h2 className="text-sm font-bold capitalize">
+          <h2 className="text-lg font-bold capitalize">
             {format(viewDate, "MMMM yyyy", { locale: es })}
           </h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onChangeDate(addMonths(viewDate, 1))}
-            className="cursor-pointer h-8 w-8 rounded-full hover:bg-accent"
+            className="cursor-pointer h-9 w-9 rounded-full hover:bg-muted"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
 
         {/* Weekday headers */}
-        <div className="grid grid-cols-7 px-2 pb-1">
-          {weekDays.map((d) => (
-            <div key={d} className="text-center text-[10px] font-semibold text-muted-foreground uppercase">
+        <div className="grid grid-cols-7 px-3 pb-2">
+          {weekDays.map((d, i) => (
+            <div key={i} className="text-center text-xs font-bold text-muted-foreground">
               {d}
             </div>
           ))}
         </div>
 
         {/* Day grid */}
-        <div className="grid grid-cols-7 px-2 pb-3 gap-y-1">
+        <div className="grid grid-cols-7 px-3 pb-4 gap-y-1">
           {days.map((day) => {
             const dayStr = dateToStr(day);
             const isCurrentMonth = isSameMonth(day, viewDate);
@@ -104,26 +100,25 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
                 key={dayStr}
                 onClick={() => onChangeDate(day)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center h-10 rounded-lg cursor-pointer transition-all",
-                  !isCurrentMonth && "opacity-30",
+                  "relative flex flex-col items-center justify-center h-11 rounded-xl cursor-pointer transition-all",
+                  !isCurrentMonth && "opacity-25",
                   isSelected && "bg-primary text-primary-foreground",
-                  !isSelected && isToday && "bg-accent text-accent-foreground",
-                  !isSelected && !isToday && "hover:bg-accent/60"
+                  !isSelected && isToday && "bg-accent text-accent-foreground font-bold",
+                  !isSelected && !isToday && "hover:bg-muted"
                 )}
               >
                 <span className={cn(
-                  "text-xs font-semibold",
+                  "text-sm font-semibold",
                   isSelected && "text-primary-foreground"
                 )}>
                   {format(day, "d")}
                 </span>
-                {/* Task indicators */}
                 {info && info.total > 0 && (
                   <div className="flex gap-0.5 mt-0.5">
                     {info.critical > 0 && (
                       <span className={cn(
                         "h-1.5 w-1.5 rounded-full",
-                        isSelected ? "bg-primary-foreground/70" : "bg-critical"
+                        isSelected ? "bg-primary-foreground/70" : "bg-[hsl(var(--critical))]"
                       )} />
                     )}
                     {(info.total - info.critical - info.done) > 0 && (
@@ -135,7 +130,7 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
                     {info.done > 0 && (
                       <span className={cn(
                         "h-1.5 w-1.5 rounded-full",
-                        isSelected ? "bg-primary-foreground/50" : "bg-success"
+                        isSelected ? "bg-primary-foreground/50" : "bg-[hsl(var(--success))]"
                       )} />
                     )}
                   </div>
@@ -146,28 +141,27 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
         </div>
       </div>
 
-      {/* Selected day label */}
-      <div className="flex items-center justify-between mt-4 mb-2 px-1">
-        <h3 className="text-sm font-bold text-foreground capitalize">
+      {/* Selected day tasks */}
+      <div className="flex items-center justify-between mt-5 mb-3 px-1">
+        <h3 className="text-base font-bold text-foreground">
           {isSameDay(viewDate, today)
-            ? "Tareas de hoy"
-            : `Tareas del ${format(viewDate, "d 'de' MMMM", { locale: es })}`}
+            ? "Tareas para hoy"
+            : `Tareas para el ${format(viewDate, "d 'de' MMM", { locale: es })}`}
         </h3>
         {selectedDayTasks.length > 0 && (
-          <span className="text-xs text-muted-foreground font-semibold">
-            {selectedDayTasks.filter((t) => t.done).length}/{selectedDayTasks.length}
+          <span className="text-xs font-semibold text-muted-foreground">
+            {selectedDayTasks.length} Eventos
           </span>
         )}
       </div>
 
-      {/* Tasks for selected day */}
       {selectedDayTasks.length === 0 ? (
-        <div className="flex flex-col items-center py-8 text-center">
-          <ListTodo className="h-6 w-6 text-muted-foreground mb-2" />
+        <div className="flex flex-col items-center py-10 text-center">
+          <CalendarDays className="h-6 w-6 text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">Sin tareas este día</p>
         </div>
       ) : (
-        <div className="rounded-xl bg-card shadow-sm overflow-hidden divide-y divide-border">
+        <div className="rounded-2xl bg-card shadow-sm overflow-hidden divide-y divide-border">
           {selectedDayTasks.map((task) => {
             const isActive = dateToStr(today) === task.date && !task.done && task.time <= currentTime;
             return (
@@ -177,6 +171,7 @@ export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone
                 isActive={isActive}
                 onDone={onDone}
                 onPostpone={onPostpone}
+                variant="compact"
               />
             );
           })}

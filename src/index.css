@@ -6,61 +6,63 @@
 
 @layer base {
   :root {
-    --background: 220 16% 96%;
-    --foreground: 220 20% 14%;
+    --background: 30 25% 97%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 217 91% 48%;
+    --primary: 217 91% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 220 20% 30%;
+    --secondary: 30 15% 93%;
+    --secondary-foreground: 220 15% 30%;
 
-    --muted: 220 14% 92%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 30 10% 91%;
+    --muted-foreground: 220 8% 50%;
 
     --accent: 217 91% 95%;
-    --accent-foreground: 217 91% 48%;
+    --accent-foreground: 217 91% 50%;
 
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 90%;
-    --input: 220 14% 90%;
-    --ring: 217 91% 48%;
+    --border: 30 12% 90%;
+    --input: 30 12% 90%;
+    --ring: 217 91% 50%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Custom tokens */
-    --critical: 4 80% 52%;
+    --critical: 0 75% 50%;
     --critical-foreground: 0 0% 100%;
-    --critical-glow: 4 80% 52%;
+    --critical-glow: 0 75% 50%;
+    --critical-light: 0 75% 96%;
 
-    --flexible: 217 91% 48%;
+    --flexible: 217 91% 50%;
     --flexible-foreground: 0 0% 100%;
-    --flexible-glow: 217 91% 48%;
+    --flexible-glow: 217 91% 50%;
+    --flexible-light: 217 91% 96%;
 
-    --success: 152 60% 45%;
+    --success: 152 55% 48%;
     --success-foreground: 0 0% 100%;
 
-    --hero-start: 217 91% 48%;
-    --hero-end: 217 80% 58%;
+    --warning: 35 95% 55%;
+    --warning-light: 35 95% 95%;
 
-    --timeline-line: 220 14% 86%;
+    --timeline-line: 30 12% 88%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 20% 14%;
-    --sidebar-primary: 217 91% 48%;
+    --sidebar-foreground: 220 15% 15%;
+    --sidebar-primary: 217 91% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 94%;
-    --sidebar-accent-foreground: 220 20% 14%;
-    --sidebar-border: 220 14% 90%;
-    --sidebar-ring: 217 91% 48%;
+    --sidebar-accent: 30 15% 93%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 30 12% 90%;
+    --sidebar-ring: 217 91% 50%;
   }
 }
 
@@ -81,8 +83,16 @@
 }
 
 @layer utilities {
-  .hero-gradient {
-    background: linear-gradient(135deg, hsl(var(--hero-start)), hsl(var(--hero-end)));
+  .hero-banner {
+    background: linear-gradient(135deg, hsl(30 25% 82%), hsl(30 15% 75%));
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, hsl(30 15% 20% / 0.5));
   }
   .task-critical {
     border-left: 4px solid hsl(var(--critical));
@@ -91,14 +101,14 @@
     border-left: 4px solid hsl(var(--flexible));
   }
   .task-done {
-    opacity: 0.55;
+    opacity: 0.5;
   }
   .pulse-critical {
     animation: pulse-red 2s ease-in-out infinite;
   }
   @keyframes pulse-red {
     0%, 100% { box-shadow: 0 0 0 0 hsl(var(--critical-glow) / 0); }
-    50% { box-shadow: 0 0 0 6px hsl(var(--critical-glow) / 0.15); }
+    50% { box-shadow: 0 0 0 8px hsl(var(--critical-glow) / 0.12); }
   }
   .bottom-nav-active {
     color: hsl(var(--primary));
