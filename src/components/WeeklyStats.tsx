@@ -3,6 +3,7 @@ import { Task } from "@/lib/tasks";
 import { useI18n, dateFnsLocales } from "@/lib/i18n";
 import { format, startOfWeek, startOfMonth, endOfMonth, addDays, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 import { BarChart3, TrendingUp, Flame, Trophy, CalendarRange } from "lucide-react";
+import { MedalShowcase } from "@/components/MedalShowcase";
 
 interface WeeklyStatsProps {
   tasks: Task[];
@@ -306,6 +307,9 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
           </div>
         </div>
       </div>
+
+      {/* Medal showcase — best scores from memory games */}
+      <MedalShowcase />
 
       {/* Motivational message */}
       {weekCompleted > 0 && (
