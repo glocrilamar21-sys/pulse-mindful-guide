@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Trophy, Play, RotateCcw, Eye } from "lucide-react";
 import { loadBestScores, maybeUpdateBest, shuffle } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
+import { memoryPalaceMedal } from "@/lib/medals";
+import { Medal } from "@/components/games/Medal";
 
 type Phase = "idle" | "memorize" | "quiz" | "result";
 
@@ -132,6 +134,7 @@ export function MemoryPalaceGame() {
           <span className="flex items-center gap-1 text-[hsl(var(--warning))]">
             <Trophy className="h-3 w-3" fill="currentColor" />
             {t("gameBest")}: {best.score}/{best.total}
+            <Medal tier={memoryPalaceMedal(best.score, best.total)} size="sm" className="ml-0.5" />
           </span>
         )}
       </div>
@@ -232,6 +235,18 @@ export function MemoryPalaceGame() {
               {t("gameNewRecord")}
             </p>
           )}
+          {(() => {
+            const earned = memoryPalaceMedal(score, pairs.length);
+            if (!earned) return null;
+            return (
+              <div className="flex flex-col items-center gap-0.5 pt-1">
+                <Medal tier={earned} size="lg" />
+                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                  {t("medalEarned")}
+                </span>
+              </div>
+            );
+          })()}
           <Button onClick={start} size="sm" className="w-full rounded-xl font-bold mt-1">
             <RotateCcw className="h-4 w-4 mr-1" />
             {t("tipsTryAgain")}

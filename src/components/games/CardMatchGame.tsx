@@ -10,6 +10,8 @@ import {
   type CardMatchDifficulty,
 } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
+import { cardMatchMedal } from "@/lib/medals";
+import { Medal } from "@/components/games/Medal";
 
 // 12 unique emojis — enough to support hard mode (12 pairs).
 const EMOJI_POOL = [
@@ -158,17 +160,24 @@ export function CardMatchGame() {
             {difficultyOptions.map((opt) => {
               const selected = difficulty === opt.id;
               const cards = DIFFICULTY_PAIRS[opt.id] * 2;
+              const allBest = loadBestScores().cardMatch ?? {};
+              const optMedal = cardMatchMedal(opt.id, allBest[opt.id]);
               return (
                 <button
                   key={opt.id}
                   onClick={() => setDifficulty(opt.id)}
                   className={cn(
-                    "rounded-xl border-2 px-2 py-2 text-center transition-all active:scale-95",
+                    "relative rounded-xl border-2 px-2 py-2 text-center transition-all active:scale-95",
                     selected
                       ? "bg-primary/15 border-primary text-foreground"
                       : "bg-muted/40 border-transparent text-muted-foreground hover:bg-muted/70",
                   )}
                 >
+                  {optMedal && (
+                    <span className="absolute -top-1.5 -right-1.5">
+                      <Medal tier={optMedal} size="sm" />
+                    </span>
+                  )}
                   <div className="text-xs font-bold leading-tight">{t(opt.labelKey)}</div>
                   <div className="text-[10px] text-muted-foreground/80 mt-0.5">
                     {cards} {t("gameCards")}
@@ -182,9 +191,10 @@ export function CardMatchGame() {
         {best && (
           <div className="flex items-center gap-2 text-xs font-bold text-[hsl(var(--warning))]">
             <Trophy className="h-3.5 w-3.5" fill="currentColor" />
-            <span>
+            <span className="flex-1">
               {t("gameBest")}: {best.moves} {t("gameMoves")} · {best.timeSec}s
             </span>
+            <Medal tier={cardMatchMedal(difficulty, best)} size="md" />
           </div>
         )}
         <Button onClick={start} className="w-full rounded-xl font-bold" size="sm">
@@ -237,6 +247,18 @@ export function CardMatchGame() {
           <p className="text-xs text-muted-foreground">
             {moves} {t("gameMoves")} · {elapsedSec}s
           </p>
+          {(() => {
+            const earnedMedal = cardMatchMedal(difficulty, { moves, timeSec: elapsedSec });
+            if (!earnedMedal) return null;
+            return (
+              <div className="flex flex-col items-center gap-0.5 pt-1">
+                <Medal tier={earnedMedal} size="lg" />
+                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                  {t("medalEarned")}
+                </span>
+              </div>
+            );
+          })()}
           {newRecord && (
             <p className="text-xs font-bold text-[hsl(var(--warning))] flex items-center justify-center gap-1">
               <Trophy className="h-3.5 w-3.5" fill="currentColor" />
