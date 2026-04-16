@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Search, X, Check } from "lucide-react";
-import { mascotOutfits, getMascotImage, type MascotCategory } from "@/lib/mascot";
+import { mascotOutfits, getMascotImage, type MascotCategory, type MascotOutfit } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { getMascotName } from "@/lib/mascotNames";
 
@@ -31,10 +33,16 @@ const CATEGORIES: CategoryDef[] = [
   { id: "accessories", labelKey: "catAccessories", emoji: "🕶️" },
 ];
 
+const LONG_PRESS_MS = 450;
+
 export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
   const { t, locale } = useI18n();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
+  const [previewOutfit, setPreviewOutfit] = useState<MascotOutfit | null>(null);
+
+  const longPressTimer = useRef<number | null>(null);
+  const longPressTriggered = useRef(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -55,6 +63,34 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     });
     return map;
   }, []);
+
+  const startLongPress = (outfit: MascotOutfit) => {
+    longPressTriggered.current = false;
+    if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTriggered.current = true;
+      setPreviewOutfit(outfit);
+      if ("vibrate" in navigator) {
+        try { navigator.vibrate?.(15); } catch { /* noop */ }
+      }
+    }, LONG_PRESS_MS);
+  };
+
+  const cancelLongPress = () => {
+    if (longPressTimer.current) {
+      window.clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleClick = (outfit: MascotOutfit) => {
+    if (longPressTriggered.current) {
+      // Suppress click that follows a long-press
+      longPressTriggered.current = false;
+      return;
+    }
+    onChange(outfit.id);
+  };
 
   return (
     <div className="space-y-3">
@@ -95,8 +131,8 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                   : "bg-muted/50 text-muted-foreground hover:bg-muted"
               )}
             >
-                <span>{cat.emoji}</span>
-                <span>{t(cat.labelKey)}</span>
+              <span>{cat.emoji}</span>
+              <span>{t(cat.labelKey)}</span>
               <span
                 className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-full",
@@ -110,10 +146,13 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
         })}
       </div>
 
-      {/* Results header */}
-      <div className="flex items-center justify-between px-1">
+      {/* Results header + hint */}
+      <div className="flex items-center justify-between px-1 gap-2">
         <span className="text-xs text-muted-foreground font-semibold">
           {filtered.length} {filtered.length === 1 ? t("galleryCountOne") : t("galleryCountMany")}
+        </span>
+        <span className="text-[10px] text-muted-foreground/70 italic truncate">
+          {t("previewHint")}
         </span>
       </div>
 
@@ -131,9 +170,17 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
             return (
               <button
                 key={outfit.id}
-                onClick={() => onChange(outfit.id)}
+                onClick={() => handleClick(outfit)}
+                onPointerDown={() => startLongPress(outfit)}
+                onPointerUp={cancelLongPress}
+                onPointerLeave={cancelLongPress}
+                onPointerCancel={cancelLongPress}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setPreviewOutfit(outfit);
+                }}
                 className={cn(
-                  "relative flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 transition-all cursor-pointer group",
+                  "relative flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 transition-all cursor-pointer group select-none touch-manipulation",
                   isActive
                     ? "ring-2 ring-primary bg-accent shadow-md"
                     : "bg-muted/40 hover:bg-muted hover:scale-[1.02]"
@@ -149,8 +196,9 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                     src={getMascotImage(outfit.id, "happy")}
                     alt={getMascotName(outfit.id, locale, outfit.name)}
                     loading="lazy"
+                    draggable={false}
                     className={cn(
-                      "h-full w-full object-contain transition-transform",
+                      "h-full w-full object-contain transition-transform pointer-events-none",
                       isActive && "scale-110"
                     )}
                   />
@@ -164,6 +212,56 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
           })}
         </div>
       )}
+
+      {/* Preview dialog (3 states) */}
+      <Dialog open={!!previewOutfit} onOpenChange={(o) => !o && setPreviewOutfit(null)}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          {previewOutfit && (
+            <div className="flex flex-col items-center gap-4 pt-2">
+              <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                <span>{previewOutfit.emoji}</span>
+                <span>{getMascotName(previewOutfit.id, locale, previewOutfit.name)}</span>
+              </DialogTitle>
+
+              <div className="grid grid-cols-3 gap-3 w-full animate-fade-in">
+                {([
+                  { mood: "happy" as const, labelKey: "moodHappy" as TranslationKey, ring: "ring-primary/30" },
+                  { mood: "worried" as const, labelKey: "moodWorried" as TranslationKey, ring: "ring-[hsl(var(--critical))]/30" },
+                  { mood: "celebrating" as const, labelKey: "moodCelebrating" as TranslationKey, ring: "ring-primary/40" },
+                ]).map(({ mood, labelKey, ring }) => (
+                  <div key={mood} className="flex flex-col items-center gap-1.5">
+                    <div className={cn("h-24 w-full bg-muted/40 rounded-xl flex items-center justify-center ring-2", ring)}>
+                      <img
+                        src={getMascotImage(previewOutfit.id, mood)}
+                        alt={t(labelKey)}
+                        className="h-20 w-20 object-contain"
+                      />
+                    </div>
+                    <span className="text-[11px] font-semibold text-muted-foreground">{t(labelKey)}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                onClick={() => {
+                  onChange(previewOutfit.id);
+                  setPreviewOutfit(null);
+                }}
+                className="w-full rounded-xl font-bold"
+              >
+                {currentOutfit === previewOutfit.id ? (
+                  <>
+                    <Check className="h-4 w-4 mr-1" />
+                    {t("complete")}
+                  </>
+                ) : (
+                  t("selectMascot")
+                )}
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
