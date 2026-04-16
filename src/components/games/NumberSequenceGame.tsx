@@ -91,6 +91,10 @@ export function NumberSequenceGame() {
       setPhase("lost");
       setInput(nextInput);
       playGameSound("wrong");
+      // If the reached level earns a medal, play the win flourish too.
+      if (numberSequenceMedal(finalLevel)) {
+        window.setTimeout(() => playGameSound("win"), 350);
+      }
       return;
     }
 
