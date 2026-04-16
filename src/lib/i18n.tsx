@@ -116,6 +116,11 @@ const translations = {
     catEducation: "Educación",
     catSeasons: "Estaciones",
     catAccessories: "Accesorios",
+    moodHappy: "Feliz",
+    moodWorried: "Preocupado",
+    moodCelebrating: "Celebrando",
+    previewHint: "Mantén presionado para ver los 3 estados",
+    selectMascot: "Seleccionar mascota",
   },
   en: {
     today: "Today",
