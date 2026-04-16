@@ -1,3 +1,10 @@
+import {
+  playCriticalSound,
+  playFlexibleSound,
+  vibrateCriticalPreset,
+  vibrateFlexiblePreset,
+} from "./soundPresets";
+
 export type TaskCategory = "critical" | "flexible";
 export type TaskScope = "trabajo" | "estudio" | "hogar" | "personal" | "salud";
 
@@ -39,15 +46,11 @@ export function generateId(): string {
 }
 
 export function vibrateCritical(): void {
-  if ("vibrate" in navigator) {
-    navigator.vibrate([300, 100, 300, 100, 300, 100, 300]);
-  }
+  vibrateCriticalPreset();
 }
 
 export function vibrateFlexible(): void {
-  if ("vibrate" in navigator) {
-    navigator.vibrate(200);
-  }
+  vibrateFlexiblePreset();
 }
 
 export function stopVibration(): void {
@@ -61,52 +64,23 @@ export function stopVibration(): void {
 let alertInterval: ReturnType<typeof setInterval> | null = null;
 let activeCtx: AudioContext | null = null;
 
-function playCriticalBeep(ctx: AudioContext) {
-  const times = [0, 0.35, 0.7, 1.05, 1.4];
-  times.forEach((start) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "square";
-    osc.frequency.value = 900;
-    gain.gain.value = 1.0; // Maximum volume
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(ctx.currentTime + start);
-    osc.stop(ctx.currentTime + start + 0.3);
-  });
-}
-
-function playFlexibleBeep(ctx: AudioContext) {
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = "triangle";
-  osc.frequency.value = 600;
-  gain.gain.value = 0.8; // High volume
-  gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.5);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.5);
-}
-
 /** Start a looping alert sound + vibration that repeats until stopAlert() is called */
 export function startAlert(type: "critical" | "flexible"): void {
-  stopAlert(); // clear any existing
+  stopAlert();
   activeCtx = new AudioContext();
 
   const play = () => {
     if (!activeCtx) return;
     if (type === "critical") {
-      playCriticalBeep(activeCtx);
-      vibrateCritical();
+      playCriticalSound(activeCtx);
+      vibrateCriticalPreset();
     } else {
-      playFlexibleBeep(activeCtx);
-      vibrateFlexible();
+      playFlexibleSound(activeCtx);
+      vibrateFlexiblePreset();
     }
   };
 
-  play(); // play immediately
-  // Loop: critical every 2s, flexible every 3.5s
+  play();
   const interval = type === "critical" ? 2000 : 3500;
   alertInterval = setInterval(play, interval);
 }
@@ -128,12 +102,21 @@ export function stopAlert(): void {
 export function playDemoSound(type: "critical" | "flexible"): void {
   const ctx = new AudioContext();
   if (type === "critical") {
-    playCriticalBeep(ctx);
-    vibrateCritical();
+    playCriticalSound(ctx);
+    vibrateCriticalPreset();
   } else {
-    playFlexibleBeep(ctx);
-    vibrateFlexible();
+    playFlexibleSound(ctx);
+    vibrateFlexiblePreset();
   }
-  // Close context after sound finishes
+  setTimeout(() => ctx.close().catch(() => {}), 2000);
+}
+
+/** Play a specific preset demo */
+export function playPresetDemo(preset: { play: (ctx: AudioContext) => void; vibratePattern: number | number[] }): void {
+  const ctx = new AudioContext();
+  preset.play(ctx);
+  if ("vibrate" in navigator) {
+    navigator.vibrate(preset.vibratePattern);
+  }
   setTimeout(() => ctx.close().catch(() => {}), 2000);
 }
