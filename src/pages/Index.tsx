@@ -59,6 +59,13 @@ export default function Index() {
   const flexibleTasks = todayTasks.filter((t) => t.category === "flexible" && !t.done);
   const doneTasks = todayTasks.filter((t) => t.done);
 
+  // Next pending task drives the header mascot when auto-mode is enabled.
+  // Priority: earliest critical pending → earliest flexible pending → none.
+  const nextPendingTask =
+    [...criticalTasks].sort((a, b) => a.time.localeCompare(b.time))[0] ??
+    [...flexibleTasks].sort((a, b) => a.time.localeCompare(b.time))[0];
+  const headerScope = nextPendingTask?.scope;
+
   const addTask = useCallback((task: Task) => {
     setTasks((prev) => [...prev, task].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
   }, []);
