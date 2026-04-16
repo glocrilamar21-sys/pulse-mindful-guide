@@ -8,6 +8,11 @@ import heroWaterfall from "@/assets/hero-waterfall.jpg";
 import heroLavender from "@/assets/hero-lavender.jpg";
 import heroStarryNight from "@/assets/hero-starry-night.jpg";
 import heroBamboo from "@/assets/hero-bamboo.jpg";
+import heroEagle from "@/assets/hero-eagle.jpg";
+import heroResilience from "@/assets/hero-resilience.jpg";
+import heroPath from "@/assets/hero-path.jpg";
+import heroWave from "@/assets/hero-wave.jpg";
+import heroSummit from "@/assets/hero-summit.jpg";
 
 export interface HeroSlide {
   image: string;
