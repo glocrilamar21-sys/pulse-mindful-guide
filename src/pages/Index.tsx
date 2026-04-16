@@ -9,7 +9,7 @@ import { ProjectsView } from "@/components/ProjectsView";
 import { HeroBanner } from "@/components/HeroBanner";
 import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
 import { format } from "date-fns";
-import { es, enUS } from "date-fns/locale";
+import { dateFnsLocales } from "@/lib/i18n";
 
 function getCurrentTime() {
   const now = new Date();
@@ -24,7 +24,7 @@ type Tab = "enfoque" | "cronograma" | "proyectos" | "recordatorios";
 
 export default function Index() {
   const { t, locale } = useI18n();
-  const dateFnsLocale = locale === "es" ? es : enUS;
+  const dateFnsLocale = dateFnsLocales[locale];
 
   const [tasks, setTasks] = useState<Task[]>(() => {
     const loaded = loadTasks();
