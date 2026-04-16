@@ -43,7 +43,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
   const handlePostpone = () => { stopAlert(); onPostpone(task.id); };
   const Icon = getTaskDisplayIcon(task);
 
-  const mascotMood = task.done ? "celebrating" : isCritical ? "worried" : "happy";
+  const mascotMood = task.done ? "happy" : "worried";
 
   if (variant === "compact") {
     return (
