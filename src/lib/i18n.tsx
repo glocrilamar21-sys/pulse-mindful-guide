@@ -360,6 +360,7 @@ const translations = {
     scopeMascotMap: "Mascot per scope",
     scopeMascotMapDesc: "Assign a mascot to each task type.",
     resetDefaults: "Reset",
+    suggestAutoMascot: "Suggest",
   },
   pt: {
     today: "Hoje",
