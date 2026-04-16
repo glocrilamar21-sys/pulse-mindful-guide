@@ -538,6 +538,7 @@ const translations = {
     scopeMascotMap: "Mascote por âmbito",
     scopeMascotMapDesc: "Atribua um mascote a cada tipo de tarefa.",
     resetDefaults: "Restaurar",
+    suggestAutoMascot: "Sugerir",
   },
   fr: {
     today: "Aujourd'hui",
