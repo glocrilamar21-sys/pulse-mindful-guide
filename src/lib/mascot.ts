@@ -148,10 +148,13 @@ import mascotHappyChemist from "@/assets/mascot-happy-chemist.png";
 import mascotWorriedChemist from "@/assets/mascot-worried-chemist.png";
 import mascotCelebratingChemist from "@/assets/mascot-celebrating-chemist.png";
 
+export type MascotCategory = "original" | "health" | "tech" | "engineering" | "creative" | "service" | "business" | "education" | "seasons" | "accessories";
+
 export interface MascotOutfit {
   id: string;
   name: string;
   emoji: string;
+  category: MascotCategory;
   happy: string;
   worried: string;
   celebrating: string;
@@ -159,60 +162,63 @@ export interface MascotOutfit {
 
 export const mascotOutfits: MascotOutfit[] = [
   // Original
-  { id: "default", name: "Original", emoji: "🧠", happy: mascotHappy, worried: mascotWorried, celebrating: mascotCelebrating },
-  // Careers
-  { id: "graduate", name: "Graduado", emoji: "🎓", happy: mascotHappyGraduate, worried: mascotWorriedGraduate, celebrating: mascotCelebratingGraduate },
-  { id: "hero", name: "Superhéroe", emoji: "🦸", happy: mascotHappyHero, worried: mascotWorriedHero, celebrating: mascotCelebratingHero },
-  { id: "chef", name: "Chef", emoji: "👨‍🍳", happy: mascotHappyChef, worried: mascotWorriedChef, celebrating: mascotCelebratingChef },
-  { id: "student", name: "Estudiante", emoji: "📚", happy: mascotHappyStudent, worried: mascotWorriedStudent, celebrating: mascotCelebratingStudent },
-  { id: "athlete", name: "Deportista", emoji: "🏃", happy: mascotHappyAthlete, worried: mascotWorriedAthlete, celebrating: mascotCelebratingAthlete },
-  { id: "doctor", name: "Doctor", emoji: "🩺", happy: mascotHappyDoctor, worried: mascotWorriedDoctor, celebrating: mascotCelebratingDoctor },
-  { id: "gardener", name: "Jardinero", emoji: "🌻", happy: mascotHappyGardener, worried: mascotWorriedGardener, celebrating: mascotCelebratingGardener },
-  { id: "astronaut", name: "Astronauta", emoji: "🚀", happy: mascotHappyAstronaut, worried: mascotWorriedAstronaut, celebrating: mascotCelebratingAstronaut },
-  { id: "scientist", name: "Científico", emoji: "🔬", happy: mascotHappyScientist, worried: mascotWorriedScientist, celebrating: mascotCelebratingScientist },
-  { id: "musician", name: "Músico", emoji: "🎸", happy: mascotHappyMusician, worried: mascotWorriedMusician, celebrating: mascotCelebratingMusician },
-  { id: "artist", name: "Artista", emoji: "🎨", happy: mascotHappyArtist, worried: mascotWorriedArtist, celebrating: mascotCelebratingArtist },
-  { id: "lawyer", name: "Abogado", emoji: "⚖️", happy: mascotHappyLawyer, worried: mascotWorriedLawyer, celebrating: mascotCelebratingLawyer },
-  { id: "judge", name: "Juez", emoji: "🧑‍⚖️", happy: mascotHappyJudge, worried: mascotWorriedJudge, celebrating: mascotCelebratingJudge },
-  { id: "photographer", name: "Fotógrafo", emoji: "📷", happy: mascotHappyPhotographer, worried: mascotWorriedPhotographer, celebrating: mascotCelebratingPhotographer },
-  { id: "model", name: "Modelo", emoji: "💃", happy: mascotHappyModel, worried: mascotWorriedModel, celebrating: mascotCelebratingModel },
-  { id: "singer", name: "Cantante", emoji: "🎤", happy: mascotHappySinger, worried: mascotWorriedSinger, celebrating: mascotCelebratingSinger },
-  // Seasons & Accessories
-  { id: "beach", name: "Playa", emoji: "🏖️", happy: mascotHappyBeach, worried: mascotWorriedBeach, celebrating: mascotCelebratingBeach },
-  { id: "summer", name: "Verano", emoji: "☀️", happy: mascotHappySummer, worried: mascotWorriedSummer, celebrating: mascotCelebratingSummer },
-  { id: "autumn", name: "Otoño", emoji: "🍂", happy: mascotHappyAutumn, worried: mascotWorriedAutumn, celebrating: mascotCelebratingAutumn },
-  { id: "spring", name: "Primavera", emoji: "🌸", happy: mascotHappySpring, worried: mascotWorriedSpring, celebrating: mascotCelebratingSpring },
-  { id: "winter", name: "Invierno", emoji: "❄️", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
-  { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
-  { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
-  // Professions
-  { id: "accountant", name: "Contador", emoji: "🧮", happy: mascotHappyAccountant, worried: mascotWorriedAccountant, celebrating: mascotCelebratingAccountant },
-  { id: "dancer", name: "Bailarín", emoji: "💃", happy: mascotHappyDancer, worried: mascotWorriedDancer, celebrating: mascotCelebratingDancer },
-  { id: "salesperson", name: "Vendedor", emoji: "🤝", happy: mascotHappySalesperson, worried: mascotWorriedSalesperson, celebrating: mascotCelebratingSalesperson },
-  { id: "manager", name: "Administrador", emoji: "📊", happy: mascotHappyManager, worried: mascotWorriedManager, celebrating: mascotCelebratingManager },
-  { id: "psychologist", name: "Psicólogo", emoji: "🧠", happy: mascotHappyPsychologist, worried: mascotWorriedPsychologist, celebrating: mascotCelebratingPsychologist },
-  { id: "teacher", name: "Profesor", emoji: "👨‍🏫", happy: mascotHappyTeacher, worried: mascotWorriedTeacher, celebrating: mascotCelebratingTeacher },
-  { id: "actor", name: "Actor", emoji: "🎭", happy: mascotHappyActor, worried: mascotWorriedActor, celebrating: mascotCelebratingActor },
-  // Engineering & Design
-  { id: "systemsengineer", name: "Ing. de Sistemas", emoji: "💻", happy: mascotHappySystemsengineer, worried: mascotWorriedSystemsengineer, celebrating: mascotCelebratingSystemsengineer },
-  { id: "mechanic", name: "Mecánico", emoji: "🔧", happy: mascotHappyMechanic, worried: mascotWorriedMechanic, celebrating: mascotCelebratingMechanic },
-  { id: "graphicdesigner", name: "Diseñador Gráfico", emoji: "🖌️", happy: mascotHappyGraphicdesigner, worried: mascotWorriedGraphicdesigner, celebrating: mascotCelebratingGraphicdesigner },
-  { id: "animator", name: "Animador Digital", emoji: "🎬", happy: mascotHappyAnimator, worried: mascotWorriedAnimator, celebrating: mascotCelebratingAnimator },
-  { id: "civilengineer", name: "Ing. Civil", emoji: "🏗️", happy: mascotHappyCivilengineer, worried: mascotWorriedCivilengineer, celebrating: mascotCelebratingCivilengineer },
-  { id: "electricalengineer", name: "Ing. Eléctrico", emoji: "⚡", happy: mascotHappyElectricalengineer, worried: mascotWorriedElectricalengineer, celebrating: mascotCelebratingElectricalengineer },
-  // Additional Professions
-  { id: "architect", name: "Arquitecto", emoji: "📐", happy: mascotHappyArchitect, worried: mascotWorriedArchitect, celebrating: mascotCelebratingArchitect },
-  { id: "veterinarian", name: "Veterinario", emoji: "🐾", happy: mascotHappyVeterinarian, worried: mascotWorriedVeterinarian, celebrating: mascotCelebratingVeterinarian },
-  { id: "pilot", name: "Piloto", emoji: "✈️", happy: mascotHappyPilot, worried: mascotWorriedPilot, celebrating: mascotCelebratingPilot },
-  { id: "firefighter", name: "Bombero", emoji: "🚒", happy: mascotHappyFirefighter, worried: mascotWorriedFirefighter, celebrating: mascotCelebratingFirefighter },
-  { id: "police", name: "Policía", emoji: "👮", happy: mascotHappyPolice, worried: mascotWorriedPolice, celebrating: mascotCelebratingPolice },
-  { id: "nurse", name: "Enfermero", emoji: "💉", happy: mascotHappyNurse, worried: mascotWorriedNurse, celebrating: mascotCelebratingNurse },
-  // More Professions
-  { id: "dentist", name: "Dentista", emoji: "🦷", happy: mascotHappyDentist, worried: mascotWorriedDentist, celebrating: mascotCelebratingDentist },
-  { id: "programmer", name: "Programador", emoji: "💻", happy: mascotHappyProgrammer, worried: mascotWorriedProgrammer, celebrating: mascotCelebratingProgrammer },
-  { id: "industrialengineer", name: "Ing. Industrial", emoji: "⚙️", happy: mascotHappyIndustrialengineer, worried: mascotWorriedIndustrialengineer, celebrating: mascotCelebratingIndustrialengineer },
-  { id: "biologist", name: "Biólogo", emoji: "🧬", happy: mascotHappyBiologist, worried: mascotWorriedBiologist, celebrating: mascotCelebratingBiologist },
-  { id: "chemist", name: "Químico", emoji: "🧪", happy: mascotHappyChemist, worried: mascotWorriedChemist, celebrating: mascotCelebratingChemist },
+  { id: "default", name: "Original", emoji: "🧠", category: "original", happy: mascotHappy, worried: mascotWorried, celebrating: mascotCelebrating },
+  // Education
+  { id: "graduate", name: "Graduado", emoji: "🎓", category: "education", happy: mascotHappyGraduate, worried: mascotWorriedGraduate, celebrating: mascotCelebratingGraduate },
+  { id: "student", name: "Estudiante", emoji: "📚", category: "education", happy: mascotHappyStudent, worried: mascotWorriedStudent, celebrating: mascotCelebratingStudent },
+  { id: "teacher", name: "Profesor", emoji: "👨‍🏫", category: "education", happy: mascotHappyTeacher, worried: mascotWorriedTeacher, celebrating: mascotCelebratingTeacher },
+  // Creative
+  { id: "hero", name: "Superhéroe", emoji: "🦸", category: "creative", happy: mascotHappyHero, worried: mascotWorriedHero, celebrating: mascotCelebratingHero },
+  { id: "musician", name: "Músico", emoji: "🎸", category: "creative", happy: mascotHappyMusician, worried: mascotWorriedMusician, celebrating: mascotCelebratingMusician },
+  { id: "artist", name: "Artista", emoji: "🎨", category: "creative", happy: mascotHappyArtist, worried: mascotWorriedArtist, celebrating: mascotCelebratingArtist },
+  { id: "photographer", name: "Fotógrafo", emoji: "📷", category: "creative", happy: mascotHappyPhotographer, worried: mascotWorriedPhotographer, celebrating: mascotCelebratingPhotographer },
+  { id: "model", name: "Modelo", emoji: "💃", category: "creative", happy: mascotHappyModel, worried: mascotWorriedModel, celebrating: mascotCelebratingModel },
+  { id: "singer", name: "Cantante", emoji: "🎤", category: "creative", happy: mascotHappySinger, worried: mascotWorriedSinger, celebrating: mascotCelebratingSinger },
+  { id: "dancer", name: "Bailarín", emoji: "💃", category: "creative", happy: mascotHappyDancer, worried: mascotWorriedDancer, celebrating: mascotCelebratingDancer },
+  { id: "actor", name: "Actor", emoji: "🎭", category: "creative", happy: mascotHappyActor, worried: mascotWorriedActor, celebrating: mascotCelebratingActor },
+  { id: "graphicdesigner", name: "Diseñador Gráfico", emoji: "🖌️", category: "creative", happy: mascotHappyGraphicdesigner, worried: mascotWorriedGraphicdesigner, celebrating: mascotCelebratingGraphicdesigner },
+  { id: "animator", name: "Animador Digital", emoji: "🎬", category: "creative", happy: mascotHappyAnimator, worried: mascotWorriedAnimator, celebrating: mascotCelebratingAnimator },
+  // Service
+  { id: "chef", name: "Chef", emoji: "👨‍🍳", category: "service", happy: mascotHappyChef, worried: mascotWorriedChef, celebrating: mascotCelebratingChef },
+  { id: "athlete", name: "Deportista", emoji: "🏃", category: "service", happy: mascotHappyAthlete, worried: mascotWorriedAthlete, celebrating: mascotCelebratingAthlete },
+  { id: "gardener", name: "Jardinero", emoji: "🌻", category: "service", happy: mascotHappyGardener, worried: mascotWorriedGardener, celebrating: mascotCelebratingGardener },
+  { id: "pilot", name: "Piloto", emoji: "✈️", category: "service", happy: mascotHappyPilot, worried: mascotWorriedPilot, celebrating: mascotCelebratingPilot },
+  { id: "firefighter", name: "Bombero", emoji: "🚒", category: "service", happy: mascotHappyFirefighter, worried: mascotWorriedFirefighter, celebrating: mascotCelebratingFirefighter },
+  { id: "police", name: "Policía", emoji: "👮", category: "service", happy: mascotHappyPolice, worried: mascotWorriedPolice, celebrating: mascotCelebratingPolice },
+  // Health
+  { id: "doctor", name: "Doctor", emoji: "🩺", category: "health", happy: mascotHappyDoctor, worried: mascotWorriedDoctor, celebrating: mascotCelebratingDoctor },
+  { id: "nurse", name: "Enfermero", emoji: "💉", category: "health", happy: mascotHappyNurse, worried: mascotWorriedNurse, celebrating: mascotCelebratingNurse },
+  { id: "dentist", name: "Dentista", emoji: "🦷", category: "health", happy: mascotHappyDentist, worried: mascotWorriedDentist, celebrating: mascotCelebratingDentist },
+  { id: "veterinarian", name: "Veterinario", emoji: "🐾", category: "health", happy: mascotHappyVeterinarian, worried: mascotWorriedVeterinarian, celebrating: mascotCelebratingVeterinarian },
+  { id: "psychologist", name: "Psicólogo", emoji: "🧠", category: "health", happy: mascotHappyPsychologist, worried: mascotWorriedPsychologist, celebrating: mascotCelebratingPsychologist },
+  // Tech
+  { id: "scientist", name: "Científico", emoji: "🔬", category: "tech", happy: mascotHappyScientist, worried: mascotWorriedScientist, celebrating: mascotCelebratingScientist },
+  { id: "astronaut", name: "Astronauta", emoji: "🚀", category: "tech", happy: mascotHappyAstronaut, worried: mascotWorriedAstronaut, celebrating: mascotCelebratingAstronaut },
+  { id: "systemsengineer", name: "Ing. de Sistemas", emoji: "💻", category: "tech", happy: mascotHappySystemsengineer, worried: mascotWorriedSystemsengineer, celebrating: mascotCelebratingSystemsengineer },
+  { id: "programmer", name: "Programador", emoji: "💻", category: "tech", happy: mascotHappyProgrammer, worried: mascotWorriedProgrammer, celebrating: mascotCelebratingProgrammer },
+  { id: "biologist", name: "Biólogo", emoji: "🧬", category: "tech", happy: mascotHappyBiologist, worried: mascotWorriedBiologist, celebrating: mascotCelebratingBiologist },
+  { id: "chemist", name: "Químico", emoji: "🧪", category: "tech", happy: mascotHappyChemist, worried: mascotWorriedChemist, celebrating: mascotCelebratingChemist },
+  // Engineering
+  { id: "architect", name: "Arquitecto", emoji: "📐", category: "engineering", happy: mascotHappyArchitect, worried: mascotWorriedArchitect, celebrating: mascotCelebratingArchitect },
+  { id: "mechanic", name: "Mecánico", emoji: "🔧", category: "engineering", happy: mascotHappyMechanic, worried: mascotWorriedMechanic, celebrating: mascotCelebratingMechanic },
+  { id: "civilengineer", name: "Ing. Civil", emoji: "🏗️", category: "engineering", happy: mascotHappyCivilengineer, worried: mascotWorriedCivilengineer, celebrating: mascotCelebratingCivilengineer },
+  { id: "electricalengineer", name: "Ing. Eléctrico", emoji: "⚡", category: "engineering", happy: mascotHappyElectricalengineer, worried: mascotWorriedElectricalengineer, celebrating: mascotCelebratingElectricalengineer },
+  { id: "industrialengineer", name: "Ing. Industrial", emoji: "⚙️", category: "engineering", happy: mascotHappyIndustrialengineer, worried: mascotWorriedIndustrialengineer, celebrating: mascotCelebratingIndustrialengineer },
+  // Business
+  { id: "lawyer", name: "Abogado", emoji: "⚖️", category: "business", happy: mascotHappyLawyer, worried: mascotWorriedLawyer, celebrating: mascotCelebratingLawyer },
+  { id: "judge", name: "Juez", emoji: "🧑‍⚖️", category: "business", happy: mascotHappyJudge, worried: mascotWorriedJudge, celebrating: mascotCelebratingJudge },
+  { id: "accountant", name: "Contador", emoji: "🧮", category: "business", happy: mascotHappyAccountant, worried: mascotWorriedAccountant, celebrating: mascotCelebratingAccountant },
+  { id: "salesperson", name: "Vendedor", emoji: "🤝", category: "business", happy: mascotHappySalesperson, worried: mascotWorriedSalesperson, celebrating: mascotCelebratingSalesperson },
+  { id: "manager", name: "Administrador", emoji: "📊", category: "business", happy: mascotHappyManager, worried: mascotWorriedManager, celebrating: mascotCelebratingManager },
+  // Seasons
+  { id: "beach", name: "Playa", emoji: "🏖️", category: "seasons", happy: mascotHappyBeach, worried: mascotWorriedBeach, celebrating: mascotCelebratingBeach },
+  { id: "summer", name: "Verano", emoji: "☀️", category: "seasons", happy: mascotHappySummer, worried: mascotWorriedSummer, celebrating: mascotCelebratingSummer },
+  { id: "autumn", name: "Otoño", emoji: "🍂", category: "seasons", happy: mascotHappyAutumn, worried: mascotWorriedAutumn, celebrating: mascotCelebratingAutumn },
+  { id: "spring", name: "Primavera", emoji: "🌸", category: "seasons", happy: mascotHappySpring, worried: mascotWorriedSpring, celebrating: mascotCelebratingSpring },
+  { id: "winter", name: "Invierno", emoji: "❄️", category: "seasons", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
+  // Accessories
+  { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", category: "accessories", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
+  { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", category: "accessories", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
