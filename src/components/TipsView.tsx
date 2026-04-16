@@ -13,8 +13,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Lightbulb, Play, RotateCcw, Eye, Timer, Sparkles } from "lucide-react";
+import { Lightbulb, Play, RotateCcw, Eye, Timer, Sparkles, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CardMatchGame } from "@/components/games/CardMatchGame";
+import { NumberSequenceGame } from "@/components/games/NumberSequenceGame";
+import { MemoryPalaceGame } from "@/components/games/MemoryPalaceGame";
 
 const CATEGORY_ACCENT: Record<TipCategoryId, string> = {
   habits: "from-primary/20 to-primary/5 border-primary/30",
