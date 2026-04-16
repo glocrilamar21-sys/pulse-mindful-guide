@@ -3,6 +3,7 @@ import { Search, X, Check } from "lucide-react";
 import { mascotOutfits, getMascotImage, type MascotCategory } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 interface MascotGalleryProps {
   currentOutfit: string;
@@ -11,25 +12,26 @@ interface MascotGalleryProps {
 
 interface CategoryDef {
   id: "all" | MascotCategory;
-  label: string;
+  labelKey: TranslationKey;
   emoji: string;
 }
 
 const CATEGORIES: CategoryDef[] = [
-  { id: "all", label: "Todos", emoji: "✨" },
-  { id: "original", label: "Original", emoji: "🧠" },
-  { id: "health", label: "Salud", emoji: "🩺" },
-  { id: "tech", label: "Tecnología", emoji: "💻" },
-  { id: "engineering", label: "Ingeniería", emoji: "🏗️" },
-  { id: "creative", label: "Creativo", emoji: "🎨" },
-  { id: "service", label: "Servicio", emoji: "🚒" },
-  { id: "business", label: "Negocios", emoji: "📊" },
-  { id: "education", label: "Educación", emoji: "🎓" },
-  { id: "seasons", label: "Estaciones", emoji: "🌸" },
-  { id: "accessories", label: "Accesorios", emoji: "🕶️" },
+  { id: "all", labelKey: "catAll", emoji: "✨" },
+  { id: "original", labelKey: "catOriginal", emoji: "🧠" },
+  { id: "health", labelKey: "catHealth", emoji: "🩺" },
+  { id: "tech", labelKey: "catTech", emoji: "💻" },
+  { id: "engineering", labelKey: "catEngineering", emoji: "🏗️" },
+  { id: "creative", labelKey: "catCreative", emoji: "🎨" },
+  { id: "service", labelKey: "catService", emoji: "🚒" },
+  { id: "business", labelKey: "catBusiness", emoji: "📊" },
+  { id: "education", labelKey: "catEducation", emoji: "🎓" },
+  { id: "seasons", labelKey: "catSeasons", emoji: "🌸" },
+  { id: "accessories", labelKey: "catAccessories", emoji: "🕶️" },
 ];
 
 export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
 
