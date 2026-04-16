@@ -1,16 +1,30 @@
 import { useEffect, useRef } from "react";
 import { Task, startAlert, stopAlert } from "@/lib/tasks";
-import { Check, Timer } from "lucide-react";
+import { Check, Clock, AlertTriangle, Pill, Briefcase, Leaf, BookOpen, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface TaskCardProps {
   task: Task;
   isActive: boolean;
   onDone: (id: string) => void;
   onPostpone: (id: string) => void;
+  variant?: "full" | "compact";
 }
 
-export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) {
+// Simple icon picker based on task name keywords
+function getTaskIcon(name: string, category: string) {
+  const lower = name.toLowerCase();
+  if (lower.includes("medic") || lower.includes("pastilla") || lower.includes("vitamina")) return Pill;
+  if (lower.includes("trabajo") || lower.includes("informe") || lower.includes("reunión") || lower.includes("fecha límite")) return Briefcase;
+  if (lower.includes("planta") || lower.includes("regar") || lower.includes("jardín")) return Leaf;
+  if (lower.includes("leer") || lower.includes("libro") || lower.includes("estudi")) return BookOpen;
+  if (lower.includes("paseo") || lower.includes("camina") || lower.includes("ejerci") || lower.includes("gym")) return Dumbbell;
+  if (category === "critical") return AlertTriangle;
+  return Clock;
+}
+
+export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" }: TaskCardProps) {
   const isCritical = task.category === "critical";
   const alertingRef = useRef(false);
 
@@ -44,73 +58,90 @@ export function TaskCard({ task, isActive, onDone, onPostpone }: TaskCardProps) 
     onPostpone(task.id);
   };
 
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-3 px-4 py-3.5 transition-all",
-        task.done && "task-done",
-        !task.done && isCritical && "task-critical",
-        !task.done && !isCritical && "task-flexible",
-        isActive && !task.done && "pulse-critical bg-critical/5"
-      )}
-    >
-      {/* Dot indicator */}
-      <div
-        className={cn(
-          "h-3 w-3 rounded-full shrink-0",
-          task.done
-            ? "bg-success"
-            : isCritical
-            ? "bg-critical"
-            : "bg-primary"
-        )}
-      />
+  const Icon = getTaskIcon(task.name, task.category);
 
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <p className={cn(
-          "text-sm font-semibold leading-tight text-foreground",
-          task.done && "line-through text-muted-foreground"
+  // Compact variant for calendar view
+  if (variant === "compact") {
+    return (
+      <div className={cn(
+        "flex items-center gap-3 px-4 py-3 transition-all",
+        task.done && "task-done"
+      )}>
+        <div className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full shrink-0",
+          isCritical ? "bg-[hsl(var(--critical-light))]" : "bg-[hsl(var(--flexible-light))]"
         )}>
-          {task.name}
-        </p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-xs text-muted-foreground tabular-nums">
-            {task.time}
-          </span>
-          {isCritical && !task.done && (
-            <span className="text-[10px] font-bold text-critical uppercase">
-              Crítica
-            </span>
-          )}
+          <Icon className={cn("h-4 w-4", isCritical ? "text-[hsl(var(--critical))]" : "text-primary")} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={cn(
+            "text-sm font-semibold text-foreground",
+            task.done && "line-through text-muted-foreground"
+          )}>{task.name}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {task.time} • {isCritical ? "Prioridad Crítica" : "Flexible"}
+          </p>
         </div>
       </div>
+    );
+  }
 
-      {/* Actions */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        {!task.done ? (
-          <>
-            <button
-              onClick={handleDone}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-success/15 text-success hover:bg-success/25 cursor-pointer transition-colors"
-            >
-              <Check className="h-4 w-4" />
-            </button>
-            {!isCritical && (
-              <button
-                onClick={handlePostpone}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer transition-colors"
-              >
-                <Timer className="h-4 w-4" />
-              </button>
-            )}
-          </>
-        ) : (
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-success/15">
-            <Check className="h-4 w-4 text-success" />
-          </div>
+  // Full variant - matches prototype design
+  return (
+    <div className={cn(
+      "rounded-2xl bg-card p-4 shadow-sm transition-all",
+      isActive && !task.done && "pulse-critical",
+      task.done && "task-done"
+    )}>
+      <div className="flex items-start justify-between mb-3">
+        <div className={cn(
+          "flex h-11 w-11 items-center justify-center rounded-full",
+          isCritical ? "bg-[hsl(var(--critical-light))]" : "bg-[hsl(var(--flexible-light))]"
+        )}>
+          <Icon className={cn(
+            "h-5 w-5",
+            isCritical ? "text-[hsl(var(--critical))]" : "text-primary"
+          )} />
+        </div>
+        {isCritical && !task.done && isActive && (
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[hsl(var(--critical-light))] text-[hsl(var(--critical))]">
+            Urgente
+          </span>
+        )}
+        {task.done && (
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[hsl(var(--success)/.1)] text-[hsl(var(--success))]">
+            Hecho
+          </span>
         )}
       </div>
+
+      <h3 className={cn(
+        "text-base font-bold text-foreground mb-1",
+        task.done && "line-through text-muted-foreground"
+      )}>
+        {task.name}
+      </h3>
+      <p className="text-sm text-muted-foreground mb-4">
+        {task.time} — {isCritical ? "Tarea crítica" : "Tarea flexible"}
+      </p>
+
+      {!task.done && (
+        <div className="flex gap-2">
+          <Button
+            onClick={handleDone}
+            className="flex-1 h-10 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm cursor-pointer"
+          >
+            Completado
+          </Button>
+          <Button
+            onClick={handlePostpone}
+            variant="outline"
+            className="h-10 rounded-full px-5 font-semibold text-sm cursor-pointer border-border"
+          >
+            Posponer
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

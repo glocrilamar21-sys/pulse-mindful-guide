@@ -4,9 +4,8 @@ import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { CalendarView } from "@/components/CalendarView";
-import { Trash2, ChevronLeft, ChevronRight, CalendarDays, Plus, ListTodo, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { format, addDays, subDays } from "date-fns";
+import { Plus, Target, CalendarDays, Bell, Settings, AlertTriangle, Sparkles } from "lucide-react";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 function getCurrentTime() {
@@ -18,7 +17,7 @@ function dateToStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type Tab = "hoy" | "calendario" | "nueva" | "config";
+type Tab = "enfoque" | "cronograma" | "recordatorios";
 
 export default function Index() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -27,7 +26,7 @@ export default function Index() {
   });
   const [currentTime, setCurrentTime] = useState(getCurrentTime);
   const [viewDate, setViewDate] = useState<Date>(new Date());
-  const [activeTab, setActiveTab] = useState<Tab>("hoy");
+  const [activeTab, setActiveTab] = useState<Tab>("enfoque");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const viewDateStr = dateToStr(viewDate);
@@ -42,10 +41,10 @@ export default function Index() {
     saveTasks(tasks);
   }, [tasks]);
 
-  const filteredTasks = tasks.filter((t) => t.date === viewDateStr);
-  const completedCount = filteredTasks.filter((t) => t.done).length;
-  const totalCount = filteredTasks.length;
-  const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const todayTasks = tasks.filter((t) => t.date === viewDateStr);
+  const criticalTasks = todayTasks.filter((t) => t.category === "critical" && !t.done);
+  const flexibleTasks = todayTasks.filter((t) => t.category === "flexible" && !t.done);
+  const doneTasks = todayTasks.filter((t) => t.done);
 
   const addTask = useCallback((task: Task) => {
     setTasks((prev) => [...prev, task].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
@@ -70,121 +69,71 @@ export default function Index() {
     );
   }, []);
 
-  const clearDone = useCallback(() => {
-    setTasks((prev) => prev.filter((t) => !(t.done && t.date === viewDateStr)));
-  }, [viewDateStr]);
-
-  const hasDone = filteredTasks.some((t) => t.done);
-
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background pb-20">
-      {/* Hero Header */}
-      <header className="hero-gradient text-primary-foreground">
-        <div className="mx-auto max-w-lg px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-5 md:max-w-2xl lg:max-w-4xl">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-bold">Memory Help</h1>
-            <span className="text-sm font-medium opacity-90 tabular-nums">{currentTime}</span>
-          </div>
+    <div className="min-h-screen min-h-[100dvh] bg-background pb-24">
+      {/* Top Header */}
+      <header className="bg-card">
+        <div className="mx-auto max-w-lg px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 md:max-w-2xl">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-2xl font-extrabold leading-tight">
-                {activeTab === "calendario"
-                  ? "Calendario"
-                  : activeTab === "config"
-                  ? "Configuración"
-                  : isToday
-                  ? "Hoy"
-                  : format(viewDate, "EEEE d", { locale: es })}
-              </p>
-              <p className="text-sm opacity-80 capitalize mt-0.5">
-                {format(viewDate, "MMMM yyyy", { locale: es })}
-              </p>
-            </div>
-            {activeTab === "hoy" && totalCount > 0 && (
-              <div className="flex flex-col items-center">
-                <div className="relative h-14 w-14">
-                  <svg className="h-14 w-14 -rotate-90" viewBox="0 0 56 56">
-                    <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="4" />
-                    <circle
-                      cx="28" cy="28" r="24"
-                      fill="none" stroke="white" strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 24}`}
-                      strokeDashoffset={`${2 * Math.PI * 24 * (1 - progressPercent / 100)}`}
-                      className="transition-all duration-500"
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                    {progressPercent}%
-                  </span>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                <span className="text-lg">🧠</span>
               </div>
-            )}
+              <div>
+                <h1 className="text-lg font-bold text-foreground">
+                  {isToday ? "Hoy" : format(viewDate, "EEEE d", { locale: es })},{" "}
+                  <span className="capitalize">{format(viewDate, "d MMM", { locale: es })}</span>
+                </h1>
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab(activeTab === "recordatorios" ? "enfoque" : "recordatorios")}
+              className="h-9 w-9 rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+            >
+              <Settings className="h-5 w-5 text-muted-foreground" />
+            </button>
           </div>
         </div>
       </header>
 
-      {/* TAB: Hoy */}
-      {activeTab === "hoy" && (
-        <>
-          {/* Date Navigator */}
-          <div className="mx-auto max-w-lg px-4 -mt-3 md:max-w-2xl lg:max-w-4xl">
-            <div className="flex items-center justify-between rounded-xl bg-card p-2 shadow-md">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setViewDate((d) => subDays(d, 1))}
-                className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <button
-                onClick={() => setViewDate(new Date())}
-                className="cursor-pointer text-sm font-semibold capitalize hover:text-primary transition-colors"
-              >
-                {isToday ? "Hoy" : format(viewDate, "EEEE d 'de' MMMM", { locale: es })}
-              </button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setViewDate((d) => addDays(d, 1))}
-                className="cursor-pointer h-9 w-9 rounded-full hover:bg-accent"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+      {/* TAB: Enfoque */}
+      {activeTab === "enfoque" && (
+        <div className="mx-auto max-w-lg px-4 pt-4 space-y-5 md:max-w-2xl">
+          {/* Hero Banner */}
+          <div className="relative rounded-2xl overflow-hidden h-40">
+            <div className="absolute inset-0 hero-banner" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 z-10" />
+            <div className="relative z-20 h-full flex flex-col justify-end p-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/80 mb-1">
+                Reflexión Matutina
+              </p>
+              <h2 className="text-2xl font-extrabold text-white leading-tight">
+                Mantente presente.
+              </h2>
             </div>
           </div>
 
-          {/* Section label */}
-          <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl lg:max-w-4xl">
+          {/* Crítica Section */}
+          <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">
-                Tareas del día
-              </h2>
-              {totalCount > 0 && (
-                <span className="text-xs font-semibold text-muted-foreground">
-                  {completedCount} de {totalCount}
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-[hsl(var(--critical))]" />
+                <h2 className="text-base font-bold text-foreground">Crítica</h2>
+              </div>
+              {criticalTasks.length > 0 && (
+                <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--critical))]">
+                  {criticalTasks.length} Tareas restantes
                 </span>
               )}
             </div>
-          </div>
-
-          {/* Task List */}
-          <main className="mx-auto max-w-lg px-4 md:max-w-2xl lg:max-w-4xl">
-            {filteredTasks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
-                  <ListTodo className="h-7 w-7 text-primary" />
-                </div>
-                <p className="text-base font-bold text-foreground">Sin tareas para {isToday ? "hoy" : "este día"}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Toca + para agregar tu primera tarea
-                </p>
+            {criticalTasks.length === 0 ? (
+              <div className="rounded-2xl bg-card p-6 text-center shadow-sm">
+                <p className="text-sm text-muted-foreground">Sin tareas críticas pendientes ✓</p>
               </div>
             ) : (
-              <div className="rounded-xl bg-card shadow-sm overflow-hidden divide-y divide-border">
-                {filteredTasks.map((task) => {
-                  const isActive = isToday && !task.done && task.time <= currentTime;
+              <div className="space-y-3">
+                {criticalTasks.map((task) => {
+                  const isActive = isToday && task.time <= currentTime;
                   return (
                     <TaskCard
                       key={task.id}
@@ -197,26 +146,83 @@ export default function Index() {
                 })}
               </div>
             )}
+          </section>
 
-            {hasDone && (
-              <div className="mt-3">
-                <Button
-                  variant="ghost"
-                  onClick={clearDone}
-                  className="w-full gap-2 text-muted-foreground cursor-pointer hover:bg-card text-xs h-9"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Limpiar completadas
-                </Button>
+          {/* Flexible Section */}
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <h2 className="text-base font-bold text-foreground">Flexible</h2>
+              </div>
+              {flexibleTasks.length > 0 && (
+                <span className="text-xs font-semibold text-muted-foreground">
+                  En curso
+                </span>
+              )}
+            </div>
+            {flexibleTasks.length === 0 ? (
+              <div className="rounded-2xl bg-card p-6 text-center shadow-sm">
+                <p className="text-sm text-muted-foreground">Sin tareas flexibles pendientes</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {flexibleTasks.map((task) => {
+                  const isActive = isToday && task.time <= currentTime;
+                  return (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      isActive={isActive}
+                      onDone={markDone}
+                      onPostpone={postpone}
+                    />
+                  );
+                })}
               </div>
             )}
-          </main>
-        </>
+          </section>
+
+          {/* Done tasks */}
+          {doneTasks.length > 0 && (
+            <section>
+              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
+                Completadas ({doneTasks.length})
+              </h2>
+              <div className="space-y-2">
+                {doneTasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    isActive={false}
+                    onDone={markDone}
+                    onPostpone={postpone}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Empty state */}
+          {todayTasks.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
+                <Target className="h-7 w-7 text-primary" />
+              </div>
+              <p className="text-base font-bold text-foreground">
+                Sin tareas para {isToday ? "hoy" : "este día"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Toca + para agregar tu primera tarea
+              </p>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* TAB: Calendario */}
-      {activeTab === "calendario" && (
-        <div className="-mt-3">
+      {/* TAB: Cronograma */}
+      {activeTab === "cronograma" && (
+        <div className="-mt-1">
           <CalendarView
             tasks={tasks}
             viewDate={viewDate}
@@ -228,9 +234,9 @@ export default function Index() {
         </div>
       )}
 
-      {/* TAB: Config */}
-      {activeTab === "config" && (
-        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl lg:max-w-4xl">
+      {/* TAB: Recordatorios/Config */}
+      {activeTab === "recordatorios" && (
+        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl">
           <SettingsPanel inline />
         </div>
       )}
@@ -238,8 +244,8 @@ export default function Index() {
       {/* FAB */}
       <button
         onClick={() => setAddDialogOpen(true)}
-        className="fixed right-4 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
-        style={{ bottom: "max(5rem, calc(4rem + env(safe-area-inset-bottom)))" }}
+        className="fixed right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+        style={{ bottom: "max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)))" }}
       >
         <Plus className="h-7 w-7" />
       </button>
@@ -248,31 +254,25 @@ export default function Index() {
       <AddTaskDialog onAdd={addTask} open={addDialogOpen} onOpenChange={setAddDialogOpen} />
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card pb-[max(0.25rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-lg flex items-center justify-around md:max-w-2xl lg:max-w-4xl">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-lg flex items-center justify-around md:max-w-2xl">
           <NavTab
-            icon={<ListTodo className="h-5 w-5" />}
-            label="Hoy"
-            active={activeTab === "hoy"}
-            onClick={() => { setActiveTab("hoy"); setViewDate(new Date()); }}
+            icon={<Target className="h-5 w-5" />}
+            label="ENFOQUE"
+            active={activeTab === "enfoque"}
+            onClick={() => { setActiveTab("enfoque"); setViewDate(new Date()); }}
           />
           <NavTab
             icon={<CalendarDays className="h-5 w-5" />}
-            label="Calendario"
-            active={activeTab === "calendario"}
-            onClick={() => setActiveTab("calendario")}
+            label="CRONOGRAMA"
+            active={activeTab === "cronograma"}
+            onClick={() => setActiveTab("cronograma")}
           />
           <NavTab
-            icon={<Plus className="h-5 w-5" />}
-            label="Nueva"
-            active={false}
-            onClick={() => setAddDialogOpen(true)}
-          />
-          <NavTab
-            icon={<Settings className="h-5 w-5" />}
-            label="Config"
-            active={activeTab === "config"}
-            onClick={() => setActiveTab("config")}
+            icon={<Bell className="h-5 w-5" />}
+            label="RECORDATORIOS"
+            active={activeTab === "recordatorios"}
+            onClick={() => setActiveTab("recordatorios")}
           />
         </div>
       </nav>
@@ -289,12 +289,12 @@ function NavTab({ icon, label, active, onClick }: {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-0.5 py-2 px-3 cursor-pointer transition-colors ${
+      className={`flex flex-col items-center gap-1 py-2.5 px-4 cursor-pointer transition-colors ${
         active ? "bottom-nav-active" : "bottom-nav-inactive"
       }`}
     >
       {icon}
-      <span className="text-[10px] font-semibold">{label}</span>
+      <span className="text-[9px] font-bold tracking-wider">{label}</span>
     </button>
   );
 }
