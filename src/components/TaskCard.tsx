@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Task, startAlert, stopAlert } from "@/lib/tasks";
 import { useI18n } from "@/lib/i18n";
-import { Check, Clock, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getTaskDisplayIcon } from "@/lib/taskIcons";
+import { BrainMascot } from "@/components/BrainMascot";
 
 interface TaskCardProps {
   task: Task;
@@ -43,6 +43,8 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
   const handlePostpone = () => { stopAlert(); onPostpone(task.id); };
   const Icon = getTaskDisplayIcon(task);
 
+  const mascotMood = isCritical ? "worried" : "happy";
+
   if (variant === "compact") {
     return (
       <div className={cn("flex items-center gap-3 px-4 py-3 transition-all", task.done && "task-done")}>
@@ -55,6 +57,9 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
             {task.time} • {isCritical ? t("criticalPriority") : t("flexible")}
           </p>
         </div>
+        {!task.done && (
+          <BrainMascot mood={mascotMood} size="sm" animate={isActive} />
+        )}
       </div>
     );
   }
@@ -66,8 +71,13 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
       task.done && "task-done"
     )}>
       <div className="flex items-start justify-between mb-3">
-        <div className={cn("flex h-11 w-11 items-center justify-center rounded-full", isCritical ? "bg-[hsl(var(--critical-light))]" : "bg-[hsl(var(--flexible-light))]")}>
-          <Icon className={cn("h-5 w-5", isCritical ? "text-[hsl(var(--critical))]" : "text-primary")} />
+        <div className="flex items-center gap-3">
+          <div className={cn("flex h-11 w-11 items-center justify-center rounded-full", isCritical ? "bg-[hsl(var(--critical-light))]" : "bg-[hsl(var(--flexible-light))]")}>
+            <Icon className={cn("h-5 w-5", isCritical ? "text-[hsl(var(--critical))]" : "text-primary")} />
+          </div>
+          {!task.done && (
+            <BrainMascot mood={mascotMood} size="md" animate={isActive} />
+          )}
         </div>
         {isCritical && !task.done && isActive && (
           <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[hsl(var(--critical-light))] text-[hsl(var(--critical))]">
