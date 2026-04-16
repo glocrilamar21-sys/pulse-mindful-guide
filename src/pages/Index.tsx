@@ -65,7 +65,7 @@ export default function Index() {
     const task = tasks.find((t) => t.id === id);
     if (task && !task.done) {
       const isCritical = task.category === "critical";
-      // Fire confetti
+      // Fire confetti for single task
       confetti({
         particleCount: isCritical ? 150 : 80,
         spread: isCritical ? 100 : 60,
@@ -74,9 +74,26 @@ export default function Index() {
           ? ["#ff4444", "#ff6b6b", "#ffd700", "#ff8c00"]
           : ["#4f46e5", "#7c3aed", "#06b6d4", "#10b981", "#fbbf24"],
       });
+
+      // Check if all tasks for today will be done after this one
+      const todayTasksList = tasks.filter((t) => t.date === viewDateStr);
+      const remainingAfter = todayTasksList.filter((t) => !t.done && t.id !== id);
+      if (todayTasksList.length > 1 && remainingAfter.length === 0) {
+        // All tasks completed celebration!
+        setTimeout(() => {
+          const duration = 3000;
+          const end = Date.now() + duration;
+          const frame = () => {
+            confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ["#ffd700", "#ff6b6b", "#4f46e5", "#10b981", "#7c3aed"] });
+            confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ["#ffd700", "#ff6b6b", "#4f46e5", "#10b981", "#7c3aed"] });
+            if (Date.now() < end) requestAnimationFrame(frame);
+          };
+          frame();
+        }, 600);
+      }
     }
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-  }, [tasks]);
+  }, [tasks, viewDateStr]);
 
   const postpone = useCallback((id: string) => {
     setTasks((prev) =>
