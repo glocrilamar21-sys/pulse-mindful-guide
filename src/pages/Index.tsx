@@ -4,7 +4,8 @@ import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { CalendarView } from "@/components/CalendarView";
-import { Plus, Target, CalendarDays, Bell, Settings, AlertTriangle, Sparkles } from "lucide-react";
+import { ProjectsView } from "@/components/ProjectsView";
+import { Plus, Target, CalendarDays, Bell, Settings, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import heroPlants from "@/assets/hero-plants.jpg";
@@ -18,7 +19,7 @@ function dateToStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type Tab = "enfoque" | "cronograma" | "recordatorios";
+type Tab = "enfoque" | "cronograma" | "proyectos" | "recordatorios";
 
 export default function Index() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -239,6 +240,11 @@ export default function Index() {
         </div>
       )}
 
+      {/* TAB: Proyectos */}
+      {activeTab === "proyectos" && (
+        <ProjectsView tasks={tasks} />
+      )}
+
       {/* TAB: Recordatorios/Config */}
       {activeTab === "recordatorios" && (
         <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl">
@@ -269,13 +275,19 @@ export default function Index() {
           />
           <NavTab
             icon={<CalendarDays className="h-5 w-5" />}
-            label="CRONOGRAMA"
+            label="CALENDARIO"
             active={activeTab === "cronograma"}
             onClick={() => setActiveTab("cronograma")}
           />
           <NavTab
+            icon={<FolderKanban className="h-5 w-5" />}
+            label="PROYECTOS"
+            active={activeTab === "proyectos"}
+            onClick={() => setActiveTab("proyectos")}
+          />
+          <NavTab
             icon={<Bell className="h-5 w-5" />}
-            label="RECORDATORIOS"
+            label="AJUSTES"
             active={activeTab === "recordatorios"}
             onClick={() => setActiveTab("recordatorios")}
           />

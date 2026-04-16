@@ -52,6 +52,7 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
       time,
       date: dateStr,
       done: false,
+      scope: scope as Task["scope"],
     });
     onOpenChange(false);
   };
