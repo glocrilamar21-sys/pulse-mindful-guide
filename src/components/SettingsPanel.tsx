@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
 import { loadMascotOutfit, saveMascotOutfit } from "@/lib/mascot";
 import { MascotGallery } from "@/components/MascotGallery";
+import { AutoMascotSettings } from "@/components/AutoMascotSettings";
 import {
   criticalPresets,
   flexiblePresets,
