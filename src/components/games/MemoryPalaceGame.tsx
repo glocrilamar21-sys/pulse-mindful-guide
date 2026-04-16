@@ -7,6 +7,7 @@ import { loadBestScores, maybeUpdateBest, shuffle } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
 import { memoryPalaceMedal } from "@/lib/medals";
 import { Medal } from "@/components/games/Medal";
+import { fireGoldConfetti } from "@/lib/confetti";
 
 type Phase = "idle" | "memorize" | "quiz" | "result";
 
@@ -101,6 +102,9 @@ export function MemoryPalaceGame() {
     window.setTimeout(() => {
       if (quizIndex + 1 >= pairs.length) {
         const finalScore = score + (correct ? 1 : 0);
+        const prevBest = loadBestScores().memoryPalace;
+        const prevMedal = memoryPalaceMedal(prevBest?.score, prevBest?.total);
+        const newMedal = memoryPalaceMedal(finalScore, pairs.length);
         const replaced = maybeUpdateBest(
           "memoryPalace",
           (prev) => !prev || finalScore > prev.score,
@@ -109,6 +113,10 @@ export function MemoryPalaceGame() {
         setNewRecord(replaced);
         setPhase("result");
         playGameSound("win");
+        // Celebrate first time reaching gold.
+        if (newMedal === "gold" && prevMedal !== "gold") {
+          fireGoldConfetti();
+        }
       } else {
         setQuizIndex((q) => q + 1);
       }

@@ -7,6 +7,7 @@ import { loadBestScores, maybeUpdateBest } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
 import { numberSequenceMedal } from "@/lib/medals";
 import { Medal } from "@/components/games/Medal";
+import { fireGoldConfetti } from "@/lib/confetti";
 
 type Phase = "idle" | "showing" | "input" | "lost";
 
@@ -82,6 +83,9 @@ export function NumberSequenceGame() {
       // Lost
       const reachedLevel = level - 1; // last successful level (this one failed)
       const finalLevel = level; // level where they failed
+      const prevBest = loadBestScores().numberSequence;
+      const prevMedal = numberSequenceMedal(prevBest?.level);
+      const newMedal = numberSequenceMedal(finalLevel);
       const replaced = maybeUpdateBest(
         "numberSequence",
         (prev) => !prev || finalLevel > prev.level,
@@ -92,8 +96,12 @@ export function NumberSequenceGame() {
       setInput(nextInput);
       playGameSound("wrong");
       // If the reached level earns a medal, play the win flourish too.
-      if (numberSequenceMedal(finalLevel)) {
+      if (newMedal) {
         window.setTimeout(() => playGameSound("win"), 350);
+      }
+      // Celebrate first time reaching gold.
+      if (newMedal === "gold" && prevMedal !== "gold") {
+        window.setTimeout(() => fireGoldConfetti(), 400);
       }
       return;
     }
