@@ -57,7 +57,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
             {task.time} • {isCritical ? t("criticalPriority") : t("flexible")}
           </p>
         </div>
-        <BrainMascot mood={mascotMood} size="sm" animate={isActive || task.done} />
+        <BrainMascot mood={mascotMood} size="sm" animate={isActive || task.done} scope={task.scope} />
       </div>
     );
   }
@@ -73,7 +73,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
           <div className={cn("flex h-11 w-11 items-center justify-center rounded-full", isCritical ? "bg-[hsl(var(--critical-light))]" : "bg-[hsl(var(--flexible-light))]")}>
             <Icon className={cn("h-5 w-5", isCritical ? "text-[hsl(var(--critical))]" : "text-primary")} />
           </div>
-          <BrainMascot mood={mascotMood} size="md" animate={isActive || task.done} />
+          <BrainMascot mood={mascotMood} size="md" animate={isActive || task.done} scope={task.scope} />
         </div>
         {isCritical && !task.done && isActive && (
           <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[hsl(var(--critical-light))] text-[hsl(var(--critical))]">
