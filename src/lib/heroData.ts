@@ -8,6 +8,11 @@ import heroWaterfall from "@/assets/hero-waterfall.jpg";
 import heroLavender from "@/assets/hero-lavender.jpg";
 import heroStarryNight from "@/assets/hero-starry-night.jpg";
 import heroBamboo from "@/assets/hero-bamboo.jpg";
+import heroEagle from "@/assets/hero-eagle.jpg";
+import heroResilience from "@/assets/hero-resilience.jpg";
+import heroPath from "@/assets/hero-path.jpg";
+import heroWave from "@/assets/hero-wave.jpg";
+import heroSummit from "@/assets/hero-summit.jpg";
 
 export interface HeroSlide {
   image: string;
@@ -65,5 +70,30 @@ export const heroSlides: HeroSlide[] = [
     image: heroBamboo,
     messages: { es: "Sé flexible como el bambú: fuerte pero adaptable.", en: "Be flexible like bamboo: strong yet adaptable.", pt: "Seja flexível como o bambu: forte mas adaptável.", fr: "Soyez flexible comme le bambou : fort mais adaptable.", it: "Sii flessibile come il bambù: forte ma adattabile." },
     subtitles: { es: "Camino Interior", en: "Inner Path", pt: "Caminho Interior", fr: "Chemin Intérieur", it: "Cammino Interiore" },
+  },
+  {
+    image: heroEagle,
+    messages: { es: "La disciplina es el puente entre tus metas y tus logros.", en: "Discipline is the bridge between goals and achievement.", pt: "A disciplina é a ponte entre metas e conquistas.", fr: "La discipline est le pont entre vos objectifs et vos réalisations.", it: "La disciplina è il ponte tra i tuoi obiettivi e i tuoi risultati." },
+    subtitles: { es: "Visión de Águila", en: "Eagle Vision", pt: "Visão de Águia", fr: "Vision d'Aigle", it: "Visione d'Aquila" },
+  },
+  {
+    image: heroResilience,
+    messages: { es: "Las raíces más fuertes nacen en terreno difícil.", en: "The strongest roots grow in tough ground.", pt: "As raízes mais fortes nascem em terreno difícil.", fr: "Les racines les plus fortes naissent en terrain difficile.", it: "Le radici più forti nascono su terreno difficile." },
+    subtitles: { es: "Resiliencia", en: "Resilience", pt: "Resiliência", fr: "Résilience", it: "Resilienza" },
+  },
+  {
+    image: heroPath,
+    messages: { es: "El éxito no es un destino, es el camino que recorres cada día.", en: "Success isn't a destination, it's the path you walk every day.", pt: "O sucesso não é um destino, é o caminho que você percorre todos os dias.", fr: "Le succès n'est pas une destination, c'est le chemin que vous parcourez chaque jour.", it: "Il successo non è una destinazione, è il cammino che percorri ogni giorno." },
+    subtitles: { es: "Perseverancia", en: "Perseverance", pt: "Perseverança", fr: "Persévérance", it: "Perseveranza" },
+  },
+  {
+    image: heroWave,
+    messages: { es: "No esperes el momento perfecto, crea tu propia ola.", en: "Don't wait for the perfect moment, create your own wave.", pt: "Não espere o momento perfeito, crie sua própria onda.", fr: "N'attendez pas le moment parfait, créez votre propre vague.", it: "Non aspettare il momento perfetto, crea la tua onda." },
+    subtitles: { es: "Fuerza Interior", en: "Inner Strength", pt: "Força Interior", fr: "Force Intérieure", it: "Forza Interiore" },
+  },
+  {
+    image: heroSummit,
+    messages: { es: "La cima se conquista con constancia, no con prisa.", en: "The summit is conquered with consistency, not haste.", pt: "O topo se conquista com constância, não com pressa.", fr: "Le sommet se conquiert avec constance, pas avec précipitation.", it: "La vetta si conquista con costanza, non con fretta." },
+    subtitles: { es: "Conquista Personal", en: "Personal Conquest", pt: "Conquista Pessoal", fr: "Conquête Personnelle", it: "Conquista Personale" },
   },
 ];
