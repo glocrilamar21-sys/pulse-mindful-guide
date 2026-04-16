@@ -24,7 +24,7 @@ function dateToStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type Tab = "enfoque" | "cronograma" | "proyectos" | "recordatorios";
+type Tab = "enfoque" | "cronograma" | "proyectos" | "stats" | "recordatorios";
 
 export default function Index() {
   const { t, locale } = useI18n();
