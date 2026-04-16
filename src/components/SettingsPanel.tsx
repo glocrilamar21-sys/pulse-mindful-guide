@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { playDemoSound } from "@/lib/tasks";
+import { playDemoSound, playPresetDemo } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, BellRing } from "lucide-react";
+import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, BellRing, Vibrate, Play } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
 import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
+import {
+  criticalPresets,
+  flexiblePresets,
+  loadCriticalPreset,
+  loadFlexiblePreset,
+  saveCriticalPreset,
+  saveFlexiblePreset,
+} from "@/lib/soundPresets";
 import {
   isNotificationSupported,
   getNotificationPermission,
@@ -34,6 +42,8 @@ function SettingsContent() {
   const [currentOutfit, setCurrentOutfit] = useState(loadMascotOutfit);
   const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled);
   const [notifPermission, setNotifPermission] = useState(getNotificationPermission);
+  const [criticalPresetId, setCriticalPresetId] = useState(loadCriticalPreset);
+  const [flexiblePresetId, setFlexiblePresetId] = useState(loadFlexiblePreset);
 
   const handleEnableNotifications = async () => {
     const granted = await requestNotificationPermission();
@@ -62,6 +72,20 @@ function SettingsContent() {
   const handleOutfitChange = (id: string) => {
     setCurrentOutfit(id);
     saveMascotOutfit(id);
+  };
+
+  const handleCriticalPresetChange = (id: string) => {
+    setCriticalPresetId(id);
+    saveCriticalPreset(id);
+    const preset = criticalPresets.find((p) => p.id === id);
+    if (preset) playPresetDemo(preset);
+  };
+
+  const handleFlexiblePresetChange = (id: string) => {
+    setFlexiblePresetId(id);
+    saveFlexiblePreset(id);
+    const preset = flexiblePresets.find((p) => p.id === id);
+    if (preset) playPresetDemo(preset);
   };
 
   return (
@@ -96,6 +120,74 @@ function SettingsContent() {
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Sound & Vibration Presets */}
+      <div>
+        <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+          <Vibrate className="h-4 w-4" />
+          {t("soundPresets")}
+        </h3>
+
+        {/* Critical Sound Picker */}
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-[hsl(var(--critical))] mb-1.5 flex items-center gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            {t("criticalSounds")}
+          </p>
+          <p className="text-[10px] text-muted-foreground mb-2">{t("criticalSoundsDesc")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {criticalPresets.map((preset) => {
+              const isActive = criticalPresetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => handleCriticalPresetChange(preset.id)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-xl px-3 py-2.5 transition-all cursor-pointer text-sm font-semibold",
+                    isActive
+                      ? "ring-2 ring-[hsl(var(--critical))] shadow-md bg-[hsl(var(--critical))]/10 text-foreground scale-105"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  )}
+                >
+                  <span className="text-lg">{preset.emoji}</span>
+                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  {isActive && <Play className="h-3 w-3 ml-auto text-[hsl(var(--critical))]" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Flexible Sound Picker */}
+        <div>
+          <p className="text-xs font-semibold text-primary mb-1.5 flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {t("flexibleSounds")}
+          </p>
+          <p className="text-[10px] text-muted-foreground mb-2">{t("flexibleSoundsDesc")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {flexiblePresets.map((preset) => {
+              const isActive = flexiblePresetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => handleFlexiblePresetChange(preset.id)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-xl px-3 py-2.5 transition-all cursor-pointer text-sm font-semibold",
+                    isActive
+                      ? "ring-2 ring-primary shadow-md bg-primary/10 text-foreground scale-105"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  )}
+                >
+                  <span className="text-lg">{preset.emoji}</span>
+                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  {isActive && <Play className="h-3 w-3 ml-auto text-primary" />}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
