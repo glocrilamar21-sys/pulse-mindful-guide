@@ -10,7 +10,8 @@ import { CalendarView } from "@/components/CalendarView";
 import { ProjectsView } from "@/components/ProjectsView";
 import { HeroBanner } from "@/components/HeroBanner";
 import { BrainMascot } from "@/components/BrainMascot";
-import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
+import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban, BarChart3 } from "lucide-react";
+import { WeeklyStats } from "@/components/WeeklyStats";
 import { format } from "date-fns";
 import { dateFnsLocales } from "@/lib/i18n";
 
