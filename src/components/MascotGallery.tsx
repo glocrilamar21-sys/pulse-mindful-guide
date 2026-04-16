@@ -4,6 +4,7 @@ import { mascotOutfits, getMascotImage, type MascotCategory } from "@/lib/mascot
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
+import { getMascotName } from "@/lib/mascotNames";
 
 interface MascotGalleryProps {
   currentOutfit: string;
@@ -31,7 +32,7 @@ const CATEGORIES: CategoryDef[] = [
 ];
 
 export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
 
@@ -39,10 +40,13 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     const q = search.trim().toLowerCase();
     return mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
-      if (q && !o.name.toLowerCase().includes(q)) return false;
+      if (q) {
+        const localized = getMascotName(o.id, locale, o.name).toLowerCase();
+        if (!localized.includes(q) && !o.name.toLowerCase().includes(q)) return false;
+      }
       return true;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, locale]);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: mascotOutfits.length };
@@ -143,7 +147,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 <div className="relative h-14 w-14 flex items-center justify-center">
                   <img
                     src={getMascotImage(outfit.id, "happy")}
-                    alt={outfit.name}
+                    alt={getMascotName(outfit.id, locale, outfit.name)}
                     loading="lazy"
                     className={cn(
                       "h-full w-full object-contain transition-transform",
@@ -153,7 +157,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 </div>
                 <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
                   <span className="mr-0.5">{outfit.emoji}</span>
-                  {outfit.name}
+                  {getMascotName(outfit.id, locale, outfit.name)}
                 </span>
               </button>
             );
