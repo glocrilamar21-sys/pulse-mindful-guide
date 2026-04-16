@@ -1,5 +1,5 @@
 import { Task } from "@/lib/tasks";
-import { Briefcase, BookOpen, Home, Heart, Stethoscope, TrendingUp } from "lucide-react";
+import { Briefcase, BookOpen, Home, UserRound, Stethoscope, TrendingUp } from "lucide-react";
 
 interface ProjectsViewProps {
   tasks: Task[];
@@ -9,7 +9,7 @@ const categories = [
   { id: "trabajo", label: "Trabajo", icon: Briefcase, color: "hsl(var(--primary))" },
   { id: "estudio", label: "Estudio", icon: BookOpen, color: "hsl(35, 95%, 55%)" },
   { id: "hogar", label: "Hogar", icon: Home, color: "hsl(var(--success))" },
-  { id: "personal", label: "Personal", icon: Heart, color: "hsl(280, 60%, 55%)" },
+  { id: "personal", label: "Personal", icon: UserRound, color: "hsl(280, 60%, 55%)" },
   { id: "salud", label: "Salud", icon: Stethoscope, color: "hsl(var(--critical))" },
 ];
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { playDemoSound, playPresetDemo } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, BellRing, Vibrate, Play } from "lucide-react";
+import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, Vibrate, Play } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
@@ -15,13 +15,6 @@ import {
   saveCriticalPreset,
   saveFlexiblePreset,
 } from "@/lib/soundPresets";
-import {
-  isNotificationSupported,
-  getNotificationPermission,
-  requestNotificationPermission,
-  isNotificationsEnabled,
-  setNotificationsEnabled,
-} from "@/lib/notifications";
 
 interface SettingsPanelProps {
   trigger?: React.ReactNode;
@@ -40,28 +33,8 @@ function SettingsContent() {
   const { t, locale, setLocale } = useI18n();
   const [currentTheme, setCurrentTheme] = useState(loadTheme);
   const [currentOutfit, setCurrentOutfit] = useState(loadMascotOutfit);
-  const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled);
-  const [notifPermission, setNotifPermission] = useState(getNotificationPermission);
   const [criticalPresetId, setCriticalPresetId] = useState(loadCriticalPreset);
   const [flexiblePresetId, setFlexiblePresetId] = useState(loadFlexiblePreset);
-
-  const handleEnableNotifications = async () => {
-    const granted = await requestNotificationPermission();
-    setNotifPermission(getNotificationPermission());
-    if (granted) {
-      setNotificationsEnabled(true);
-      setNotifEnabled(true);
-    }
-  };
-
-  const handleToggleNotifications = () => {
-    if (notifEnabled) {
-      setNotificationsEnabled(false);
-      setNotifEnabled(false);
-    } else {
-      handleEnableNotifications();
-    }
-  };
 
   const handleThemeChange = (id: string) => {
     setCurrentTheme(id);
@@ -248,33 +221,6 @@ function SettingsContent() {
         </div>
       </div>
 
-      {/* Notifications */}
-      {isNotificationSupported() && (
-        <div>
-          <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
-            <BellRing className="h-4 w-4" />
-            {t("notifications")}
-          </h3>
-          <p className="text-xs text-muted-foreground mb-3">{t("notificationsDesc")}</p>
-          {notifPermission === "denied" ? (
-            <p className="text-xs text-destructive font-semibold">{t("notificationsBlocked")}</p>
-          ) : (
-            <Button
-              onClick={handleToggleNotifications}
-              size="lg"
-              className={cn(
-                "h-12 w-full gap-2 text-sm font-bold cursor-pointer rounded-lg active:scale-95 transition-transform",
-                notifEnabled
-                  ? "bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/80 text-white"
-                  : "bg-primary hover:bg-primary/80 text-primary-foreground"
-              )}
-            >
-              <BellRing className="h-4 w-4" />
-              {notifEnabled ? t("notificationsActive") : t("enableNotifications")}
-            </Button>
-          )}
-        </div>
-      )}
 
       {/* Test Alerts */}
       <div>
