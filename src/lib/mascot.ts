@@ -131,6 +131,14 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "winter", name: "Invierno", emoji: "❄️", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
   { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
   { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
+  // New professions
+  { id: "accountant", name: "Contador", emoji: "🧮", happy: mascotHappyAccountant, worried: mascotWorriedAccountant, celebrating: mascotCelebratingAccountant },
+  { id: "dancer", name: "Bailarín", emoji: "💃", happy: mascotHappyDancer, worried: mascotWorriedDancer, celebrating: mascotCelebratingDancer },
+  { id: "salesperson", name: "Vendedor", emoji: "🤝", happy: mascotHappySalesperson, worried: mascotWorriedSalesperson, celebrating: mascotCelebratingSalesperson },
+  { id: "manager", name: "Administrador", emoji: "📊", happy: mascotHappyManager, worried: mascotWorriedManager, celebrating: mascotCelebratingManager },
+  { id: "psychologist", name: "Psicólogo", emoji: "🧠", happy: mascotHappyPsychologist, worried: mascotWorriedPsychologist, celebrating: mascotCelebratingPsychologist },
+  { id: "teacher", name: "Profesor", emoji: "👨‍🏫", happy: mascotHappyTeacher, worried: mascotWorriedTeacher, celebrating: mascotCelebratingTeacher },
+  { id: "actor", name: "Actor", emoji: "🎭", happy: mascotHappyActor, worried: mascotWorriedActor, celebrating: mascotCelebratingActor },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
