@@ -1,4 +1,5 @@
 export type TaskCategory = "critical" | "flexible";
+export type TaskScope = "trabajo" | "estudio" | "hogar" | "personal" | "salud";
 
 export interface Task {
   id: string;
@@ -7,6 +8,7 @@ export interface Task {
   time: string; // HH:MM
   date: string; // YYYY-MM-DD
   done: boolean;
+  scope?: TaskScope;
   postponedUntil?: string; // ISO string
 }
 
