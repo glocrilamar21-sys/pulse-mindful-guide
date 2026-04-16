@@ -58,7 +58,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     }
   };
 
-  const filtered = useMemo(() => {
+  const { favoritesList, restList, totalCount } = useMemo(() => {
     const q = search.trim().toLowerCase();
     const list = mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
@@ -69,11 +69,10 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       return true;
     });
     const favSet = new Set(favorites);
-    return [...list].sort((a, b) => {
-      const af = favSet.has(a.id) ? 0 : 1;
-      const bf = favSet.has(b.id) ? 0 : 1;
-      return af - bf;
-    });
+    const favs: MascotOutfit[] = [];
+    const rest: MascotOutfit[] = [];
+    list.forEach((o) => (favSet.has(o.id) ? favs.push(o) : rest.push(o)));
+    return { favoritesList: favs, restList: rest, totalCount: list.length };
   }, [search, activeCategory, locale, favorites]);
 
   const counts = useMemo(() => {
