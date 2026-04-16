@@ -22,6 +22,55 @@ import mascotCelebratingDoctor from "@/assets/mascot-celebrating-doctor.png";
 import mascotHappyGardener from "@/assets/mascot-happy-gardener.png";
 import mascotWorriedGardener from "@/assets/mascot-worried-gardener.png";
 import mascotCelebratingGardener from "@/assets/mascot-celebrating-gardener.png";
+// New outfits
+import mascotHappyAstronaut from "@/assets/mascot-happy-astronaut.png";
+import mascotWorriedAstronaut from "@/assets/mascot-worried-astronaut.png";
+import mascotCelebratingAstronaut from "@/assets/mascot-celebrating-astronaut.png";
+import mascotHappyScientist from "@/assets/mascot-happy-scientist.png";
+import mascotWorriedScientist from "@/assets/mascot-worried-scientist.png";
+import mascotCelebratingScientist from "@/assets/mascot-celebrating-scientist.png";
+import mascotHappyMusician from "@/assets/mascot-happy-musician.png";
+import mascotWorriedMusician from "@/assets/mascot-worried-musician.png";
+import mascotCelebratingMusician from "@/assets/mascot-celebrating-musician.png";
+import mascotHappyArtist from "@/assets/mascot-happy-artist.png";
+import mascotWorriedArtist from "@/assets/mascot-worried-artist.png";
+import mascotCelebratingArtist from "@/assets/mascot-celebrating-artist.png";
+import mascotHappyLawyer from "@/assets/mascot-happy-lawyer.png";
+import mascotWorriedLawyer from "@/assets/mascot-worried-lawyer.png";
+import mascotCelebratingLawyer from "@/assets/mascot-celebrating-lawyer.png";
+import mascotHappyJudge from "@/assets/mascot-happy-judge.png";
+import mascotWorriedJudge from "@/assets/mascot-worried-judge.png";
+import mascotCelebratingJudge from "@/assets/mascot-celebrating-judge.png";
+import mascotHappyPhotographer from "@/assets/mascot-happy-photographer.png";
+import mascotWorriedPhotographer from "@/assets/mascot-worried-photographer.png";
+import mascotCelebratingPhotographer from "@/assets/mascot-celebrating-photographer.png";
+import mascotHappyModel from "@/assets/mascot-happy-model.png";
+import mascotWorriedModel from "@/assets/mascot-worried-model.png";
+import mascotCelebratingModel from "@/assets/mascot-celebrating-model.png";
+import mascotHappySinger from "@/assets/mascot-happy-singer.png";
+import mascotWorriedSinger from "@/assets/mascot-worried-singer.png";
+import mascotCelebratingSinger from "@/assets/mascot-celebrating-singer.png";
+import mascotHappyBeach from "@/assets/mascot-happy-beach.png";
+import mascotWorriedBeach from "@/assets/mascot-worried-beach.png";
+import mascotCelebratingBeach from "@/assets/mascot-celebrating-beach.png";
+import mascotHappySummer from "@/assets/mascot-happy-summer.png";
+import mascotWorriedSummer from "@/assets/mascot-worried-summer.png";
+import mascotCelebratingSummer from "@/assets/mascot-celebrating-summer.png";
+import mascotHappyAutumn from "@/assets/mascot-happy-autumn.png";
+import mascotWorriedAutumn from "@/assets/mascot-worried-autumn.png";
+import mascotCelebratingAutumn from "@/assets/mascot-celebrating-autumn.png";
+import mascotHappySpring from "@/assets/mascot-happy-spring.png";
+import mascotWorriedSpring from "@/assets/mascot-worried-spring.png";
+import mascotCelebratingSpring from "@/assets/mascot-celebrating-spring.png";
+import mascotHappyWinter from "@/assets/mascot-happy-winter.png";
+import mascotWorriedWinter from "@/assets/mascot-worried-winter.png";
+import mascotCelebratingWinter from "@/assets/mascot-celebrating-winter.png";
+import mascotHappySunglasses from "@/assets/mascot-happy-sunglasses.png";
+import mascotWorriedSunglasses from "@/assets/mascot-worried-sunglasses.png";
+import mascotCelebratingSunglasses from "@/assets/mascot-celebrating-sunglasses.png";
+import mascotHappyReadingglasses from "@/assets/mascot-happy-readingglasses.png";
+import mascotWorriedReadingglasses from "@/assets/mascot-worried-readingglasses.png";
+import mascotCelebratingReadingglasses from "@/assets/mascot-celebrating-readingglasses.png";
 
 export interface MascotOutfit {
   id: string;
@@ -33,7 +82,9 @@ export interface MascotOutfit {
 }
 
 export const mascotOutfits: MascotOutfit[] = [
+  // Original
   { id: "default", name: "Original", emoji: "🧠", happy: mascotHappy, worried: mascotWorried, celebrating: mascotCelebrating },
+  // Careers
   { id: "graduate", name: "Graduado", emoji: "🎓", happy: mascotHappyGraduate, worried: mascotWorriedGraduate, celebrating: mascotCelebratingGraduate },
   { id: "hero", name: "Superhéroe", emoji: "🦸", happy: mascotHappyHero, worried: mascotWorriedHero, celebrating: mascotCelebratingHero },
   { id: "chef", name: "Chef", emoji: "👨‍🍳", happy: mascotHappyChef, worried: mascotWorriedChef, celebrating: mascotCelebratingChef },
@@ -41,6 +92,23 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "athlete", name: "Deportista", emoji: "🏃", happy: mascotHappyAthlete, worried: mascotWorriedAthlete, celebrating: mascotCelebratingAthlete },
   { id: "doctor", name: "Doctor", emoji: "🩺", happy: mascotHappyDoctor, worried: mascotWorriedDoctor, celebrating: mascotCelebratingDoctor },
   { id: "gardener", name: "Jardinero", emoji: "🌻", happy: mascotHappyGardener, worried: mascotWorriedGardener, celebrating: mascotCelebratingGardener },
+  { id: "astronaut", name: "Astronauta", emoji: "🚀", happy: mascotHappyAstronaut, worried: mascotWorriedAstronaut, celebrating: mascotCelebratingAstronaut },
+  { id: "scientist", name: "Científico", emoji: "🔬", happy: mascotHappyScientist, worried: mascotWorriedScientist, celebrating: mascotCelebratingScientist },
+  { id: "musician", name: "Músico", emoji: "🎸", happy: mascotHappyMusician, worried: mascotWorriedMusician, celebrating: mascotCelebratingMusician },
+  { id: "artist", name: "Artista", emoji: "🎨", happy: mascotHappyArtist, worried: mascotWorriedArtist, celebrating: mascotCelebratingArtist },
+  { id: "lawyer", name: "Abogado", emoji: "⚖️", happy: mascotHappyLawyer, worried: mascotWorriedLawyer, celebrating: mascotCelebratingLawyer },
+  { id: "judge", name: "Juez", emoji: "🧑‍⚖️", happy: mascotHappyJudge, worried: mascotWorriedJudge, celebrating: mascotCelebratingJudge },
+  { id: "photographer", name: "Fotógrafo", emoji: "📷", happy: mascotHappyPhotographer, worried: mascotWorriedPhotographer, celebrating: mascotCelebratingPhotographer },
+  { id: "model", name: "Modelo", emoji: "💃", happy: mascotHappyModel, worried: mascotWorriedModel, celebrating: mascotCelebratingModel },
+  { id: "singer", name: "Cantante", emoji: "🎤", happy: mascotHappySinger, worried: mascotWorriedSinger, celebrating: mascotCelebratingSinger },
+  // Seasons & Accessories
+  { id: "beach", name: "Playa", emoji: "🏖️", happy: mascotHappyBeach, worried: mascotWorriedBeach, celebrating: mascotCelebratingBeach },
+  { id: "summer", name: "Verano", emoji: "☀️", happy: mascotHappySummer, worried: mascotWorriedSummer, celebrating: mascotCelebratingSummer },
+  { id: "autumn", name: "Otoño", emoji: "🍂", happy: mascotHappyAutumn, worried: mascotWorriedAutumn, celebrating: mascotCelebratingAutumn },
+  { id: "spring", name: "Primavera", emoji: "🌸", happy: mascotHappySpring, worried: mascotWorriedSpring, celebrating: mascotCelebratingSpring },
+  { id: "winter", name: "Invierno", emoji: "❄️", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
+  { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
+  { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
