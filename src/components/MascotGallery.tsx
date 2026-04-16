@@ -3,6 +3,7 @@ import { Search, X, Check } from "lucide-react";
 import { mascotOutfits, getMascotImage, type MascotCategory } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 interface MascotGalleryProps {
   currentOutfit: string;
@@ -11,25 +12,26 @@ interface MascotGalleryProps {
 
 interface CategoryDef {
   id: "all" | MascotCategory;
-  label: string;
+  labelKey: TranslationKey;
   emoji: string;
 }
 
 const CATEGORIES: CategoryDef[] = [
-  { id: "all", label: "Todos", emoji: "✨" },
-  { id: "original", label: "Original", emoji: "🧠" },
-  { id: "health", label: "Salud", emoji: "🩺" },
-  { id: "tech", label: "Tecnología", emoji: "💻" },
-  { id: "engineering", label: "Ingeniería", emoji: "🏗️" },
-  { id: "creative", label: "Creativo", emoji: "🎨" },
-  { id: "service", label: "Servicio", emoji: "🚒" },
-  { id: "business", label: "Negocios", emoji: "📊" },
-  { id: "education", label: "Educación", emoji: "🎓" },
-  { id: "seasons", label: "Estaciones", emoji: "🌸" },
-  { id: "accessories", label: "Accesorios", emoji: "🕶️" },
+  { id: "all", labelKey: "catAll", emoji: "✨" },
+  { id: "original", labelKey: "catOriginal", emoji: "🧠" },
+  { id: "health", labelKey: "catHealth", emoji: "🩺" },
+  { id: "tech", labelKey: "catTech", emoji: "💻" },
+  { id: "engineering", labelKey: "catEngineering", emoji: "🏗️" },
+  { id: "creative", labelKey: "catCreative", emoji: "🎨" },
+  { id: "service", labelKey: "catService", emoji: "🚒" },
+  { id: "business", labelKey: "catBusiness", emoji: "📊" },
+  { id: "education", labelKey: "catEducation", emoji: "🎓" },
+  { id: "seasons", labelKey: "catSeasons", emoji: "🌸" },
+  { id: "accessories", labelKey: "catAccessories", emoji: "🕶️" },
 ];
 
 export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
 
@@ -58,14 +60,14 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar mascota..."
+          placeholder={t("gallerySearchPlaceholder")}
           className="pl-9 pr-9 h-10 rounded-xl bg-muted/40 border-0 focus-visible:ring-1 focus-visible:ring-primary"
         />
         {search && (
           <button
             onClick={() => setSearch("")}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted cursor-pointer"
-            aria-label="Limpiar búsqueda"
+            aria-label={t("gallerySearchPlaceholder")}
           >
             <X className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
@@ -89,8 +91,8 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                   : "bg-muted/50 text-muted-foreground hover:bg-muted"
               )}
             >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
+                <span>{cat.emoji}</span>
+                <span>{t(cat.labelKey)}</span>
               <span
                 className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-full",
@@ -107,7 +109,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       {/* Results header */}
       <div className="flex items-center justify-between px-1">
         <span className="text-xs text-muted-foreground font-semibold">
-          {filtered.length} {filtered.length === 1 ? "mascota" : "mascotas"}
+          {filtered.length} {filtered.length === 1 ? t("galleryCountOne") : t("galleryCountMany")}
         </span>
       </div>
 
@@ -115,8 +117,8 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Search className="h-8 w-8 text-muted-foreground mb-2 opacity-50" />
-          <p className="text-sm text-muted-foreground font-semibold">Sin resultados</p>
-          <p className="text-xs text-muted-foreground/70">Prueba otra búsqueda</p>
+          <p className="text-sm text-muted-foreground font-semibold">{t("galleryNoResults")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("galleryNoResultsHint")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-2.5">
