@@ -253,6 +253,13 @@ export default function Index() {
         </div>
       )}
 
+      {/* TAB: Stats */}
+      {activeTab === "stats" && (
+        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl animate-fade-in">
+          <WeeklyStats tasks={tasks} />
+        </div>
+      )}
+
       {/* TAB: Recordatorios/Config */}
       {activeTab === "recordatorios" && (
         <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl animate-fade-in">
@@ -277,6 +284,7 @@ export default function Index() {
           <NavTab icon={<Target className="h-5 w-5" />} label={t("tabFocus")} active={activeTab === "enfoque"} onClick={() => { setActiveTab("enfoque"); setViewDate(new Date()); }} />
           <NavTab icon={<CalendarDays className="h-5 w-5" />} label={t("tabCalendar")} active={activeTab === "cronograma"} onClick={() => setActiveTab("cronograma")} />
           <NavTab icon={<FolderKanban className="h-5 w-5" />} label={t("tabProjects")} active={activeTab === "proyectos"} onClick={() => setActiveTab("proyectos")} />
+          <NavTab icon={<BarChart3 className="h-5 w-5" />} label={t("tabStats")} active={activeTab === "stats"} onClick={() => setActiveTab("stats")} />
           <NavTab icon={<Bell className="h-5 w-5" />} label={t("tabSettings")} active={activeTab === "recordatorios"} onClick={() => setActiveTab("recordatorios")} />
         </div>
       </nav>
