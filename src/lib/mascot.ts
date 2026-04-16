@@ -246,6 +246,7 @@ const SCOPE_MAP_KEY = "pulso-diario-mascot-scope-map";
 /** Sentinel value stored when the user picks "Auto" in the gallery. */
 export const AUTO_MASCOT_ID = "__auto__";
 
+/** Task scope keys mirrored from tasks.ts to avoid a circular import. */
 export type TaskScope = "trabajo" | "estudio" | "hogar" | "personal" | "salud";
 
 /** Default mascot per task scope — sensible matches by category. */
