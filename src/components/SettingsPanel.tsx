@@ -6,7 +6,8 @@ import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, Vibrate, Play } f
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
-import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
+import { loadMascotOutfit, saveMascotOutfit } from "@/lib/mascot";
+import { MascotGallery } from "@/components/MascotGallery";
 import {
   criticalPresets,
   flexiblePresets,
@@ -69,31 +70,7 @@ function SettingsContent() {
           <Brain className="h-4 w-4" />
           Mascota
         </h3>
-        <div className="grid grid-cols-2 gap-3">
-          {mascotOutfits.map((outfit) => {
-            const isActive = currentOutfit === outfit.id;
-            return (
-              <button
-                key={outfit.id}
-                onClick={() => handleOutfitChange(outfit.id)}
-                className={cn(
-                  "relative flex flex-col items-center gap-2 rounded-xl px-3 py-4 transition-all cursor-pointer",
-                  isActive
-                    ? "ring-2 ring-primary shadow-md scale-105 bg-accent"
-                    : "bg-muted/50 hover:bg-muted"
-                )}
-              >
-                <div className="flex gap-1">
-                  <img src={getMascotImage(outfit.id, "happy")} alt="" className="h-10 w-10 object-contain" />
-                  <img src={getMascotImage(outfit.id, "worried")} alt="" className="h-10 w-10 object-contain" />
-                </div>
-                <span className="text-xs font-semibold text-foreground">
-                  {outfit.emoji} {outfit.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        <MascotGallery currentOutfit={currentOutfit} onChange={handleOutfitChange} />
       </div>
 
       {/* Sound & Vibration Presets */}
