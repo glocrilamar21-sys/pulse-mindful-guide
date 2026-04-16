@@ -10,7 +10,7 @@ import { TaskCategory, generateId, Task } from "@/lib/tasks";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { es, enUS } from "date-fns/locale";
+import { dateFnsLocales } from "@/lib/i18n";
 
 interface AddTaskDialogProps {
   onAdd: (task: Task) => void;
@@ -20,7 +20,7 @@ interface AddTaskDialogProps {
 
 export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps) {
   const { t, locale } = useI18n();
-  const dateFnsLocale = locale === "es" ? es : enUS;
+  const dateFnsLocale = dateFnsLocales[locale];
 
   const scopes = [
     { id: "trabajo", label: t("work"), icon: Briefcase },

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { Task } from "@/lib/tasks";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, dateFnsLocales } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
 import {
   startOfMonth, endOfMonth, startOfWeek, endOfWeek,
   eachDayOfInterval, isSameMonth, isSameDay, format, addMonths, subMonths
 } from "date-fns";
-import { es, enUS } from "date-fns/locale";
+
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ function dateToStr(d: Date): string {
 
 export function CalendarView({ tasks, viewDate, onChangeDate, onDone, onPostpone, currentTime }: CalendarViewProps) {
   const { t, locale } = useI18n();
-  const dateFnsLocale = locale === "es" ? es : enUS;
+  const dateFnsLocale = dateFnsLocales[locale];
   const today = new Date();
   const todayStr = dateToStr(today);
   const selectedStr = dateToStr(viewDate);
