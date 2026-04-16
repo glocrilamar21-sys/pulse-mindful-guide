@@ -112,6 +112,25 @@ import mascotCelebratingCivilengineer from "@/assets/mascot-celebrating-civileng
 import mascotHappyElectricalengineer from "@/assets/mascot-happy-electricalengineer.png";
 import mascotWorriedElectricalengineer from "@/assets/mascot-worried-electricalengineer.png";
 import mascotCelebratingElectricalengineer from "@/assets/mascot-celebrating-electricalengineer.png";
+// Additional professions
+import mascotHappyArchitect from "@/assets/mascot-happy-architect.png";
+import mascotWorriedArchitect from "@/assets/mascot-worried-architect.png";
+import mascotCelebratingArchitect from "@/assets/mascot-celebrating-architect.png";
+import mascotHappyVeterinarian from "@/assets/mascot-happy-veterinarian.png";
+import mascotWorriedVeterinarian from "@/assets/mascot-worried-veterinarian.png";
+import mascotCelebratingVeterinarian from "@/assets/mascot-celebrating-veterinarian.png";
+import mascotHappyPilot from "@/assets/mascot-happy-pilot.png";
+import mascotWorriedPilot from "@/assets/mascot-worried-pilot.png";
+import mascotCelebratingPilot from "@/assets/mascot-celebrating-pilot.png";
+import mascotHappyFirefighter from "@/assets/mascot-happy-firefighter.png";
+import mascotWorriedFirefighter from "@/assets/mascot-worried-firefighter.png";
+import mascotCelebratingFirefighter from "@/assets/mascot-celebrating-firefighter.png";
+import mascotHappyPolice from "@/assets/mascot-happy-police.png";
+import mascotWorriedPolice from "@/assets/mascot-worried-police.png";
+import mascotCelebratingPolice from "@/assets/mascot-celebrating-police.png";
+import mascotHappyNurse from "@/assets/mascot-happy-nurse.png";
+import mascotWorriedNurse from "@/assets/mascot-worried-nurse.png";
+import mascotCelebratingNurse from "@/assets/mascot-celebrating-nurse.png";
 
 export interface MascotOutfit {
   id: string;
