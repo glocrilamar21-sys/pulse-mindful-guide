@@ -122,6 +122,9 @@ const translations = {
     moodCelebrating: "Celebrando",
     previewHint: "Mantén presionado para ver los 3 estados",
     selectMascot: "Seleccionar mascota",
+    addFavorite: "Agregar a favoritos",
+    removeFavorite: "Quitar de favoritos",
+    favoritesSection: "Favoritos",
   },
   en: {
     today: "Today",
@@ -239,6 +242,9 @@ const translations = {
     moodCelebrating: "Celebrating",
     previewHint: "Long-press to see all 3 states",
     selectMascot: "Select mascot",
+    addFavorite: "Add to favorites",
+    removeFavorite: "Remove from favorites",
+    favoritesSection: "Favorites",
   },
   pt: {
     today: "Hoje",
@@ -356,6 +362,9 @@ const translations = {
     moodCelebrating: "Comemorando",
     previewHint: "Pressione e segure para ver os 3 estados",
     selectMascot: "Selecionar mascote",
+    addFavorite: "Adicionar aos favoritos",
+    removeFavorite: "Remover dos favoritos",
+    favoritesSection: "Favoritos",
   },
   fr: {
     today: "Aujourd'hui",
@@ -473,6 +482,9 @@ const translations = {
     moodCelebrating: "Célébration",
     previewHint: "Maintenez pour voir les 3 états",
     selectMascot: "Sélectionner la mascotte",
+    addFavorite: "Ajouter aux favoris",
+    removeFavorite: "Retirer des favoris",
+    favoritesSection: "Favoris",
   },
   it: {
     today: "Oggi",
@@ -590,6 +602,9 @@ const translations = {
     moodCelebrating: "Festeggiando",
     previewHint: "Tieni premuto per vedere i 3 stati",
     selectMascot: "Seleziona mascotte",
+    addFavorite: "Aggiungi ai preferiti",
+    removeFavorite: "Rimuovi dai preferiti",
+    favoritesSection: "Preferiti",
   },
 } as const;
 

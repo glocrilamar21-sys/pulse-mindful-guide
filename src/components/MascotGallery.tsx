@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { Search, X, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Search, X, Check, Star } from "lucide-react";
 import { mascotOutfits, getMascotImage, type MascotCategory, type MascotOutfit } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { getMascotName } from "@/lib/mascotNames";
+import { loadFavorites, saveFavorites, toggleFavorite } from "@/lib/favorites";
 
 interface MascotGalleryProps {
   currentOutfit: string;
@@ -41,13 +42,25 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
   const [previewOutfit, setPreviewOutfit] = useState<MascotOutfit | null>(null);
+  const [favorites, setFavorites] = useState<string[]>(() => loadFavorites());
 
   const longPressTimer = useRef<number | null>(null);
   const longPressTriggered = useRef(false);
 
+  useEffect(() => {
+    saveFavorites(favorites);
+  }, [favorites]);
+
+  const handleToggleFavorite = (id: string) => {
+    setFavorites((prev) => toggleFavorite(prev, id));
+    if ("vibrate" in navigator) {
+      try { navigator.vibrate?.(10); } catch { /* noop */ }
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return mascotOutfits.filter((o) => {
+    const list = mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
       if (q) {
         const localized = getMascotName(o.id, locale, o.name).toLowerCase();
@@ -55,7 +68,13 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       }
       return true;
     });
-  }, [search, activeCategory, locale]);
+    const favSet = new Set(favorites);
+    return [...list].sort((a, b) => {
+      const af = favSet.has(a.id) ? 0 : 1;
+      const bf = favSet.has(b.id) ? 0 : 1;
+      return af - bf;
+    });
+  }, [search, activeCategory, locale, favorites]);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: mascotOutfits.length };
@@ -168,6 +187,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
         <div className="grid grid-cols-3 gap-2.5">
           {filtered.map((outfit) => {
             const isActive = currentOutfit === outfit.id;
+            const isFav = favorites.includes(outfit.id);
             return (
               <button
                 key={outfit.id}
@@ -190,6 +210,16 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 {isActive && (
                   <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-primary rounded-full flex items-center justify-center shadow">
                     <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+                  </div>
+                )}
+                {isFav && !isActive && (
+                  <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
+                  </div>
+                )}
+                {isFav && isActive && (
+                  <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
                   </div>
                 )}
                 <div className="relative h-14 w-14 flex items-center justify-center">
@@ -243,22 +273,43 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 ))}
               </div>
 
-              <Button
-                onClick={() => {
-                  onChange(previewOutfit.id);
-                  setPreviewOutfit(null);
-                }}
-                className="w-full rounded-xl font-bold"
-              >
-                {currentOutfit === previewOutfit.id ? (
-                  <>
-                    <Check className="h-4 w-4 mr-1" />
-                    {t("complete")}
-                  </>
-                ) : (
-                  t("selectMascot")
-                )}
-              </Button>
+              <div className="flex gap-2 w-full">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleToggleFavorite(previewOutfit.id)}
+                  aria-label={favorites.includes(previewOutfit.id) ? t("removeFavorite") : t("addFavorite")}
+                  className={cn(
+                    "rounded-xl shrink-0 transition-colors",
+                    favorites.includes(previewOutfit.id) && "border-[hsl(var(--warning))] bg-[hsl(var(--warning-light))] hover:bg-[hsl(var(--warning-light))]"
+                  )}
+                >
+                  <Star
+                    className={cn(
+                      "h-4 w-4 transition-colors",
+                      favorites.includes(previewOutfit.id) ? "text-[hsl(var(--warning))]" : "text-muted-foreground"
+                    )}
+                    fill={favorites.includes(previewOutfit.id) ? "hsl(var(--warning))" : "none"}
+                    strokeWidth={2}
+                  />
+                </Button>
+                <Button
+                  onClick={() => {
+                    onChange(previewOutfit.id);
+                    setPreviewOutfit(null);
+                  }}
+                  className="flex-1 rounded-xl font-bold"
+                >
+                  {currentOutfit === previewOutfit.id ? (
+                    <>
+                      <Check className="h-4 w-4 mr-1" />
+                      {t("complete")}
+                    </>
+                  ) : (
+                    t("selectMascot")
+                  )}
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
