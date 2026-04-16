@@ -245,6 +245,68 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
         </div>
       </div>
 
+      {/* Monthly Cumulative Progress */}
+      <div className="rounded-2xl bg-card p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <CalendarRange className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-bold text-foreground">{t("monthlyProgress")}</h3>
+          </div>
+          <span className="text-[10px] font-bold text-muted-foreground capitalize">{monthLabel}</span>
+        </div>
+
+        {/* Cumulative line chart */}
+        <div className="relative w-full h-32 mb-3">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+            <defs>
+              <linearGradient id="monthGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Grid lines */}
+            {[0, 25, 50, 75, 100].map((y) => (
+              <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="hsl(var(--border))" strokeWidth="0.3" strokeDasharray="1,1" />
+            ))}
+            {chartPath.area && <path d={chartPath.area} fill="url(#monthGradient)" />}
+            {chartPath.line && (
+              <path d={chartPath.line} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+            )}
+          </svg>
+          {chartPath.maxCum > 0 && (
+            <>
+              <span className="absolute top-0 right-0 text-[9px] font-bold text-muted-foreground bg-card px-1">{chartPath.maxCum}</span>
+              <span className="absolute bottom-0 right-0 text-[9px] font-bold text-muted-foreground bg-card px-1">0</span>
+            </>
+          )}
+        </div>
+
+        {/* Day labels (every 5th) */}
+        <div className="flex justify-between text-[9px] text-muted-foreground font-semibold px-1">
+          {monthData.points.filter((_, i) => i % 5 === 0 || i === monthData.points.length - 1).map((p) => (
+            <span key={p.dayNum} className={p.isToday ? "text-primary font-bold" : ""}>
+              {p.dayNum}
+            </span>
+          ))}
+        </div>
+
+        {/* Monthly summary stats */}
+        <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border">
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.monthCompleted}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthDone")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.activeDays}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthActiveDays")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.dailyAvg}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthAvg")}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Motivational message */}
       {weekCompleted > 0 && (
         <div className="rounded-2xl bg-gradient-to-r from-primary/5 to-primary/10 p-4 text-center">
