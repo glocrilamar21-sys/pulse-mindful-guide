@@ -7,6 +7,7 @@ import { SettingsPanel } from "@/components/SettingsPanel";
 import { CalendarView } from "@/components/CalendarView";
 import { ProjectsView } from "@/components/ProjectsView";
 import { HeroBanner } from "@/components/HeroBanner";
+import { BrainMascot } from "@/components/BrainMascot";
 import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
 import { format } from "date-fns";
 import { dateFnsLocales } from "@/lib/i18n";
@@ -83,7 +84,7 @@ export default function Index() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                <span className="text-lg">🧠</span>
+                <BrainMascot mood="happy" size="sm" />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">

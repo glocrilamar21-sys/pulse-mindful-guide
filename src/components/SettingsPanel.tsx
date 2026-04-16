@@ -2,10 +2,11 @@ import { useState } from "react";
 import { playDemoSound } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Volume2, Globe, Palette } from "lucide-react";
+import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
+import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
 
 interface SettingsPanelProps {
   trigger?: React.ReactNode;
@@ -23,6 +24,7 @@ const languages: { id: Locale; flag: string; labelKey: "spanish" | "english" | "
 function SettingsContent() {
   const { t, locale, setLocale } = useI18n();
   const [currentTheme, setCurrentTheme] = useState(loadTheme);
+  const [currentOutfit, setCurrentOutfit] = useState(loadMascotOutfit);
 
   const handleThemeChange = (id: string) => {
     setCurrentTheme(id);
@@ -30,8 +32,46 @@ function SettingsContent() {
     applyTheme(id);
   };
 
+  const handleOutfitChange = (id: string) => {
+    setCurrentOutfit(id);
+    saveMascotOutfit(id);
+  };
+
   return (
     <div className="space-y-5">
+      {/* Mascot Outfit Picker */}
+      <div>
+        <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+          <Brain className="h-4 w-4" />
+          Mascota
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
+          {mascotOutfits.map((outfit) => {
+            const isActive = currentOutfit === outfit.id;
+            return (
+              <button
+                key={outfit.id}
+                onClick={() => handleOutfitChange(outfit.id)}
+                className={cn(
+                  "relative flex flex-col items-center gap-2 rounded-xl px-3 py-4 transition-all cursor-pointer",
+                  isActive
+                    ? "ring-2 ring-primary shadow-md scale-105 bg-accent"
+                    : "bg-muted/50 hover:bg-muted"
+                )}
+              >
+                <div className="flex gap-1">
+                  <img src={getMascotImage(outfit.id, "happy")} alt="" className="h-10 w-10 object-contain" />
+                  <img src={getMascotImage(outfit.id, "worried")} alt="" className="h-10 w-10 object-contain" />
+                </div>
+                <span className="text-xs font-semibold text-foreground">
+                  {outfit.emoji} {outfit.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Theme Picker */}
       <div>
         <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
@@ -41,7 +81,6 @@ function SettingsContent() {
         <div className="grid grid-cols-3 gap-2">
           {themes.map((theme) => {
             const isActive = currentTheme === theme.id;
-            // Show a preview swatch of the theme's primary color
             const primaryHsl = theme.colors.primary;
             const bgHsl = theme.colors.background;
             return (
@@ -55,16 +94,9 @@ function SettingsContent() {
                     : "bg-muted/50 text-muted-foreground hover:bg-muted"
                 )}
               >
-                {/* Color swatch */}
                 <div className="flex gap-1">
-                  <div
-                    className="h-5 w-5 rounded-full border border-black/10"
-                    style={{ backgroundColor: `hsl(${primaryHsl})` }}
-                  />
-                  <div
-                    className="h-5 w-5 rounded-full border border-black/10"
-                    style={{ backgroundColor: `hsl(${bgHsl})` }}
-                  />
+                  <div className="h-5 w-5 rounded-full border border-black/10" style={{ backgroundColor: `hsl(${primaryHsl})` }} />
+                  <div className="h-5 w-5 rounded-full border border-black/10" style={{ backgroundColor: `hsl(${bgHsl})` }} />
                 </div>
                 <span className="text-xs">{theme.emoji} {theme.name}</span>
               </button>
