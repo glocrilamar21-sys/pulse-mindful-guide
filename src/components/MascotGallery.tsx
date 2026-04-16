@@ -214,12 +214,12 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 )}
                 {isFav && !isActive && (
                   <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
-                    <Star className="h-3 w-3 text-amber-400" fill="currentColor" strokeWidth={2} />
+                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
                   </div>
                 )}
                 {isFav && isActive && (
                   <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
-                    <Star className="h-3 w-3 text-amber-400" fill="currentColor" strokeWidth={2} />
+                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
                   </div>
                 )}
                 <div className="relative h-14 w-14 flex items-center justify-center">
@@ -281,15 +281,15 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                   aria-label={favorites.includes(previewOutfit.id) ? t("removeFavorite") : t("addFavorite")}
                   className={cn(
                     "rounded-xl shrink-0 transition-colors",
-                    favorites.includes(previewOutfit.id) && "border-amber-400 bg-amber-50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-950/50"
+                    favorites.includes(previewOutfit.id) && "border-[hsl(var(--warning))] bg-[hsl(var(--warning-light))] hover:bg-[hsl(var(--warning-light))]"
                   )}
                 >
                   <Star
                     className={cn(
                       "h-4 w-4 transition-colors",
-                      favorites.includes(previewOutfit.id) ? "text-amber-400" : "text-muted-foreground"
+                      favorites.includes(previewOutfit.id) ? "text-[hsl(var(--warning))]" : "text-muted-foreground"
                     )}
-                    fill={favorites.includes(previewOutfit.id) ? "currentColor" : "none"}
+                    fill={favorites.includes(previewOutfit.id) ? "hsl(var(--warning))" : "none"}
                     strokeWidth={2}
                   />
                 </Button>
