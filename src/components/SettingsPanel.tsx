@@ -200,6 +200,33 @@ function SettingsContent() {
             onCheckedChange={handleGameSoundsToggle}
           />
         </label>
+
+        {/* Volume slider — only meaningful when sounds enabled */}
+        <div
+          className={cn(
+            "mt-2 rounded-xl bg-muted/40 px-3 py-3 transition-opacity",
+            !gameSoundsEnabled && "opacity-50 pointer-events-none",
+          )}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+              <Volume2 className="h-3.5 w-3.5" />
+              {t("gameVolume")}
+            </span>
+            <span className="text-xs font-bold tabular-nums text-primary">
+              {gameVolume}%
+            </span>
+          </div>
+          <Slider
+            value={[gameVolume]}
+            onValueChange={handleVolumeChange}
+            min={0}
+            max={100}
+            step={5}
+            disabled={!gameSoundsEnabled}
+            aria-label={t("gameVolume")}
+          />
+        </div>
       </div>
 
       {/* Theme Picker */}
