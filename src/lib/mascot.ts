@@ -71,6 +71,28 @@ import mascotCelebratingSunglasses from "@/assets/mascot-celebrating-sunglasses.
 import mascotHappyReadingglasses from "@/assets/mascot-happy-readingglasses.png";
 import mascotWorriedReadingglasses from "@/assets/mascot-worried-readingglasses.png";
 import mascotCelebratingReadingglasses from "@/assets/mascot-celebrating-readingglasses.png";
+// New professions
+import mascotHappyAccountant from "@/assets/mascot-happy-accountant.png";
+import mascotWorriedAccountant from "@/assets/mascot-worried-accountant.png";
+import mascotCelebratingAccountant from "@/assets/mascot-celebrating-accountant.png";
+import mascotHappyDancer from "@/assets/mascot-happy-dancer.png";
+import mascotWorriedDancer from "@/assets/mascot-worried-dancer.png";
+import mascotCelebratingDancer from "@/assets/mascot-celebrating-dancer.png";
+import mascotHappySalesperson from "@/assets/mascot-happy-salesperson.png";
+import mascotWorriedSalesperson from "@/assets/mascot-worried-salesperson.png";
+import mascotCelebratingSalesperson from "@/assets/mascot-celebrating-salesperson.png";
+import mascotHappyManager from "@/assets/mascot-happy-manager.png";
+import mascotWorriedManager from "@/assets/mascot-worried-manager.png";
+import mascotCelebratingManager from "@/assets/mascot-celebrating-manager.png";
+import mascotHappyPsychologist from "@/assets/mascot-happy-psychologist.png";
+import mascotWorriedPsychologist from "@/assets/mascot-worried-psychologist.png";
+import mascotCelebratingPsychologist from "@/assets/mascot-celebrating-psychologist.png";
+import mascotHappyTeacher from "@/assets/mascot-happy-teacher.png";
+import mascotWorriedTeacher from "@/assets/mascot-worried-teacher.png";
+import mascotCelebratingTeacher from "@/assets/mascot-celebrating-teacher.png";
+import mascotHappyActor from "@/assets/mascot-happy-actor.png";
+import mascotWorriedActor from "@/assets/mascot-worried-actor.png";
+import mascotCelebratingActor from "@/assets/mascot-celebrating-actor.png";
 
 export interface MascotOutfit {
   id: string;
