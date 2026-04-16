@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
+import { checkAndNotify, clearNotifiedIfNewDay } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
