@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Trophy, Play, RotateCcw, Eye } from "lucide-react";
 import { loadBestScores, maybeUpdateBest } from "@/lib/memoryGames";
+import { playGameSound } from "@/lib/gameSounds";
 
 type Phase = "idle" | "showing" | "input" | "lost";
 
@@ -87,13 +88,16 @@ export function NumberSequenceGame() {
       setNewRecord(replaced);
       setPhase("lost");
       setInput(nextInput);
+      playGameSound("wrong");
       return;
     }
 
+    playGameSound("tap");
     setInput(nextInput);
 
     if (nextInput.length === sequence.length) {
       // Level passed, advance
+      playGameSound("correct");
       window.setTimeout(() => {
         startLevel(level + 1);
       }, 600);

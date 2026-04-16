@@ -9,6 +9,7 @@ import {
   shuffle,
   type CardMatchDifficulty,
 } from "@/lib/memoryGames";
+import { playGameSound } from "@/lib/gameSounds";
 
 // 12 unique emojis — enough to support hard mode (12 pairs).
 const EMOJI_POOL = [
@@ -82,6 +83,7 @@ export function CardMatchGame() {
       );
       setNewRecord(replaced);
       setBestVersion((v) => v + 1);
+      playGameSound("win");
     }
   }, [allMatched, startedAt, finishedTime, moves, difficulty]);
 
@@ -107,6 +109,8 @@ export function CardMatchGame() {
     const card = cards.find((c) => c.id === id);
     if (!card || card.matched) return;
 
+    playGameSound("flip");
+
     const nextFlipped = [...flipped, id];
     setFlipped(nextFlipped);
 
@@ -121,12 +125,14 @@ export function CardMatchGame() {
             prev.map((c) => (c.id === aId || c.id === bId ? { ...c, matched: true } : c)),
           );
           setFlipped([]);
+          playGameSound("match");
         }, 400);
       } else {
         lockRef.current = true;
         window.setTimeout(() => {
           setFlipped([]);
           lockRef.current = false;
+          playGameSound("wrong");
         }, 800);
       }
     }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Trophy, Play, RotateCcw, Eye } from "lucide-react";
 import { loadBestScores, maybeUpdateBest, shuffle } from "@/lib/memoryGames";
+import { playGameSound } from "@/lib/gameSounds";
 
 type Phase = "idle" | "memorize" | "quiz" | "result";
 
@@ -93,6 +94,7 @@ export function MemoryPalaceGame() {
     const correct = item.id === pairs[quizIndex].item.id;
     setAnswered({ correct, chosen: item.id });
     if (correct) setScore((s) => s + 1);
+    playGameSound(correct ? "correct" : "wrong");
 
     window.setTimeout(() => {
       if (quizIndex + 1 >= pairs.length) {
@@ -104,6 +106,7 @@ export function MemoryPalaceGame() {
         );
         setNewRecord(replaced);
         setPhase("result");
+        playGameSound("win");
       } else {
         setQuizIndex((q) => q + 1);
       }

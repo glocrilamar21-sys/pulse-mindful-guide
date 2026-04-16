@@ -165,6 +165,10 @@ const translations = {
     gameDifficultyMedium: "Medio",
     gameDifficultyHard: "Difícil",
     gameCards: "cartas",
+    gameSoundsTitle: "Sonidos de juegos",
+    gameSoundsDesc: "Tonos sutiles al voltear cartas, acertar y ganar.",
+    gameSoundsOn: "Activados",
+    gameSoundsOff: "Silenciados",
   },
   en: {
     today: "Today",
@@ -325,6 +329,10 @@ const translations = {
     gameDifficultyMedium: "Medium",
     gameDifficultyHard: "Hard",
     gameCards: "cards",
+    gameSoundsTitle: "Game sounds",
+    gameSoundsDesc: "Subtle tones when flipping cards, matching and winning.",
+    gameSoundsOn: "On",
+    gameSoundsOff: "Muted",
   },
   pt: {
     today: "Hoje",
@@ -485,6 +493,10 @@ const translations = {
     gameDifficultyMedium: "Médio",
     gameDifficultyHard: "Difícil",
     gameCards: "cartas",
+    gameSoundsTitle: "Sons dos jogos",
+    gameSoundsDesc: "Tons sutis ao virar cartas, acertar e ganhar.",
+    gameSoundsOn: "Ativados",
+    gameSoundsOff: "Silenciados",
   },
   fr: {
     today: "Aujourd'hui",
@@ -645,6 +657,10 @@ const translations = {
     gameDifficultyMedium: "Moyen",
     gameDifficultyHard: "Difficile",
     gameCards: "cartes",
+    gameSoundsTitle: "Sons des jeux",
+    gameSoundsDesc: "Tonalités subtiles en retournant les cartes, en réussissant et en gagnant.",
+    gameSoundsOn: "Activés",
+    gameSoundsOff: "Coupés",
   },
   it: {
     today: "Oggi",
@@ -805,6 +821,10 @@ const translations = {
     gameDifficultyMedium: "Medio",
     gameDifficultyHard: "Difficile",
     gameCards: "carte",
+    gameSoundsTitle: "Suoni dei giochi",
+    gameSoundsDesc: "Toni sottili quando giri le carte, abbini e vinci.",
+    gameSoundsOn: "Attivi",
+    gameSoundsOff: "Silenziati",
   },
 } as const;
 
