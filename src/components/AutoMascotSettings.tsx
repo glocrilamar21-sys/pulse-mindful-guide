@@ -73,6 +73,18 @@ export function AutoMascotSettings() {
     saveScopeMap(next);
   };
 
+  const handleSuggest = () => {
+    const next = { ...scopeMap };
+    (Object.keys(SCOPE_AFFINITY) as TaskScope[]).forEach((scope) => {
+      const cats = SCOPE_AFFINITY[scope];
+      const candidates = mascotOutfits.filter((o) => cats.includes(o.category));
+      const picked = pickRandom(candidates);
+      if (picked) next[scope] = picked.id;
+    });
+    setScopeMap(next);
+    saveScopeMap(next);
+  };
+
   return (
     <div>
       <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
