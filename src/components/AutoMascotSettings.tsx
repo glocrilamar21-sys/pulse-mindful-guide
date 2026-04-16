@@ -112,20 +112,32 @@ export function AutoMascotSettings() {
           !enabled && "opacity-50 pointer-events-none",
         )}
       >
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-foreground">
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <span className="text-xs font-bold text-foreground min-w-0 truncate">
             {t("scopeMascotMap")}
           </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleReset}
-            disabled={!enabled}
-            className="h-6 px-2 text-[10px] font-bold gap-1 text-muted-foreground hover:text-foreground"
-          >
-            <RotateCcw className="h-3 w-3" />
-            {t("resetDefaults")}
-          </Button>
+          <div className="flex items-center gap-1 shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSuggest}
+              disabled={!enabled}
+              className="h-6 px-2 text-[10px] font-bold gap-1 text-primary hover:text-primary hover:bg-primary/10"
+            >
+              <Wand2 className="h-3 w-3" />
+              {t("suggestAutoMascot")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleReset}
+              disabled={!enabled}
+              className="h-6 px-2 text-[10px] font-bold gap-1 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="h-3 w-3" />
+              {t("resetDefaults")}
+            </Button>
+          </div>
         </div>
         <p className="text-[10px] text-muted-foreground mb-2">
           {t("scopeMascotMapDesc")}
