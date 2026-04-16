@@ -221,33 +221,6 @@ function SettingsContent() {
         </div>
       </div>
 
-      {/* Notifications */}
-      {isNotificationSupported() && (
-        <div>
-          <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
-            <BellRing className="h-4 w-4" />
-            {t("notifications")}
-          </h3>
-          <p className="text-xs text-muted-foreground mb-3">{t("notificationsDesc")}</p>
-          {notifPermission === "denied" ? (
-            <p className="text-xs text-destructive font-semibold">{t("notificationsBlocked")}</p>
-          ) : (
-            <Button
-              onClick={handleToggleNotifications}
-              size="lg"
-              className={cn(
-                "h-12 w-full gap-2 text-sm font-bold cursor-pointer rounded-lg active:scale-95 transition-transform",
-                notifEnabled
-                  ? "bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/80 text-white"
-                  : "bg-primary hover:bg-primary/80 text-primary-foreground"
-              )}
-            >
-              <BellRing className="h-4 w-4" />
-              {notifEnabled ? t("notificationsActive") : t("enableNotifications")}
-            </Button>
-          )}
-        </div>
-      )}
 
       {/* Test Alerts */}
       <div>
