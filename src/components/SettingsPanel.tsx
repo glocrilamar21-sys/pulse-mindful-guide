@@ -1,5 +1,5 @@
 import { playDemoSound } from "@/lib/tasks";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Clock, Volume2, Globe } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -9,6 +9,14 @@ interface SettingsPanelProps {
   trigger?: React.ReactNode;
   inline?: boolean;
 }
+
+const languages: { id: Locale; flag: string; labelKey: "spanish" | "english" | "portuguese" | "french" | "italian" }[] = [
+  { id: "es", flag: "🇪🇸", labelKey: "spanish" },
+  { id: "en", flag: "🇺🇸", labelKey: "english" },
+  { id: "pt", flag: "🇧🇷", labelKey: "portuguese" },
+  { id: "fr", flag: "🇫🇷", labelKey: "french" },
+  { id: "it", flag: "🇮🇹", labelKey: "italian" },
+];
 
 function SettingsContent() {
   const { t, locale, setLocale } = useI18n();
@@ -22,28 +30,20 @@ function SettingsContent() {
           {t("language")}
         </h3>
         <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={() => setLocale("es")}
-            className={cn(
-              "flex items-center justify-center gap-2 rounded-xl px-4 py-3 transition-all cursor-pointer font-semibold text-sm",
-              locale === "es"
-                ? "bg-primary text-primary-foreground shadow-md scale-105"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
-            )}
-          >
-            🇪🇸 {t("spanish")}
-          </button>
-          <button
-            onClick={() => setLocale("en")}
-            className={cn(
-              "flex items-center justify-center gap-2 rounded-xl px-4 py-3 transition-all cursor-pointer font-semibold text-sm",
-              locale === "en"
-                ? "bg-primary text-primary-foreground shadow-md scale-105"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
-            )}
-          >
-            🇺🇸 {t("english")}
-          </button>
+          {languages.map((lang) => (
+            <button
+              key={lang.id}
+              onClick={() => setLocale(lang.id)}
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-xl px-4 py-3 transition-all cursor-pointer font-semibold text-sm",
+                locale === lang.id
+                  ? "bg-primary text-primary-foreground shadow-md scale-105"
+                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              )}
+            >
+              {lang.flag} {t(lang.labelKey)}
+            </button>
+          ))}
         </div>
       </div>
 
