@@ -2,8 +2,16 @@ const STORAGE_KEY = "memoryGames.bestScores.v1";
 
 export type GameId = "cardMatch" | "numberSequence" | "memoryPalace";
 
+export type CardMatchDifficulty = "easy" | "medium" | "hard";
+
+export interface CardMatchScore {
+  moves: number;
+  timeSec: number;
+}
+
 export interface BestScores {
-  cardMatch?: { moves: number; timeSec: number };
+  /** Best score per difficulty for the card-match game. */
+  cardMatch?: Partial<Record<CardMatchDifficulty, CardMatchScore>>;
   numberSequence?: { level: number };
   memoryPalace?: { score: number; total: number };
 }
