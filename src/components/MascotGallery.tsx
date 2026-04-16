@@ -147,7 +147,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 <div className="relative h-14 w-14 flex items-center justify-center">
                   <img
                     src={getMascotImage(outfit.id, "happy")}
-                    alt={outfit.name}
+                    alt={getMascotName(outfit.id, locale, outfit.name)}
                     loading="lazy"
                     className={cn(
                       "h-full w-full object-contain transition-transform",
@@ -157,7 +157,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 </div>
                 <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
                   <span className="mr-0.5">{outfit.emoji}</span>
-                  {outfit.name}
+                  {getMascotName(outfit.id, locale, outfit.name)}
                 </span>
               </button>
             );
