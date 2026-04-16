@@ -894,6 +894,7 @@ const translations = {
     scopeMascotMap: "Mascotte per ambito",
     scopeMascotMapDesc: "Assegna una mascotte a ogni tipo di attività.",
     resetDefaults: "Ripristina",
+    suggestAutoMascot: "Suggerisci",
   },
 } as const;
 
