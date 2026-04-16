@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Clock, Briefcase, GraduationCap, Home, Heart } from "lucide-react";
+import { CalendarIcon, Clock, Briefcase, BookOpen, Home, Heart, Stethoscope } from "lucide-react";
 import { TaskCategory, generateId, Task } from "@/lib/tasks";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -25,9 +25,10 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
 
   const scopes = [
     { id: "trabajo", label: t("work"), icon: Briefcase },
-    { id: "estudio", label: t("study"), icon: GraduationCap },
+    { id: "estudio", label: t("study"), icon: BookOpen },
     { id: "hogar", label: t("home"), icon: Home },
     { id: "personal", label: t("personal"), icon: Heart },
+    { id: "salud", label: t("health"), icon: Stethoscope },
   ];
 
   const [name, setName] = useState("");
