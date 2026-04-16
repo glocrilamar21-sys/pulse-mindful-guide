@@ -42,6 +42,16 @@ function SettingsContent() {
   const [currentOutfit, setCurrentOutfit] = useState(loadMascotOutfit);
   const [criticalPresetId, setCriticalPresetId] = useState(loadCriticalPreset);
   const [flexiblePresetId, setFlexiblePresetId] = useState(loadFlexiblePreset);
+  const [gameSoundsEnabled, setGameSoundsEnabled] = useState(loadGameSoundsEnabled);
+
+  const handleGameSoundsToggle = (enabled: boolean) => {
+    setGameSoundsEnabled(enabled);
+    saveGameSoundsEnabled(enabled);
+    if (enabled) {
+      // Tiny preview so the user hears the change.
+      playGameSound("match");
+    }
+  };
 
   const handleThemeChange = (id: string) => {
     setCurrentTheme(id);
