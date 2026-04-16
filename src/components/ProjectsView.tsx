@@ -1,5 +1,5 @@
 import { Task } from "@/lib/tasks";
-import { Briefcase, GraduationCap, Home, Heart, Activity, TrendingUp } from "lucide-react";
+import { Briefcase, BookOpen, Home, Heart, Stethoscope, TrendingUp } from "lucide-react";
 
 interface ProjectsViewProps {
   tasks: Task[];
@@ -7,10 +7,10 @@ interface ProjectsViewProps {
 
 const categories = [
   { id: "trabajo", label: "Trabajo", icon: Briefcase, color: "hsl(var(--primary))" },
-  { id: "estudio", label: "Estudio", icon: GraduationCap, color: "hsl(35, 95%, 55%)" },
+  { id: "estudio", label: "Estudio", icon: BookOpen, color: "hsl(35, 95%, 55%)" },
   { id: "hogar", label: "Hogar", icon: Home, color: "hsl(var(--success))" },
   { id: "personal", label: "Personal", icon: Heart, color: "hsl(280, 60%, 55%)" },
-  { id: "salud", label: "Salud", icon: Activity, color: "hsl(var(--critical))" },
+  { id: "salud", label: "Salud", icon: Stethoscope, color: "hsl(var(--critical))" },
 ];
 
 export function ProjectsView({ tasks }: ProjectsViewProps) {
