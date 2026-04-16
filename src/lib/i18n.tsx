@@ -95,6 +95,10 @@ const translations = {
     weekGoodJob: "¡Buen trabajo! Vas por buen camino.",
     weekKeepGoing: "Cada tarea cuenta. ¡No te detengas!",
     tabStats: "STATS",
+    monthlyProgress: "Progreso Mensual",
+    monthDone: "Hechas",
+    monthActiveDays: "Días activos",
+    monthAvg: "Promedio/día",
   },
   en: {
     today: "Today",
@@ -185,6 +189,10 @@ const translations = {
     weekGoodJob: "Good job! You're on track.",
     weekKeepGoing: "Every task counts. Keep going!",
     tabStats: "STATS",
+    monthlyProgress: "Monthly Progress",
+    monthDone: "Done",
+    monthActiveDays: "Active days",
+    monthAvg: "Avg/day",
   },
   pt: {
     today: "Hoje",
@@ -275,6 +283,10 @@ const translations = {
     weekGoodJob: "Bom trabalho! Está no caminho certo.",
     weekKeepGoing: "Cada tarefa conta. Continue!",
     tabStats: "STATS",
+    monthlyProgress: "Progresso Mensal",
+    monthDone: "Feitas",
+    monthActiveDays: "Dias ativos",
+    monthAvg: "Média/dia",
   },
   fr: {
     today: "Aujourd'hui",
@@ -365,6 +377,10 @@ const translations = {
     weekGoodJob: "Bon travail ! Vous êtes sur la bonne voie.",
     weekKeepGoing: "Chaque tâche compte. Continuez !",
     tabStats: "STATS",
+    monthlyProgress: "Progression Mensuelle",
+    monthDone: "Faites",
+    monthActiveDays: "Jours actifs",
+    monthAvg: "Moy./jour",
   },
   it: {
     today: "Oggi",
@@ -455,6 +471,10 @@ const translations = {
     weekGoodJob: "Buon lavoro! Sei sulla buona strada.",
     weekKeepGoing: "Ogni attività conta. Continua!",
     tabStats: "STATS",
+    monthlyProgress: "Progresso Mensile",
+    monthDone: "Fatte",
+    monthActiveDays: "Giorni attivi",
+    monthAvg: "Media/giorno",
   },
 } as const;
 

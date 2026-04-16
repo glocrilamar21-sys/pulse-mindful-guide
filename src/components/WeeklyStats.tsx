@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Task } from "@/lib/tasks";
 import { useI18n, dateFnsLocales } from "@/lib/i18n";
-import { format, startOfWeek, addDays, isSameDay } from "date-fns";
-import { BarChart3, TrendingUp, Flame, Trophy } from "lucide-react";
+import { format, startOfWeek, startOfMonth, endOfMonth, addDays, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { BarChart3, TrendingUp, Flame, Trophy, CalendarRange } from "lucide-react";
 
 interface WeeklyStatsProps {
   tasks: Task[];
@@ -61,6 +61,64 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
   }, [tasks]);
 
   const weekPercent = weekTotal > 0 ? Math.round((weekCompleted / weekTotal) * 100) : 0;
+
+  // Monthly cumulative data
+  const monthData = useMemo(() => {
+    const today = new Date();
+    const monthStart = startOfMonth(today);
+    const monthEnd = endOfMonth(today);
+    const allDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+    let cumulative = 0;
+    const points = allDays.map((day) => {
+      const dayStr = dateToStr(day);
+      const dayCompleted = tasks.filter((t) => t.date === dayStr && t.done).length;
+      const isFuture = day > today;
+      if (!isFuture) cumulative += dayCompleted;
+      return {
+        date: day,
+        dayNum: format(day, "d"),
+        completed: dayCompleted,
+        cumulative: isFuture ? null : cumulative,
+        isToday: isSameDay(day, today),
+        isFuture,
+      };
+    });
+
+    const monthCompleted = tasks.filter((t) => {
+      const taskDate = new Date(t.date + "T00:00:00");
+      return t.done && isSameMonth(taskDate, today);
+    }).length;
+    const monthTotal = tasks.filter((t) => {
+      const taskDate = new Date(t.date + "T00:00:00");
+      return isSameMonth(taskDate, today);
+    }).length;
+    const activeDays = points.filter((p) => p.completed > 0).length;
+    const dailyAvg = activeDays > 0 ? (monthCompleted / activeDays).toFixed(1) : "0";
+
+    return { points, monthCompleted, monthTotal, activeDays, dailyAvg };
+  }, [tasks]);
+
+  // SVG path for cumulative line chart
+  const chartPath = useMemo(() => {
+    const points = monthData.points.filter((p) => p.cumulative !== null);
+    if (points.length === 0) return { line: "", area: "", maxCum: 0 };
+    const maxCum = Math.max(...points.map((p) => p.cumulative as number), 1);
+    const w = 100;
+    const h = 100;
+    const stepX = points.length > 1 ? w / (points.length - 1) : 0;
+    const coords = points.map((p, i) => {
+      const x = i * stepX;
+      const y = h - ((p.cumulative as number) / maxCum) * h;
+      return { x, y };
+    });
+    const line = coords.map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(2)},${c.y.toFixed(2)}`).join(" ");
+    const area = `${line} L${coords[coords.length - 1].x.toFixed(2)},${h} L0,${h} Z`;
+    return { line, area, maxCum };
+  }, [monthData]);
+
+  const today = new Date();
+  const monthLabel = format(today, "MMMM yyyy", { locale: dateFnsLocale });
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -184,6 +242,68 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Monthly Cumulative Progress */}
+      <div className="rounded-2xl bg-card p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <CalendarRange className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-bold text-foreground">{t("monthlyProgress")}</h3>
+          </div>
+          <span className="text-[10px] font-bold text-muted-foreground capitalize">{monthLabel}</span>
+        </div>
+
+        {/* Cumulative line chart */}
+        <div className="relative w-full h-32 mb-3">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+            <defs>
+              <linearGradient id="monthGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Grid lines */}
+            {[0, 25, 50, 75, 100].map((y) => (
+              <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="hsl(var(--border))" strokeWidth="0.3" strokeDasharray="1,1" />
+            ))}
+            {chartPath.area && <path d={chartPath.area} fill="url(#monthGradient)" />}
+            {chartPath.line && (
+              <path d={chartPath.line} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+            )}
+          </svg>
+          {chartPath.maxCum > 0 && (
+            <>
+              <span className="absolute top-0 right-0 text-[9px] font-bold text-muted-foreground bg-card px-1">{chartPath.maxCum}</span>
+              <span className="absolute bottom-0 right-0 text-[9px] font-bold text-muted-foreground bg-card px-1">0</span>
+            </>
+          )}
+        </div>
+
+        {/* Day labels (every 5th) */}
+        <div className="flex justify-between text-[9px] text-muted-foreground font-semibold px-1">
+          {monthData.points.filter((_, i) => i % 5 === 0 || i === monthData.points.length - 1).map((p) => (
+            <span key={p.dayNum} className={p.isToday ? "text-primary font-bold" : ""}>
+              {p.dayNum}
+            </span>
+          ))}
+        </div>
+
+        {/* Monthly summary stats */}
+        <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border">
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.monthCompleted}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthDone")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.activeDays}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthActiveDays")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-black text-foreground">{monthData.dailyAvg}</p>
+            <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">{t("monthAvg")}</p>
+          </div>
         </div>
       </div>
 
