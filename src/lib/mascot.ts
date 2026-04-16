@@ -93,6 +93,25 @@ import mascotCelebratingTeacher from "@/assets/mascot-celebrating-teacher.png";
 import mascotHappyActor from "@/assets/mascot-happy-actor.png";
 import mascotWorriedActor from "@/assets/mascot-worried-actor.png";
 import mascotCelebratingActor from "@/assets/mascot-celebrating-actor.png";
+// Engineering & Design professions
+import mascotHappySystemsengineer from "@/assets/mascot-happy-systemsengineer.png";
+import mascotWorriedSystemsengineer from "@/assets/mascot-worried-systemsengineer.png";
+import mascotCelebratingSystemsengineer from "@/assets/mascot-celebrating-systemsengineer.png";
+import mascotHappyMechanic from "@/assets/mascot-happy-mechanic.png";
+import mascotWorriedMechanic from "@/assets/mascot-worried-mechanic.png";
+import mascotCelebratingMechanic from "@/assets/mascot-celebrating-mechanic.png";
+import mascotHappyGraphicdesigner from "@/assets/mascot-happy-graphicdesigner.png";
+import mascotWorriedGraphicdesigner from "@/assets/mascot-worried-graphicdesigner.png";
+import mascotCelebratingGraphicdesigner from "@/assets/mascot-celebrating-graphicdesigner.png";
+import mascotHappyAnimator from "@/assets/mascot-happy-animator.png";
+import mascotWorriedAnimator from "@/assets/mascot-worried-animator.png";
+import mascotCelebratingAnimator from "@/assets/mascot-celebrating-animator.png";
+import mascotHappyCivilengineer from "@/assets/mascot-happy-civilengineer.png";
+import mascotWorriedCivilengineer from "@/assets/mascot-worried-civilengineer.png";
+import mascotCelebratingCivilengineer from "@/assets/mascot-celebrating-civilengineer.png";
+import mascotHappyElectricalengineer from "@/assets/mascot-happy-electricalengineer.png";
+import mascotWorriedElectricalengineer from "@/assets/mascot-worried-electricalengineer.png";
+import mascotCelebratingElectricalengineer from "@/assets/mascot-celebrating-electricalengineer.png";
 
 export interface MascotOutfit {
   id: string;
@@ -131,7 +150,7 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "winter", name: "Invierno", emoji: "❄️", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
   { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
   { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
-  // New professions
+  // Professions
   { id: "accountant", name: "Contador", emoji: "🧮", happy: mascotHappyAccountant, worried: mascotWorriedAccountant, celebrating: mascotCelebratingAccountant },
   { id: "dancer", name: "Bailarín", emoji: "💃", happy: mascotHappyDancer, worried: mascotWorriedDancer, celebrating: mascotCelebratingDancer },
   { id: "salesperson", name: "Vendedor", emoji: "🤝", happy: mascotHappySalesperson, worried: mascotWorriedSalesperson, celebrating: mascotCelebratingSalesperson },
@@ -139,6 +158,13 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "psychologist", name: "Psicólogo", emoji: "🧠", happy: mascotHappyPsychologist, worried: mascotWorriedPsychologist, celebrating: mascotCelebratingPsychologist },
   { id: "teacher", name: "Profesor", emoji: "👨‍🏫", happy: mascotHappyTeacher, worried: mascotWorriedTeacher, celebrating: mascotCelebratingTeacher },
   { id: "actor", name: "Actor", emoji: "🎭", happy: mascotHappyActor, worried: mascotWorriedActor, celebrating: mascotCelebratingActor },
+  // Engineering & Design
+  { id: "systemsengineer", name: "Ing. de Sistemas", emoji: "💻", happy: mascotHappySystemsengineer, worried: mascotWorriedSystemsengineer, celebrating: mascotCelebratingSystemsengineer },
+  { id: "mechanic", name: "Mecánico", emoji: "🔧", happy: mascotHappyMechanic, worried: mascotWorriedMechanic, celebrating: mascotCelebratingMechanic },
+  { id: "graphicdesigner", name: "Diseñador Gráfico", emoji: "🖌️", happy: mascotHappyGraphicdesigner, worried: mascotWorriedGraphicdesigner, celebrating: mascotCelebratingGraphicdesigner },
+  { id: "animator", name: "Animador Digital", emoji: "🎬", happy: mascotHappyAnimator, worried: mascotWorriedAnimator, celebrating: mascotCelebratingAnimator },
+  { id: "civilengineer", name: "Ing. Civil", emoji: "🏗️", happy: mascotHappyCivilengineer, worried: mascotWorriedCivilengineer, celebrating: mascotCelebratingCivilengineer },
+  { id: "electricalengineer", name: "Ing. Eléctrico", emoji: "⚡", happy: mascotHappyElectricalengineer, worried: mascotWorriedElectricalengineer, celebrating: mascotCelebratingElectricalengineer },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
