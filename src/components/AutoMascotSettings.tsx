@@ -33,6 +33,21 @@ const SCOPES: ScopeDef[] = [
   { id: "personal", labelKey: "personal", emoji: "✨" },
 ];
 
+// Affinity: which mascot categories suit each task scope.
+// Each scope picks randomly from any of its preferred categories.
+const SCOPE_AFFINITY: Record<TaskScope, MascotCategory[]> = {
+  trabajo: ["tech", "business", "engineering"],
+  estudio: ["education"],
+  hogar: ["service", "seasons"],
+  salud: ["health"],
+  personal: ["creative", "festive", "accessories", "original"],
+};
+
+function pickRandom<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) return undefined;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export function AutoMascotSettings() {
   const { t, locale } = useI18n();
   const [enabled, setEnabled] = useState(loadAutoMascotMode);
