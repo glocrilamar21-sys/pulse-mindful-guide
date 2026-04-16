@@ -247,6 +247,18 @@ export function CardMatchGame() {
           <p className="text-xs text-muted-foreground">
             {moves} {t("gameMoves")} · {elapsedSec}s
           </p>
+          {(() => {
+            const earnedMedal = cardMatchMedal(difficulty, { moves, timeSec: elapsedSec });
+            if (!earnedMedal) return null;
+            return (
+              <div className="flex flex-col items-center gap-0.5 pt-1">
+                <Medal tier={earnedMedal} size="lg" />
+                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                  {t("medalEarned")}
+                </span>
+              </div>
+            );
+          })()}
           {newRecord && (
             <p className="text-xs font-bold text-[hsl(var(--warning))] flex items-center justify-center gap-1">
               <Trophy className="h-3.5 w-3.5" fill="currentColor" />
