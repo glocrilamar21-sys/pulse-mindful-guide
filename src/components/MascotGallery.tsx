@@ -91,8 +91,8 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                   : "bg-muted/50 text-muted-foreground hover:bg-muted"
               )}
             >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
+                <span>{cat.emoji}</span>
+                <span>{t(cat.labelKey)}</span>
               <span
                 className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-full",
