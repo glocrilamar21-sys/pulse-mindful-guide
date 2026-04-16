@@ -86,8 +86,8 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
         </div>
         <div className="rounded-2xl bg-card p-4 shadow-sm text-center">
           <div className="flex justify-center mb-2">
-            <div className="h-9 w-9 rounded-full bg-orange-500/10 flex items-center justify-center">
-              <Flame className="h-4 w-4 text-orange-500" />
+            <div className="h-9 w-9 rounded-full bg-destructive/10 flex items-center justify-center">
+              <Flame className="h-4 w-4 text-destructive" />
             </div>
           </div>
           <p className="text-2xl font-black text-foreground">{streak}</p>
