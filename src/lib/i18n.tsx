@@ -580,6 +580,11 @@ const translations = {
     catEducation: "Istruzione",
     catSeasons: "Stagioni",
     catAccessories: "Accessori",
+    moodHappy: "Felice",
+    moodWorried: "Preoccupato",
+    moodCelebrating: "Festeggiando",
+    previewHint: "Tieni premuto per vedere i 3 stati",
+    selectMascot: "Seleziona mascotte",
   },
 } as const;
 
