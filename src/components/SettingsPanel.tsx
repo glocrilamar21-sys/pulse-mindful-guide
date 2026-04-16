@@ -2,7 +2,18 @@ import { useState } from "react";
 import { playDemoSound } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain } from "lucide-react";
+import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, BellRing } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
+import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
+import {
+  isNotificationSupported,
+  getNotificationPermission,
+  requestNotificationPermission,
+  isNotificationsEnabled,
+  setNotificationsEnabled,
+} from "@/lib/notifications";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
