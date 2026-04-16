@@ -59,6 +59,13 @@ export default function Index() {
   const flexibleTasks = todayTasks.filter((t) => t.category === "flexible" && !t.done);
   const doneTasks = todayTasks.filter((t) => t.done);
 
+  // Next pending task drives the header mascot when auto-mode is enabled.
+  // Priority: earliest critical pending → earliest flexible pending → none.
+  const nextPendingTask =
+    [...criticalTasks].sort((a, b) => a.time.localeCompare(b.time))[0] ??
+    [...flexibleTasks].sort((a, b) => a.time.localeCompare(b.time))[0];
+  const headerScope = nextPendingTask?.scope;
+
   const addTask = useCallback((task: Task) => {
     setTasks((prev) => [...prev, task].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
   }, []);
@@ -120,7 +127,7 @@ export default function Index() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                <BrainMascot mood="happy" size="sm" />
+                <BrainMascot mood="happy" size="sm" scope={headerScope} />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">
