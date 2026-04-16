@@ -127,7 +127,7 @@ export default function Index() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                <BrainMascot mood="happy" size="sm" />
+                <BrainMascot mood="happy" size="sm" scope={headerScope} />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">
