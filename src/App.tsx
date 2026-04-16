@@ -4,8 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/lib/i18n";
+import { loadTheme, applyTheme } from "@/lib/themes";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+
+// Apply saved theme immediately
+applyTheme(loadTheme());
 
 const queryClient = new QueryClient();
 
