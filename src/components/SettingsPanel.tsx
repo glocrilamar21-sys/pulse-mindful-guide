@@ -68,7 +68,7 @@ function SettingsContent() {
       <div>
         <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
           <Brain className="h-4 w-4" />
-          Mascota
+          {t("mascot")}
         </h3>
         <MascotGallery currentOutfit={currentOutfit} onChange={handleOutfitChange} />
       </div>
