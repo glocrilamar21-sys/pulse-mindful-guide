@@ -111,6 +111,63 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     onChange(outfit.id);
   };
 
+  const renderCard = (outfit: MascotOutfit) => {
+    const isActive = currentOutfit === outfit.id;
+    const isFav = favorites.includes(outfit.id);
+    return (
+      <button
+        key={outfit.id}
+        onClick={() => handleClick(outfit)}
+        onPointerDown={() => startLongPress(outfit)}
+        onPointerUp={cancelLongPress}
+        onPointerLeave={cancelLongPress}
+        onPointerCancel={cancelLongPress}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setPreviewOutfit(outfit);
+        }}
+        className={cn(
+          "relative flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 transition-all cursor-pointer group select-none touch-manipulation",
+          isActive
+            ? "ring-2 ring-primary bg-accent shadow-md"
+            : "bg-muted/40 hover:bg-muted hover:scale-[1.02]"
+        )}
+      >
+        {isActive && (
+          <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-primary rounded-full flex items-center justify-center shadow">
+            <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+          </div>
+        )}
+        {isFav && !isActive && (
+          <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+            <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
+          </div>
+        )}
+        {isFav && isActive && (
+          <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+            <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
+          </div>
+        )}
+        <div className="relative h-14 w-14 flex items-center justify-center">
+          <img
+            src={getMascotImage(outfit.id, "happy")}
+            alt={getMascotName(outfit.id, locale, outfit.name)}
+            loading="lazy"
+            draggable={false}
+            className={cn(
+              "h-full w-full object-contain transition-transform pointer-events-none",
+              isActive && "scale-110"
+            )}
+          />
+        </div>
+        <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
+          <span className="mr-0.5">{outfit.emoji}</span>
+          {getMascotName(outfit.id, locale, outfit.name)}
+        </span>
+      </button>
+    );
+  };
+
   return (
     <div className="space-y-3">
       {/* Search */}
