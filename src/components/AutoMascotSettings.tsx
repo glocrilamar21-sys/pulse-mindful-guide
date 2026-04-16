@@ -14,6 +14,7 @@ import {
   getMascotImage,
   mascotOutfits,
   type TaskScope,
+  type MascotCategory,
 } from "@/lib/mascot";
 import { getMascotName } from "@/lib/mascotNames";
 import { MascotGallery } from "@/components/MascotGallery";
