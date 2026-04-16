@@ -2,7 +2,7 @@ import { getMascotImage, loadMascotOutfit } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 
 interface BrainMascotProps {
-  mood: "happy" | "worried";
+  mood: "happy" | "worried" | "celebrating";
   size?: "sm" | "md" | "lg";
   className?: string;
   animate?: boolean;
@@ -18,15 +18,22 @@ export function BrainMascot({ mood, size = "md", className, animate = false }: B
     lg: "h-20 w-20",
   };
 
+  const altText = mood === "celebrating" 
+    ? "Brain mascot celebrating with confetti" 
+    : mood === "happy" 
+    ? "Brain mascot smiling" 
+    : "Brain mascot worried";
+
   return (
     <img
       src={src}
-      alt={mood === "happy" ? "Brain mascot smiling" : "Brain mascot worried"}
+      alt={altText}
       className={cn(
         sizeClasses[size],
         "object-contain select-none",
         animate && mood === "worried" && "animate-bounce",
         animate && mood === "happy" && "animate-pulse",
+        animate && mood === "celebrating" && "animate-bounce",
         className
       )}
       loading="lazy"
