@@ -207,6 +207,12 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "firefighter", name: "Bombero", emoji: "🚒", happy: mascotHappyFirefighter, worried: mascotWorriedFirefighter, celebrating: mascotCelebratingFirefighter },
   { id: "police", name: "Policía", emoji: "👮", happy: mascotHappyPolice, worried: mascotWorriedPolice, celebrating: mascotCelebratingPolice },
   { id: "nurse", name: "Enfermero", emoji: "💉", happy: mascotHappyNurse, worried: mascotWorriedNurse, celebrating: mascotCelebratingNurse },
+  // More Professions
+  { id: "dentist", name: "Dentista", emoji: "🦷", happy: mascotHappyDentist, worried: mascotWorriedDentist, celebrating: mascotCelebratingDentist },
+  { id: "programmer", name: "Programador", emoji: "💻", happy: mascotHappyProgrammer, worried: mascotWorriedProgrammer, celebrating: mascotCelebratingProgrammer },
+  { id: "industrialengineer", name: "Ing. Industrial", emoji: "⚙️", happy: mascotHappyIndustrialengineer, worried: mascotWorriedIndustrialengineer, celebrating: mascotCelebratingIndustrialengineer },
+  { id: "biologist", name: "Biólogo", emoji: "🧬", happy: mascotHappyBiologist, worried: mascotWorriedBiologist, celebrating: mascotCelebratingBiologist },
+  { id: "chemist", name: "Químico", emoji: "🧪", happy: mascotHappyChemist, worried: mascotWorriedChemist, celebrating: mascotCelebratingChemist },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
