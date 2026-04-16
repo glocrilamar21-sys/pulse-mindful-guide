@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { playDemoSound, playPresetDemo } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,11 @@ import {
 import {
   loadGameSoundsEnabled,
   saveGameSoundsEnabled,
+  loadGameVolume,
+  saveGameVolume,
   playGameSound,
 } from "@/lib/gameSounds";
+import { Slider } from "@/components/ui/slider";
 
 interface SettingsPanelProps {
   trigger?: React.ReactNode;
@@ -43,6 +46,8 @@ function SettingsContent() {
   const [criticalPresetId, setCriticalPresetId] = useState(loadCriticalPreset);
   const [flexiblePresetId, setFlexiblePresetId] = useState(loadFlexiblePreset);
   const [gameSoundsEnabled, setGameSoundsEnabled] = useState(loadGameSoundsEnabled);
+  const [gameVolume, setGameVolume] = useState(loadGameVolume);
+  const volumeDebounceRef = useRef<number | null>(null);
 
   const handleGameSoundsToggle = (enabled: boolean) => {
     setGameSoundsEnabled(enabled);
@@ -51,6 +56,17 @@ function SettingsContent() {
       // Tiny preview so the user hears the change.
       playGameSound("match");
     }
+  };
+
+  const handleVolumeChange = (val: number[]) => {
+    const v = val[0] ?? 0;
+    setGameVolume(v);
+    saveGameVolume(v);
+    // Debounced preview to avoid spamming sounds while dragging.
+    if (volumeDebounceRef.current) window.clearTimeout(volumeDebounceRef.current);
+    volumeDebounceRef.current = window.setTimeout(() => {
+      if (gameSoundsEnabled && v > 0) playGameSound("tap");
+    }, 180);
   };
 
   const handleThemeChange = (id: string) => {
