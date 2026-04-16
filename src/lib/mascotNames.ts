@@ -59,6 +59,11 @@ export const mascotNames: Record<string, NameMap> = {
   autumn: { es: "Otoño", en: "Autumn", pt: "Outono", fr: "Automne", it: "Autunno" },
   spring: { es: "Primavera", en: "Spring", pt: "Primavera", fr: "Printemps", it: "Primavera" },
   winter: { es: "Invierno", en: "Winter", pt: "Inverno", fr: "Hiver", it: "Inverno" },
+  // Festive
+  halloween: { es: "Halloween", en: "Halloween", pt: "Halloween", fr: "Halloween", it: "Halloween" },
+  christmas: { es: "Navidad", en: "Christmas", pt: "Natal", fr: "Noël", it: "Natale" },
+  diadelosmuertos: { es: "Día de Muertos", en: "Day of the Dead", pt: "Dia dos Mortos", fr: "Jour des Morts", it: "Giorno dei Morti" },
+  newyear: { es: "Año Nuevo", en: "New Year", pt: "Ano Novo", fr: "Nouvel An", it: "Capodanno" },
   // Accessories
   sunglasses: { es: "Lentes de sol", en: "Sunglasses", pt: "Óculos de sol", fr: "Lunettes de soleil", it: "Occhiali da sole" },
   readingglasses: { es: "Lentes de lectura", en: "Reading glasses", pt: "Óculos de leitura", fr: "Lunettes de lecture", it: "Occhiali da lettura" },
