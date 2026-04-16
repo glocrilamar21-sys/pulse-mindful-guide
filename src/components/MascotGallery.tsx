@@ -60,14 +60,14 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar mascota..."
+          placeholder={t("gallerySearchPlaceholder")}
           className="pl-9 pr-9 h-10 rounded-xl bg-muted/40 border-0 focus-visible:ring-1 focus-visible:ring-primary"
         />
         {search && (
           <button
             onClick={() => setSearch("")}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted cursor-pointer"
-            aria-label="Limpiar búsqueda"
+            aria-label={t("gallerySearchPlaceholder")}
           >
             <X className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
