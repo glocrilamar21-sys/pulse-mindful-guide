@@ -14,10 +14,6 @@ import {
   isNotificationsEnabled,
   setNotificationsEnabled,
 } from "@/lib/notifications";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
-import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
-import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
 
 interface SettingsPanelProps {
   trigger?: React.ReactNode;
