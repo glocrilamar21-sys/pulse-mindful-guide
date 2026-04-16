@@ -127,6 +127,82 @@ export function TipsView() {
         })}
       </Accordion>
 
+      {/* Games section */}
+      <section className="rounded-2xl bg-gradient-to-br from-primary/10 via-background to-[hsl(var(--warning))]/10 border border-primary/20 shadow-sm overflow-hidden">
+        <div className="px-4 py-3 border-b border-border/50 flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+            <Gamepad2 className="h-5 w-5 text-primary" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-foreground leading-tight">
+              {t("gamesSection")}
+            </h2>
+            <p className="text-[11px] text-muted-foreground font-medium truncate">
+              {t("gamesSectionDesc")}
+            </p>
+          </div>
+        </div>
+
+        <Accordion type="single" collapsible className="px-3 py-2">
+          <AccordionItem value="cardMatch" className="border-b border-border/40">
+            <AccordionTrigger className="hover:no-underline py-3">
+              <div className="flex items-center gap-2.5 min-w-0 text-left">
+                <span className="text-xl shrink-0">🃏</span>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold text-foreground leading-tight">
+                    {t("gameCardMatch")}
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {t("gameCardMatchDesc")}
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-4">
+              <CardMatchGame />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="numberSequence" className="border-b border-border/40">
+            <AccordionTrigger className="hover:no-underline py-3">
+              <div className="flex items-center gap-2.5 min-w-0 text-left">
+                <span className="text-xl shrink-0">🔢</span>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold text-foreground leading-tight">
+                    {t("gameNumberSequence")}
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {t("gameNumberSequenceDesc")}
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-4">
+              <NumberSequenceGame />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="memoryPalace" className="border-b-0">
+            <AccordionTrigger className="hover:no-underline py-3">
+              <div className="flex items-center gap-2.5 min-w-0 text-left">
+                <span className="text-xl shrink-0">🏛️</span>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold text-foreground leading-tight">
+                    {t("gameMemoryPalace")}
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {t("gameMemoryPalaceDesc")}
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-4">
+              <MemoryPalaceGame />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
       <div className="text-center text-[10px] text-muted-foreground/60 italic py-2">
         💡 {t("tipsHowToPlay")}
       </div>
