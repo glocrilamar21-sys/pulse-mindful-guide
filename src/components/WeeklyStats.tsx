@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Task } from "@/lib/tasks";
 import { useI18n, dateFnsLocales } from "@/lib/i18n";
-import { format, startOfWeek, addDays, isSameDay } from "date-fns";
-import { BarChart3, TrendingUp, Flame, Trophy } from "lucide-react";
+import { format, startOfWeek, startOfMonth, endOfMonth, addDays, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { BarChart3, TrendingUp, Flame, Trophy, CalendarRange } from "lucide-react";
 
 interface WeeklyStatsProps {
   tasks: Task[];
