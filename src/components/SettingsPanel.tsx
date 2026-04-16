@@ -32,6 +32,26 @@ function SettingsContent() {
   const { t, locale, setLocale } = useI18n();
   const [currentTheme, setCurrentTheme] = useState(loadTheme);
   const [currentOutfit, setCurrentOutfit] = useState(loadMascotOutfit);
+  const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled);
+  const [notifPermission, setNotifPermission] = useState(getNotificationPermission);
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestNotificationPermission();
+    setNotifPermission(getNotificationPermission());
+    if (granted) {
+      setNotificationsEnabled(true);
+      setNotifEnabled(true);
+    }
+  };
+
+  const handleToggleNotifications = () => {
+    if (notifEnabled) {
+      setNotificationsEnabled(false);
+      setNotifEnabled(false);
+    } else {
+      handleEnableNotifications();
+    }
+  };
 
   const handleThemeChange = (id: string) => {
     setCurrentTheme(id);
