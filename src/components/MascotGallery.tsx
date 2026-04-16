@@ -4,6 +4,7 @@ import { mascotOutfits, getMascotImage, type MascotCategory } from "@/lib/mascot
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
+import { getMascotName } from "@/lib/mascotNames";
 
 interface MascotGalleryProps {
   currentOutfit: string;
