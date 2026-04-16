@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { Search, X, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Search, X, Check, Star } from "lucide-react";
 import { mascotOutfits, getMascotImage, type MascotCategory, type MascotOutfit } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { getMascotName } from "@/lib/mascotNames";
+import { loadFavorites, saveFavorites, toggleFavorite } from "@/lib/favorites";
 
 interface MascotGalleryProps {
   currentOutfit: string;
@@ -41,13 +42,25 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
   const [previewOutfit, setPreviewOutfit] = useState<MascotOutfit | null>(null);
+  const [favorites, setFavorites] = useState<string[]>(() => loadFavorites());
 
   const longPressTimer = useRef<number | null>(null);
   const longPressTriggered = useRef(false);
 
+  useEffect(() => {
+    saveFavorites(favorites);
+  }, [favorites]);
+
+  const handleToggleFavorite = (id: string) => {
+    setFavorites((prev) => toggleFavorite(prev, id));
+    if ("vibrate" in navigator) {
+      try { navigator.vibrate?.(10); } catch { /* noop */ }
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return mascotOutfits.filter((o) => {
+    const list = mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
       if (q) {
         const localized = getMascotName(o.id, locale, o.name).toLowerCase();
@@ -55,7 +68,13 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       }
       return true;
     });
-  }, [search, activeCategory, locale]);
+    const favSet = new Set(favorites);
+    return [...list].sort((a, b) => {
+      const af = favSet.has(a.id) ? 0 : 1;
+      const bf = favSet.has(b.id) ? 0 : 1;
+      return af - bf;
+    });
+  }, [search, activeCategory, locale, favorites]);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: mascotOutfits.length };
