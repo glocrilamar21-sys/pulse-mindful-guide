@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
 import { loadMascotOutfit, saveMascotOutfit } from "@/lib/mascot";
 import { MascotGallery } from "@/components/MascotGallery";
+import { AutoMascotSettings } from "@/components/AutoMascotSettings";
 import {
   criticalPresets,
   flexiblePresets,
@@ -104,6 +105,9 @@ function SettingsContent() {
         </h3>
         <MascotGallery currentOutfit={currentOutfit} onChange={handleOutfitChange} />
       </div>
+
+      {/* Auto mascot per task scope */}
+      <AutoMascotSettings />
 
       {/* Sound & Vibration Presets */}
       <div>

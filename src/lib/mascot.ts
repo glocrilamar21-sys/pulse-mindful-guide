@@ -240,6 +240,23 @@ export const mascotOutfits: MascotOutfit[] = [
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
+const AUTO_MODE_KEY = "pulso-diario-mascot-auto";
+const SCOPE_MAP_KEY = "pulso-diario-mascot-scope-map";
+
+/** Sentinel value stored when the user picks "Auto" in the gallery. */
+export const AUTO_MASCOT_ID = "__auto__";
+
+/** Task scope keys mirrored from tasks.ts to avoid a circular import. */
+export type TaskScope = "trabajo" | "estudio" | "hogar" | "personal" | "salud";
+
+/** Default mascot per task scope — sensible matches by category. */
+export const DEFAULT_SCOPE_MAP: Record<TaskScope, string> = {
+  trabajo: "programmer",
+  estudio: "student",
+  hogar: "chef",
+  salud: "doctor",
+  personal: "default",
+};
 
 export function loadMascotOutfit(): string {
   return localStorage.getItem(MASCOT_KEY) || "default";
@@ -249,8 +266,56 @@ export function saveMascotOutfit(id: string): void {
   localStorage.setItem(MASCOT_KEY, id);
 }
 
+/** Whether automatic per-task mascot mode is enabled. */
+export function loadAutoMascotMode(): boolean {
+  try {
+    return localStorage.getItem(AUTO_MODE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function saveAutoMascotMode(enabled: boolean): void {
+  try {
+    localStorage.setItem(AUTO_MODE_KEY, enabled ? "1" : "0");
+  } catch {
+    /* noop */
+  }
+}
+
+export function loadScopeMap(): Record<TaskScope, string> {
+  try {
+    const raw = localStorage.getItem(SCOPE_MAP_KEY);
+    if (!raw) return { ...DEFAULT_SCOPE_MAP };
+    const parsed = JSON.parse(raw);
+    return { ...DEFAULT_SCOPE_MAP, ...parsed };
+  } catch {
+    return { ...DEFAULT_SCOPE_MAP };
+  }
+}
+
+export function saveScopeMap(map: Record<TaskScope, string>): void {
+  try {
+    localStorage.setItem(SCOPE_MAP_KEY, JSON.stringify(map));
+  } catch {
+    /* noop */
+  }
+}
+
+/**
+ * Resolve which mascot id should render for a given task scope.
+ * If auto mode is off OR no scope provided, returns the global outfit.
+ */
+export function resolveMascotForScope(scope: TaskScope | undefined): string {
+  const global = loadMascotOutfit();
+  if (!scope || !loadAutoMascotMode()) return global;
+  const map = loadScopeMap();
+  return map[scope] || global;
+}
+
 export function getMascotImage(outfitId: string, mood: "happy" | "worried" | "celebrating"): string {
   const outfit = mascotOutfits.find((o) => o.id === outfitId) || mascotOutfits[0];
   if (mood === "celebrating") return outfit.celebrating;
   return mood === "happy" ? outfit.happy : outfit.worried;
 }
+

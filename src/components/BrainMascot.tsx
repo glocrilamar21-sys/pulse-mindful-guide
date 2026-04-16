@@ -1,4 +1,4 @@
-import { getMascotImage, loadMascotOutfit } from "@/lib/mascot";
+import { getMascotImage, resolveMascotForScope, type TaskScope } from "@/lib/mascot";
 import { cn } from "@/lib/utils";
 
 interface BrainMascotProps {
@@ -6,10 +6,16 @@ interface BrainMascotProps {
   size?: "sm" | "md" | "lg";
   className?: string;
   animate?: boolean;
+  /**
+   * Optional task scope. When auto-mascot mode is enabled in Settings,
+   * the displayed mascot is resolved from the scope map; otherwise the
+   * globally selected outfit is used.
+   */
+  scope?: TaskScope;
 }
 
-export function BrainMascot({ mood, size = "md", className, animate = false }: BrainMascotProps) {
-  const outfitId = loadMascotOutfit();
+export function BrainMascot({ mood, size = "md", className, animate = false, scope }: BrainMascotProps) {
+  const outfitId = resolveMascotForScope(scope);
   const src = getMascotImage(outfitId, mood);
 
   const sizeClasses = {
@@ -18,10 +24,10 @@ export function BrainMascot({ mood, size = "md", className, animate = false }: B
     lg: "h-20 w-20",
   };
 
-  const altText = mood === "celebrating" 
-    ? "Brain mascot celebrating with confetti" 
-    : mood === "happy" 
-    ? "Brain mascot smiling" 
+  const altText = mood === "celebrating"
+    ? "Brain mascot celebrating with confetti"
+    : mood === "happy"
+    ? "Brain mascot smiling"
     : "Brain mascot worried";
 
   return (
