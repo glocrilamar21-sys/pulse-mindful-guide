@@ -716,6 +716,7 @@ const translations = {
     scopeMascotMap: "Mascotte par domaine",
     scopeMascotMapDesc: "Assignez une mascotte à chaque type de tâche.",
     resetDefaults: "Réinitialiser",
+    suggestAutoMascot: "Suggérer",
   },
   it: {
     today: "Oggi",
