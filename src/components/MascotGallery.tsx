@@ -58,7 +58,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     }
   };
 
-  const filtered = useMemo(() => {
+  const { favoritesList, restList, totalCount } = useMemo(() => {
     const q = search.trim().toLowerCase();
     const list = mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
@@ -69,11 +69,10 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       return true;
     });
     const favSet = new Set(favorites);
-    return [...list].sort((a, b) => {
-      const af = favSet.has(a.id) ? 0 : 1;
-      const bf = favSet.has(b.id) ? 0 : 1;
-      return af - bf;
-    });
+    const favs: MascotOutfit[] = [];
+    const rest: MascotOutfit[] = [];
+    list.forEach((o) => (favSet.has(o.id) ? favs.push(o) : rest.push(o)));
+    return { favoritesList: favs, restList: rest, totalCount: list.length };
   }, [search, activeCategory, locale, favorites]);
 
   const counts = useMemo(() => {
@@ -110,6 +109,63 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       return;
     }
     onChange(outfit.id);
+  };
+
+  const renderCard = (outfit: MascotOutfit) => {
+    const isActive = currentOutfit === outfit.id;
+    const isFav = favorites.includes(outfit.id);
+    return (
+      <button
+        key={outfit.id}
+        onClick={() => handleClick(outfit)}
+        onPointerDown={() => startLongPress(outfit)}
+        onPointerUp={cancelLongPress}
+        onPointerLeave={cancelLongPress}
+        onPointerCancel={cancelLongPress}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setPreviewOutfit(outfit);
+        }}
+        className={cn(
+          "relative flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 transition-all cursor-pointer group select-none touch-manipulation",
+          isActive
+            ? "ring-2 ring-primary bg-accent shadow-md"
+            : "bg-muted/40 hover:bg-muted hover:scale-[1.02]"
+        )}
+      >
+        {isActive && (
+          <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-primary rounded-full flex items-center justify-center shadow">
+            <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+          </div>
+        )}
+        {isFav && !isActive && (
+          <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+            <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
+          </div>
+        )}
+        {isFav && isActive && (
+          <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+            <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
+          </div>
+        )}
+        <div className="relative h-14 w-14 flex items-center justify-center">
+          <img
+            src={getMascotImage(outfit.id, "happy")}
+            alt={getMascotName(outfit.id, locale, outfit.name)}
+            loading="lazy"
+            draggable={false}
+            className={cn(
+              "h-full w-full object-contain transition-transform pointer-events-none",
+              isActive && "scale-110"
+            )}
+          />
+        </div>
+        <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
+          <span className="mr-0.5">{outfit.emoji}</span>
+          {getMascotName(outfit.id, locale, outfit.name)}
+        </span>
+      </button>
+    );
   };
 
   return (
@@ -169,7 +225,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       {/* Results header + hint */}
       <div className="flex items-center justify-between px-1 gap-2">
         <span className="text-xs text-muted-foreground font-semibold">
-          {filtered.length} {filtered.length === 1 ? t("galleryCountOne") : t("galleryCountMany")}
+          {totalCount} {totalCount === 1 ? t("galleryCountOne") : t("galleryCountMany")}
         </span>
         <span className="text-[10px] text-muted-foreground/70 italic truncate">
           {t("previewHint")}
@@ -177,70 +233,54 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
       </div>
 
       {/* Gallery grid */}
-      {filtered.length === 0 ? (
+      {totalCount === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Search className="h-8 w-8 text-muted-foreground mb-2 opacity-50" />
           <p className="text-sm text-muted-foreground font-semibold">{t("galleryNoResults")}</p>
           <p className="text-xs text-muted-foreground/70">{t("galleryNoResultsHint")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2.5">
-          {filtered.map((outfit) => {
-            const isActive = currentOutfit === outfit.id;
-            const isFav = favorites.includes(outfit.id);
-            return (
-              <button
-                key={outfit.id}
-                onClick={() => handleClick(outfit)}
-                onPointerDown={() => startLongPress(outfit)}
-                onPointerUp={cancelLongPress}
-                onPointerLeave={cancelLongPress}
-                onPointerCancel={cancelLongPress}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  setPreviewOutfit(outfit);
-                }}
-                className={cn(
-                  "relative flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 transition-all cursor-pointer group select-none touch-manipulation",
-                  isActive
-                    ? "ring-2 ring-primary bg-accent shadow-md"
-                    : "bg-muted/40 hover:bg-muted hover:scale-[1.02]"
-                )}
-              >
-                {isActive && (
-                  <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-primary rounded-full flex items-center justify-center shadow">
-                    <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
-                  </div>
-                )}
-                {isFav && !isActive && (
-                  <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
-                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
-                  </div>
-                )}
-                {isFav && isActive && (
-                  <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
-                    <Star className="h-3 w-3 text-[hsl(var(--warning))]" fill="hsl(var(--warning))" strokeWidth={2} />
-                  </div>
-                )}
-                <div className="relative h-14 w-14 flex items-center justify-center">
-                  <img
-                    src={getMascotImage(outfit.id, "happy")}
-                    alt={getMascotName(outfit.id, locale, outfit.name)}
-                    loading="lazy"
-                    draggable={false}
-                    className={cn(
-                      "h-full w-full object-contain transition-transform pointer-events-none",
-                      isActive && "scale-110"
-                    )}
-                  />
-                </div>
-                <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
-                  <span className="mr-0.5">{outfit.emoji}</span>
-                  {getMascotName(outfit.id, locale, outfit.name)}
+        <div className="space-y-4">
+          {favoritesList.length > 0 && (
+            <section className="space-y-2">
+              <div className="flex items-center gap-2 px-1">
+                <Star
+                  className="h-3.5 w-3.5 text-[hsl(var(--warning))] shrink-0"
+                  fill="hsl(var(--warning))"
+                  strokeWidth={2}
+                />
+                <h3 className="text-xs font-bold uppercase tracking-wide text-foreground">
+                  {t("favoritesSection")}
+                </h3>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[hsl(var(--warning-light))] text-[hsl(var(--warning))]">
+                  {favoritesList.length}
                 </span>
-              </button>
-            );
-          })}
+                <div className="flex-1 h-px bg-border ml-1" />
+              </div>
+              <div className="grid grid-cols-3 gap-2.5">
+                {favoritesList.map((outfit) => renderCard(outfit))}
+              </div>
+            </section>
+          )}
+
+          {restList.length > 0 && (
+            <section className="space-y-2">
+              {favoritesList.length > 0 && (
+                <div className="flex items-center gap-2 px-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                    {t("galleryAllSection")}
+                  </h3>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                    {restList.length}
+                  </span>
+                  <div className="flex-1 h-px bg-border ml-1" />
+                </div>
+              )}
+              <div className="grid grid-cols-3 gap-2.5">
+                {restList.map((outfit) => renderCard(outfit))}
+              </div>
+            </section>
+          )}
         </div>
       )}
 

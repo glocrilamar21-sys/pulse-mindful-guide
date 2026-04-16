@@ -125,6 +125,7 @@ const translations = {
     addFavorite: "Agregar a favoritos",
     removeFavorite: "Quitar de favoritos",
     favoritesSection: "Favoritos",
+    galleryAllSection: "Todos",
   },
   en: {
     today: "Today",
@@ -245,6 +246,7 @@ const translations = {
     addFavorite: "Add to favorites",
     removeFavorite: "Remove from favorites",
     favoritesSection: "Favorites",
+    galleryAllSection: "All",
   },
   pt: {
     today: "Hoje",
@@ -365,6 +367,7 @@ const translations = {
     addFavorite: "Adicionar aos favoritos",
     removeFavorite: "Remover dos favoritos",
     favoritesSection: "Favoritos",
+    galleryAllSection: "Todos",
   },
   fr: {
     today: "Aujourd'hui",
@@ -485,6 +488,7 @@ const translations = {
     addFavorite: "Ajouter aux favoris",
     removeFavorite: "Retirer des favoris",
     favoritesSection: "Favoris",
+    galleryAllSection: "Tous",
   },
   it: {
     today: "Oggi",
@@ -605,6 +609,7 @@ const translations = {
     addFavorite: "Aggiungi ai preferiti",
     removeFavorite: "Rimuovi dai preferiti",
     favoritesSection: "Preferiti",
+    galleryAllSection: "Tutti",
   },
 } as const;
 
