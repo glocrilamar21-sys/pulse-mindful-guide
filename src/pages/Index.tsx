@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
+import { checkAndNotify, clearNotifiedIfNewDay } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
@@ -41,9 +42,15 @@ export default function Index() {
   const isToday = viewDateStr === todayStr();
 
   useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(getCurrentTime()), 30000);
+    clearNotifiedIfNewDay();
+    const interval = setInterval(() => {
+      setCurrentTime(getCurrentTime());
+      checkAndNotify(tasks);
+    }, 30000);
+    // Check immediately on mount
+    checkAndNotify(tasks);
     return () => clearInterval(interval);
-  }, []);
+  }, [tasks]);
 
   useEffect(() => {
     saveTasks(tasks);
