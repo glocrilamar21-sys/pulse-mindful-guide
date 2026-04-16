@@ -9,6 +9,7 @@ export interface Task {
   date: string; // YYYY-MM-DD
   done: boolean;
   scope?: TaskScope;
+  icon?: string;
   postponedUntil?: string; // ISO string
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { dateFnsLocales } from "@/lib/i18n";
+import { taskIcons, suggestIcon } from "@/lib/taskIcons";
 
 interface AddTaskDialogProps {
   onAdd: (task: Task) => void;
@@ -34,22 +35,49 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
   const [category, setCategory] = useState<TaskCategory>("flexible");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [scope, setScope] = useState("personal");
+  const [selectedIcon, setSelectedIcon] = useState("");
+  const [showAllIcons, setShowAllIcons] = useState(false);
+
+  // Auto-suggest icon based on task name
+  const autoIcon = useMemo(() => suggestIcon(name), [name]);
 
   useEffect(() => {
-    if (open) { setName(""); setTime("09:00"); setCategory("flexible"); setSelectedDate(new Date()); setScope("personal"); }
+    if (open) {
+      setName(""); setTime("09:00"); setCategory("flexible");
+      setSelectedDate(new Date()); setScope("personal");
+      setSelectedIcon(""); setShowAllIcons(false);
+    }
   }, [open]);
+
+  // When auto-icon changes and user hasn't manually selected, follow suggestion
+  useEffect(() => {
+    if (autoIcon && !selectedIcon) {
+      setSelectedIcon(autoIcon);
+    }
+  }, [autoIcon]);
 
   const handleSubmit = () => {
     if (!name.trim()) return;
     const d = selectedDate;
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    onAdd({ id: generateId(), name: name.trim(), category, time, date: dateStr, done: false, scope: scope as Task["scope"] });
+    onAdd({
+      id: generateId(),
+      name: name.trim(),
+      category,
+      time,
+      date: dateStr,
+      done: false,
+      scope: scope as Task["scope"],
+      icon: selectedIcon || autoIcon || undefined,
+    });
     onOpenChange(false);
   };
 
+  const displayedIcons = showAllIcons ? taskIcons : taskIcons.slice(0, 12);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-3xl p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-md rounded-3xl p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
         <div className="p-6 space-y-5">
           <DialogHeader className="p-0">
             <DialogTitle className="text-xl font-bold">{t("taskIdentity")}</DialogTitle>
@@ -58,6 +86,41 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
           <div className="space-y-2">
             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("contextDetails")}</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("taskPlaceholder")} className="h-12 text-sm rounded-xl border-border" autoFocus />
+          </div>
+
+          {/* Icon Picker */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Icono</h3>
+            <div className="flex flex-wrap gap-2">
+              {displayedIcons.map((opt) => {
+                const IconComp = opt.icon;
+                const isSelected = (selectedIcon || autoIcon) === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setSelectedIcon(opt.id)}
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-xl transition-all cursor-pointer",
+                      isSelected
+                        ? "bg-primary text-primary-foreground shadow-md scale-110"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted hover:scale-105"
+                    )}
+                  >
+                    <IconComp className="h-4.5 w-4.5" />
+                  </button>
+                );
+              })}
+            </div>
+            {!showAllIcons && taskIcons.length > 12 && (
+              <button
+                type="button"
+                onClick={() => setShowAllIcons(true)}
+                className="text-xs font-semibold text-primary cursor-pointer hover:underline"
+              >
+                + Ver todos los iconos
+              </button>
+            )}
           </div>
 
           <div className="space-y-3">
