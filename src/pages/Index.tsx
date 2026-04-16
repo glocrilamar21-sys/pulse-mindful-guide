@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
+import { useI18n } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { CalendarView } from "@/components/CalendarView";
 import { ProjectsView } from "@/components/ProjectsView";
-import { Plus, Target, CalendarDays, Bell, Settings, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
+import { HeroBanner } from "@/components/HeroBanner";
+import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban } from "lucide-react";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import heroPlants from "@/assets/hero-plants.jpg";
+import { es, enUS } from "date-fns/locale";
 
 function getCurrentTime() {
   const now = new Date();
@@ -22,6 +23,9 @@ function dateToStr(d: Date): string {
 type Tab = "enfoque" | "cronograma" | "proyectos" | "recordatorios";
 
 export default function Index() {
+  const { t, locale } = useI18n();
+  const dateFnsLocale = locale === "es" ? es : enUS;
+
   const [tasks, setTasks] = useState<Task[]>(() => {
     const loaded = loadTasks();
     return loaded.map((t) => ({ ...t, date: t.date || todayStr() }));
@@ -83,8 +87,8 @@ export default function Index() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">
-                  {isToday ? "Hoy" : format(viewDate, "EEEE d", { locale: es })},{" "}
-                  <span className="capitalize">{format(viewDate, "d MMM", { locale: es })}</span>
+                  {isToday ? t("today") : format(viewDate, "EEEE d", { locale: dateFnsLocale })},{" "}
+                  <span className="capitalize">{format(viewDate, "d MMM", { locale: dateFnsLocale })}</span>
                 </h1>
               </div>
             </div>
@@ -92,7 +96,7 @@ export default function Index() {
               onClick={() => setActiveTab(activeTab === "recordatorios" ? "enfoque" : "recordatorios")}
               className="h-9 w-9 rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
             >
-              <Settings className="h-5 w-5 text-muted-foreground" />
+              <Bell className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -100,54 +104,34 @@ export default function Index() {
 
       {/* TAB: Enfoque */}
       {activeTab === "enfoque" && (
-        <div className="mx-auto max-w-lg px-4 pt-4 space-y-5 md:max-w-2xl">
-          {/* Hero Banner */}
-          <div className="relative rounded-2xl overflow-hidden h-40">
-            <img 
-              src={heroPlants} 
-              alt="Plantas y naturaleza" 
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 z-10" />
-            <div className="relative z-20 h-full flex flex-col justify-end p-5">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/80 mb-1">
-                Reflexión Matutina
-              </p>
-              <h2 className="text-2xl font-extrabold text-white leading-tight">
-                Mantente presente.
-              </h2>
-            </div>
-          </div>
+        <div className="mx-auto max-w-lg px-4 pt-4 space-y-5 md:max-w-2xl animate-fade-in">
+          <HeroBanner />
 
-          {/* Crítica Section */}
-          <section>
+          {/* Critical Section */}
+          <section className="animate-fade-in" style={{ animationDelay: "100ms" }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-[hsl(var(--critical))]" />
-                <h2 className="text-base font-bold text-foreground">Crítica</h2>
+                <h2 className="text-base font-bold text-foreground">{t("critical")}</h2>
               </div>
               {criticalTasks.length > 0 && (
                 <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--critical))]">
-                  {criticalTasks.length} Tareas restantes
+                  {criticalTasks.length} {t("tasksRemaining")}
                 </span>
               )}
             </div>
             {criticalTasks.length === 0 ? (
               <div className="rounded-2xl bg-card p-6 text-center shadow-sm">
-                <p className="text-sm text-muted-foreground">Sin tareas críticas pendientes ✓</p>
+                <p className="text-sm text-muted-foreground">{t("noCriticalTasks")}</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {criticalTasks.map((task) => {
+                {criticalTasks.map((task, i) => {
                   const isActive = isToday && task.time <= currentTime;
                   return (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      isActive={isActive}
-                      onDone={markDone}
-                      onPostpone={postpone}
-                    />
+                    <div key={task.id} className="animate-fade-in" style={{ animationDelay: `${i * 80}ms` }}>
+                      <TaskCard task={task} isActive={isActive} onDone={markDone} onPostpone={postpone} />
+                    </div>
                   );
                 })}
               </div>
@@ -155,34 +139,28 @@ export default function Index() {
           </section>
 
           {/* Flexible Section */}
-          <section>
+          <section className="animate-fade-in" style={{ animationDelay: "200ms" }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
-                <h2 className="text-base font-bold text-foreground">Flexible</h2>
+                <h2 className="text-base font-bold text-foreground">{t("flexible")}</h2>
               </div>
               {flexibleTasks.length > 0 && (
-                <span className="text-xs font-semibold text-muted-foreground">
-                  En curso
-                </span>
+                <span className="text-xs font-semibold text-muted-foreground">{t("inProgress")}</span>
               )}
             </div>
             {flexibleTasks.length === 0 ? (
               <div className="rounded-2xl bg-card p-6 text-center shadow-sm">
-                <p className="text-sm text-muted-foreground">Sin tareas flexibles pendientes</p>
+                <p className="text-sm text-muted-foreground">{t("noFlexibleTasks")}</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {flexibleTasks.map((task) => {
+                {flexibleTasks.map((task, i) => {
                   const isActive = isToday && task.time <= currentTime;
                   return (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      isActive={isActive}
-                      onDone={markDone}
-                      onPostpone={postpone}
-                    />
+                    <div key={task.id} className="animate-fade-in" style={{ animationDelay: `${i * 80}ms` }}>
+                      <TaskCard task={task} isActive={isActive} onDone={markDone} onPostpone={postpone} />
+                    </div>
                   );
                 })}
               </div>
@@ -191,19 +169,13 @@ export default function Index() {
 
           {/* Done tasks */}
           {doneTasks.length > 0 && (
-            <section>
+            <section className="animate-fade-in" style={{ animationDelay: "300ms" }}>
               <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">
-                Completadas ({doneTasks.length})
+                {t("completed")} ({doneTasks.length})
               </h2>
               <div className="space-y-2">
                 {doneTasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    isActive={false}
-                    onDone={markDone}
-                    onPostpone={postpone}
-                  />
+                  <TaskCard key={task.id} task={task} isActive={false} onDone={markDone} onPostpone={postpone} />
                 ))}
               </div>
             </section>
@@ -211,16 +183,14 @@ export default function Index() {
 
           {/* Empty state */}
           {todayTasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex flex-col items-center justify-center py-16 text-center animate-fade-in">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
                 <Target className="h-7 w-7 text-primary" />
               </div>
               <p className="text-base font-bold text-foreground">
-                Sin tareas para {isToday ? "hoy" : "este día"}
+                {isToday ? t("noTasksToday") : t("noTasksThisDay")}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Toca + para agregar tu primera tarea
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{t("tapToAdd")}</p>
             </div>
           )}
         </div>
@@ -228,7 +198,7 @@ export default function Index() {
 
       {/* TAB: Cronograma */}
       {activeTab === "cronograma" && (
-        <div className="-mt-1">
+        <div className="-mt-1 animate-fade-in">
           <CalendarView
             tasks={tasks}
             viewDate={viewDate}
@@ -242,12 +212,14 @@ export default function Index() {
 
       {/* TAB: Proyectos */}
       {activeTab === "proyectos" && (
-        <ProjectsView tasks={tasks} />
+        <div className="animate-fade-in">
+          <ProjectsView tasks={tasks} />
+        </div>
       )}
 
       {/* TAB: Recordatorios/Config */}
       {activeTab === "recordatorios" && (
-        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl">
+        <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl animate-fade-in">
           <SettingsPanel inline />
         </div>
       )}
@@ -255,59 +227,33 @@ export default function Index() {
       {/* FAB */}
       <button
         onClick={() => setAddDialogOpen(true)}
-        className="fixed right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+        className="fixed right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 active:scale-95 transition-all cursor-pointer hover:scale-110"
         style={{ bottom: "max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)))" }}
       >
         <Plus className="h-7 w-7" />
       </button>
 
-      {/* Add Task Dialog */}
       <AddTaskDialog onAdd={addTask} open={addDialogOpen} onOpenChange={setAddDialogOpen} />
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-lg flex items-center justify-around md:max-w-2xl">
-          <NavTab
-            icon={<Target className="h-5 w-5" />}
-            label="ENFOQUE"
-            active={activeTab === "enfoque"}
-            onClick={() => { setActiveTab("enfoque"); setViewDate(new Date()); }}
-          />
-          <NavTab
-            icon={<CalendarDays className="h-5 w-5" />}
-            label="CALENDARIO"
-            active={activeTab === "cronograma"}
-            onClick={() => setActiveTab("cronograma")}
-          />
-          <NavTab
-            icon={<FolderKanban className="h-5 w-5" />}
-            label="PROYECTOS"
-            active={activeTab === "proyectos"}
-            onClick={() => setActiveTab("proyectos")}
-          />
-          <NavTab
-            icon={<Bell className="h-5 w-5" />}
-            label="AJUSTES"
-            active={activeTab === "recordatorios"}
-            onClick={() => setActiveTab("recordatorios")}
-          />
+          <NavTab icon={<Target className="h-5 w-5" />} label={t("tabFocus")} active={activeTab === "enfoque"} onClick={() => { setActiveTab("enfoque"); setViewDate(new Date()); }} />
+          <NavTab icon={<CalendarDays className="h-5 w-5" />} label={t("tabCalendar")} active={activeTab === "cronograma"} onClick={() => setActiveTab("cronograma")} />
+          <NavTab icon={<FolderKanban className="h-5 w-5" />} label={t("tabProjects")} active={activeTab === "proyectos"} onClick={() => setActiveTab("proyectos")} />
+          <NavTab icon={<Bell className="h-5 w-5" />} label={t("tabSettings")} active={activeTab === "recordatorios"} onClick={() => setActiveTab("recordatorios")} />
         </div>
       </nav>
     </div>
   );
 }
 
-function NavTab({ icon, label, active, onClick }: {
-  icon: React.ReactNode;
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2.5 px-4 cursor-pointer transition-colors ${
-        active ? "bottom-nav-active" : "bottom-nav-inactive"
+      className={`flex flex-col items-center gap-1 py-2.5 px-4 cursor-pointer transition-all duration-200 ${
+        active ? "bottom-nav-active scale-105" : "bottom-nav-inactive"
       }`}
     >
       {icon}
