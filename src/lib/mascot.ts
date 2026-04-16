@@ -112,6 +112,25 @@ import mascotCelebratingCivilengineer from "@/assets/mascot-celebrating-civileng
 import mascotHappyElectricalengineer from "@/assets/mascot-happy-electricalengineer.png";
 import mascotWorriedElectricalengineer from "@/assets/mascot-worried-electricalengineer.png";
 import mascotCelebratingElectricalengineer from "@/assets/mascot-celebrating-electricalengineer.png";
+// Additional professions
+import mascotHappyArchitect from "@/assets/mascot-happy-architect.png";
+import mascotWorriedArchitect from "@/assets/mascot-worried-architect.png";
+import mascotCelebratingArchitect from "@/assets/mascot-celebrating-architect.png";
+import mascotHappyVeterinarian from "@/assets/mascot-happy-veterinarian.png";
+import mascotWorriedVeterinarian from "@/assets/mascot-worried-veterinarian.png";
+import mascotCelebratingVeterinarian from "@/assets/mascot-celebrating-veterinarian.png";
+import mascotHappyPilot from "@/assets/mascot-happy-pilot.png";
+import mascotWorriedPilot from "@/assets/mascot-worried-pilot.png";
+import mascotCelebratingPilot from "@/assets/mascot-celebrating-pilot.png";
+import mascotHappyFirefighter from "@/assets/mascot-happy-firefighter.png";
+import mascotWorriedFirefighter from "@/assets/mascot-worried-firefighter.png";
+import mascotCelebratingFirefighter from "@/assets/mascot-celebrating-firefighter.png";
+import mascotHappyPolice from "@/assets/mascot-happy-police.png";
+import mascotWorriedPolice from "@/assets/mascot-worried-police.png";
+import mascotCelebratingPolice from "@/assets/mascot-celebrating-police.png";
+import mascotHappyNurse from "@/assets/mascot-happy-nurse.png";
+import mascotWorriedNurse from "@/assets/mascot-worried-nurse.png";
+import mascotCelebratingNurse from "@/assets/mascot-celebrating-nurse.png";
 
 export interface MascotOutfit {
   id: string;
@@ -165,6 +184,13 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "animator", name: "Animador Digital", emoji: "🎬", happy: mascotHappyAnimator, worried: mascotWorriedAnimator, celebrating: mascotCelebratingAnimator },
   { id: "civilengineer", name: "Ing. Civil", emoji: "🏗️", happy: mascotHappyCivilengineer, worried: mascotWorriedCivilengineer, celebrating: mascotCelebratingCivilengineer },
   { id: "electricalengineer", name: "Ing. Eléctrico", emoji: "⚡", happy: mascotHappyElectricalengineer, worried: mascotWorriedElectricalengineer, celebrating: mascotCelebratingElectricalengineer },
+  // Additional Professions
+  { id: "architect", name: "Arquitecto", emoji: "📐", happy: mascotHappyArchitect, worried: mascotWorriedArchitect, celebrating: mascotCelebratingArchitect },
+  { id: "veterinarian", name: "Veterinario", emoji: "🐾", happy: mascotHappyVeterinarian, worried: mascotWorriedVeterinarian, celebrating: mascotCelebratingVeterinarian },
+  { id: "pilot", name: "Piloto", emoji: "✈️", happy: mascotHappyPilot, worried: mascotWorriedPilot, celebrating: mascotCelebratingPilot },
+  { id: "firefighter", name: "Bombero", emoji: "🚒", happy: mascotHappyFirefighter, worried: mascotWorriedFirefighter, celebrating: mascotCelebratingFirefighter },
+  { id: "police", name: "Policía", emoji: "👮", happy: mascotHappyPolice, worried: mascotWorriedPolice, celebrating: mascotCelebratingPolice },
+  { id: "nurse", name: "Enfermero", emoji: "💉", happy: mascotHappyNurse, worried: mascotWorriedNurse, celebrating: mascotCelebratingNurse },
 ];
 
 const MASCOT_KEY = "pulso-diario-mascot";
