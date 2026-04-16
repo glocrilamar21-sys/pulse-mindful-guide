@@ -10,6 +10,8 @@ import {
   type CardMatchDifficulty,
 } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
+import { cardMatchMedal } from "@/lib/medals";
+import { Medal } from "@/components/games/Medal";
 
 // 12 unique emojis — enough to support hard mode (12 pairs).
 const EMOJI_POOL = [
