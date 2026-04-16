@@ -232,6 +232,11 @@ const translations = {
     catEducation: "Education",
     catSeasons: "Seasons",
     catAccessories: "Accessories",
+    moodHappy: "Happy",
+    moodWorried: "Worried",
+    moodCelebrating: "Celebrating",
+    previewHint: "Long-press to see all 3 states",
+    selectMascot: "Select mascot",
   },
   pt: {
     today: "Hoje",
