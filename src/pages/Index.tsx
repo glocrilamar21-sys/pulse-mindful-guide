@@ -42,9 +42,15 @@ export default function Index() {
   const isToday = viewDateStr === todayStr();
 
   useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(getCurrentTime()), 30000);
+    clearNotifiedIfNewDay();
+    const interval = setInterval(() => {
+      setCurrentTime(getCurrentTime());
+      checkAndNotify(tasks);
+    }, 30000);
+    // Check immediately on mount
+    checkAndNotify(tasks);
     return () => clearInterval(interval);
-  }, []);
+  }, [tasks]);
 
   useEffect(() => {
     saveTasks(tasks);
