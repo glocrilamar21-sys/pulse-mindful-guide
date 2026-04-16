@@ -157,6 +157,35 @@ function SettingsContent() {
         </div>
       </div>
 
+      {/* Game Sounds Toggle */}
+      <div>
+        <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+          <Gamepad2 className="h-4 w-4" />
+          {t("gameSoundsTitle")}
+        </h3>
+        <label className="flex items-center justify-between gap-3 rounded-xl bg-muted/40 px-3 py-3 cursor-pointer hover:bg-muted/60 transition-colors">
+          <div className="flex items-center gap-2 min-w-0">
+            {gameSoundsEnabled ? (
+              <Volume2 className="h-4 w-4 text-primary shrink-0" />
+            ) : (
+              <VolumeX className="h-4 w-4 text-muted-foreground shrink-0" />
+            )}
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-foreground leading-tight">
+                {gameSoundsEnabled ? t("gameSoundsOn") : t("gameSoundsOff")}
+              </p>
+              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">
+                {t("gameSoundsDesc")}
+              </p>
+            </div>
+          </div>
+          <Switch
+            checked={gameSoundsEnabled}
+            onCheckedChange={handleGameSoundsToggle}
+          />
+        </label>
+      </div>
+
       {/* Theme Picker */}
       <div>
         <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
