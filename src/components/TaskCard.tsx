@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Task, startAlert, stopAlert } from "@/lib/tasks";
 import { useI18n } from "@/lib/i18n";
-import { Check, Clock, AlertTriangle, Pill, Briefcase, Leaf, BookOpen, Dumbbell } from "lucide-react";
+import { Check, Clock, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { getTaskDisplayIcon } from "@/lib/taskIcons";
 
 interface TaskCardProps {
   task: Task;
@@ -11,17 +12,6 @@ interface TaskCardProps {
   onDone: (id: string) => void;
   onPostpone: (id: string) => void;
   variant?: "full" | "compact";
-}
-
-function getTaskIcon(name: string, category: string) {
-  const lower = name.toLowerCase();
-  if (lower.includes("medic") || lower.includes("pastilla") || lower.includes("vitamina")) return Pill;
-  if (lower.includes("trabajo") || lower.includes("informe") || lower.includes("reunión") || lower.includes("work") || lower.includes("meeting")) return Briefcase;
-  if (lower.includes("planta") || lower.includes("regar") || lower.includes("jardín") || lower.includes("plant") || lower.includes("garden")) return Leaf;
-  if (lower.includes("leer") || lower.includes("libro") || lower.includes("estudi") || lower.includes("read") || lower.includes("study")) return BookOpen;
-  if (lower.includes("paseo") || lower.includes("camina") || lower.includes("ejerci") || lower.includes("gym") || lower.includes("walk") || lower.includes("exercise")) return Dumbbell;
-  if (category === "critical") return AlertTriangle;
-  return Clock;
 }
 
 export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" }: TaskCardProps) {
@@ -51,7 +41,7 @@ export function TaskCard({ task, isActive, onDone, onPostpone, variant = "full" 
 
   const handleDone = () => { stopAlert(); onDone(task.id); };
   const handlePostpone = () => { stopAlert(); onPostpone(task.id); };
-  const Icon = getTaskIcon(task.name, task.category);
+  const Icon = getTaskDisplayIcon(task);
 
   if (variant === "compact") {
     return (
