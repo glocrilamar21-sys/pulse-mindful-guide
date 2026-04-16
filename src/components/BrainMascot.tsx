@@ -1,4 +1,6 @@
 import { getMascotImage, resolveMascotForScope, type TaskScope } from "@/lib/mascot";
+import { getMascotName } from "@/lib/mascotNames";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 interface BrainMascotProps {
@@ -14,7 +16,24 @@ interface BrainMascotProps {
   scope?: TaskScope;
 }
 
+const moodWordByLocale: Record<string, Record<"happy" | "worried" | "celebrating", string>> = {
+  es: { happy: "feliz", worried: "preocupado", celebrating: "celebrando" },
+  en: { happy: "smiling", worried: "worried", celebrating: "celebrating" },
+  pt: { happy: "feliz", worried: "preocupado", celebrating: "comemorando" },
+  fr: { happy: "souriante", worried: "inquiète", celebrating: "en fête" },
+  it: { happy: "felice", worried: "preoccupata", celebrating: "in festa" },
+};
+
+const mascotWordByLocale: Record<string, string> = {
+  es: "Mascota",
+  en: "mascot",
+  pt: "Mascote",
+  fr: "Mascotte",
+  it: "Mascotte",
+};
+
 export function BrainMascot({ mood, size = "md", className, animate = false, scope }: BrainMascotProps) {
+  const { locale } = useI18n();
   const outfitId = resolveMascotForScope(scope);
   const src = getMascotImage(outfitId, mood);
 
@@ -24,11 +43,17 @@ export function BrainMascot({ mood, size = "md", className, animate = false, sco
     lg: "h-20 w-20",
   };
 
-  const altText = mood === "celebrating"
-    ? "Brain mascot celebrating with confetti"
-    : mood === "happy"
-    ? "Brain mascot smiling"
-    : "Brain mascot worried";
+  const fallbackName = outfitId.charAt(0).toUpperCase() + outfitId.slice(1);
+  const mascotName = getMascotName(outfitId, locale, fallbackName);
+  const moodWord = (moodWordByLocale[locale] ?? moodWordByLocale.en)[mood];
+  const mascotWord = mascotWordByLocale[locale] ?? mascotWordByLocale.en;
+
+  // Examples:
+  //   en: "Astronaut mascot worried"
+  //   es: "Mascota Astronauta preocupado"
+  const altText = locale === "en"
+    ? `${mascotName} ${mascotWord} ${moodWord}`
+    : `${mascotWord} ${mascotName} ${moodWord}`;
 
   return (
     <img
