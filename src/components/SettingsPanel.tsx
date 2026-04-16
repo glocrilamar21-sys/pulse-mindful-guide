@@ -6,7 +6,8 @@ import { AlertTriangle, Clock, Volume2, Globe, Palette, Brain, Vibrate, Play } f
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { themes, loadTheme, saveTheme, applyTheme } from "@/lib/themes";
-import { mascotOutfits, loadMascotOutfit, saveMascotOutfit, getMascotImage } from "@/lib/mascot";
+import { loadMascotOutfit, saveMascotOutfit } from "@/lib/mascot";
+import { MascotGallery } from "@/components/MascotGallery";
 import {
   criticalPresets,
   flexiblePresets,
