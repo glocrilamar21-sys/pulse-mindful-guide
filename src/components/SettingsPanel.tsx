@@ -98,7 +98,7 @@ export function SettingsPanel({ trigger, inline }: SettingsPanelProps) {
       )}
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle className="text-lg font-bold">{t("tabSettings")}</SheetTitle>
+          <SheetTitle className="text-lg font-bold">Settings</SheetTitle>
         </SheetHeader>
         <div className="mt-6">
           <SettingsContent />
