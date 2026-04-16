@@ -12,6 +12,7 @@ import {
 import { playGameSound } from "@/lib/gameSounds";
 import { cardMatchMedal } from "@/lib/medals";
 import { Medal } from "@/components/games/Medal";
+import { fireGoldConfetti } from "@/lib/confetti";
 
 // 12 unique emojis — enough to support hard mode (12 pairs).
 const EMOJI_POOL = [
@@ -71,6 +72,9 @@ export function CardMatchGame() {
       setFinishedTime(finished);
       const moves_ = moves;
       const time = Math.floor((finished - startedAt) / 1000);
+      const prevBest = loadBestScores().cardMatch?.[difficulty];
+      const prevMedal = cardMatchMedal(difficulty, prevBest);
+      const newMedal = cardMatchMedal(difficulty, { moves: moves_, timeSec: time });
       const replaced = maybeUpdateBest(
         "cardMatch",
         (prev) => {
@@ -86,6 +90,10 @@ export function CardMatchGame() {
       setNewRecord(replaced);
       setBestVersion((v) => v + 1);
       playGameSound("win");
+      // Celebrate first time reaching gold for this difficulty.
+      if (newMedal === "gold" && prevMedal !== "gold") {
+        fireGoldConfetti();
+      }
     }
   }, [allMatched, startedAt, finishedTime, moves, difficulty]);
 
