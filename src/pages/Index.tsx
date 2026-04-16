@@ -7,6 +7,7 @@ import { CalendarView } from "@/components/CalendarView";
 import { Plus, Target, CalendarDays, Bell, Settings, AlertTriangle, Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import heroPlants from "@/assets/hero-plants.jpg";
 
 function getCurrentTime() {
   const now = new Date();
@@ -101,8 +102,12 @@ export default function Index() {
         <div className="mx-auto max-w-lg px-4 pt-4 space-y-5 md:max-w-2xl">
           {/* Hero Banner */}
           <div className="relative rounded-2xl overflow-hidden h-40">
-            <div className="absolute inset-0 hero-banner" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 z-10" />
+            <img 
+              src={heroPlants} 
+              alt="Plantas y naturaleza" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 z-10" />
             <div className="relative z-20 h-full flex flex-col justify-end p-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/80 mb-1">
                 Reflexión Matutina
