@@ -147,8 +147,21 @@ import mascotCelebratingBiologist from "@/assets/mascot-celebrating-biologist.pn
 import mascotHappyChemist from "@/assets/mascot-happy-chemist.png";
 import mascotWorriedChemist from "@/assets/mascot-worried-chemist.png";
 import mascotCelebratingChemist from "@/assets/mascot-celebrating-chemist.png";
+// Festive
+import mascotHappyHalloween from "@/assets/mascot-happy-halloween.png";
+import mascotWorriedHalloween from "@/assets/mascot-worried-halloween.png";
+import mascotCelebratingHalloween from "@/assets/mascot-celebrating-halloween.png";
+import mascotHappyChristmas from "@/assets/mascot-happy-christmas.png";
+import mascotWorriedChristmas from "@/assets/mascot-worried-christmas.png";
+import mascotCelebratingChristmas from "@/assets/mascot-celebrating-christmas.png";
+import mascotHappyDiadelosmuertos from "@/assets/mascot-happy-diadelosmuertos.png";
+import mascotWorriedDiadelosmuertos from "@/assets/mascot-worried-diadelosmuertos.png";
+import mascotCelebratingDiadelosmuertos from "@/assets/mascot-celebrating-diadelosmuertos.png";
+import mascotHappyNewyear from "@/assets/mascot-happy-newyear.png";
+import mascotWorriedNewyear from "@/assets/mascot-worried-newyear.png";
+import mascotCelebratingNewyear from "@/assets/mascot-celebrating-newyear.png";
 
-export type MascotCategory = "original" | "health" | "tech" | "engineering" | "creative" | "service" | "business" | "education" | "seasons" | "accessories";
+export type MascotCategory = "original" | "health" | "tech" | "engineering" | "creative" | "service" | "business" | "education" | "seasons" | "festive" | "accessories";
 
 export interface MascotOutfit {
   id: string;
