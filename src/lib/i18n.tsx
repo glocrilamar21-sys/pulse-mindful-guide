@@ -182,6 +182,7 @@ const translations = {
     scopeMascotMap: "Mascota por ámbito",
     scopeMascotMapDesc: "Asigna una mascota a cada tipo de tarea.",
     resetDefaults: "Restablecer",
+    suggestAutoMascot: "Sugerir",
   },
   en: {
     today: "Today",
