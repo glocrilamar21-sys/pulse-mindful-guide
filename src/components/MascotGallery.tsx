@@ -187,6 +187,7 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
         <div className="grid grid-cols-3 gap-2.5">
           {filtered.map((outfit) => {
             const isActive = currentOutfit === outfit.id;
+            const isFav = favorites.includes(outfit.id);
             return (
               <button
                 key={outfit.id}
@@ -209,6 +210,16 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 {isActive && (
                   <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-primary rounded-full flex items-center justify-center shadow">
                     <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+                  </div>
+                )}
+                {isFav && !isActive && (
+                  <div className="absolute top-1.5 right-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+                    <Star className="h-3 w-3 text-amber-400" fill="currentColor" strokeWidth={2} />
+                  </div>
+                )}
+                {isFav && isActive && (
+                  <div className="absolute top-1.5 left-1.5 h-5 w-5 bg-background/90 rounded-full flex items-center justify-center shadow">
+                    <Star className="h-3 w-3 text-amber-400" fill="currentColor" strokeWidth={2} />
                   </div>
                 )}
                 <div className="relative h-14 w-14 flex items-center justify-center">
@@ -262,22 +273,43 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
                 ))}
               </div>
 
-              <Button
-                onClick={() => {
-                  onChange(previewOutfit.id);
-                  setPreviewOutfit(null);
-                }}
-                className="w-full rounded-xl font-bold"
-              >
-                {currentOutfit === previewOutfit.id ? (
-                  <>
-                    <Check className="h-4 w-4 mr-1" />
-                    {t("complete")}
-                  </>
-                ) : (
-                  t("selectMascot")
-                )}
-              </Button>
+              <div className="flex gap-2 w-full">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleToggleFavorite(previewOutfit.id)}
+                  aria-label={favorites.includes(previewOutfit.id) ? t("removeFavorite") : t("addFavorite")}
+                  className={cn(
+                    "rounded-xl shrink-0 transition-colors",
+                    favorites.includes(previewOutfit.id) && "border-amber-400 bg-amber-50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-950/50"
+                  )}
+                >
+                  <Star
+                    className={cn(
+                      "h-4 w-4 transition-colors",
+                      favorites.includes(previewOutfit.id) ? "text-amber-400" : "text-muted-foreground"
+                    )}
+                    fill={favorites.includes(previewOutfit.id) ? "currentColor" : "none"}
+                    strokeWidth={2}
+                  />
+                </Button>
+                <Button
+                  onClick={() => {
+                    onChange(previewOutfit.id);
+                    setPreviewOutfit(null);
+                  }}
+                  className="flex-1 rounded-xl font-bold"
+                >
+                  {currentOutfit === previewOutfit.id ? (
+                    <>
+                      <Check className="h-4 w-4 mr-1" />
+                      {t("complete")}
+                    </>
+                  ) : (
+                    t("selectMascot")
+                  )}
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
