@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import confetti from "canvas-confetti";
 import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
 import { useI18n } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
@@ -58,8 +59,21 @@ export default function Index() {
   }, []);
 
   const markDone = useCallback((id: string) => {
+    const task = tasks.find((t) => t.id === id);
+    if (task && !task.done) {
+      const isCritical = task.category === "critical";
+      // Fire confetti
+      confetti({
+        particleCount: isCritical ? 150 : 80,
+        spread: isCritical ? 100 : 60,
+        origin: { y: 0.6 },
+        colors: isCritical
+          ? ["#ff4444", "#ff6b6b", "#ffd700", "#ff8c00"]
+          : ["#4f46e5", "#7c3aed", "#06b6d4", "#10b981", "#fbbf24"],
+      });
+    }
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-  }, []);
+  }, [tasks]);
 
   const postpone = useCallback((id: string) => {
     setTasks((prev) =>
