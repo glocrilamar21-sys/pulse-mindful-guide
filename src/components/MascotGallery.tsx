@@ -32,7 +32,7 @@ const CATEGORIES: CategoryDef[] = [
 ];
 
 export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | MascotCategory>("all");
 
@@ -40,10 +40,13 @@ export function MascotGallery({ currentOutfit, onChange }: MascotGalleryProps) {
     const q = search.trim().toLowerCase();
     return mascotOutfits.filter((o) => {
       if (activeCategory !== "all" && o.category !== activeCategory) return false;
-      if (q && !o.name.toLowerCase().includes(q)) return false;
+      if (q) {
+        const localized = getMascotName(o.id, locale, o.name).toLowerCase();
+        if (!localized.includes(q) && !o.name.toLowerCase().includes(q)) return false;
+      }
       return true;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, locale]);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: mascotOutfits.length };
