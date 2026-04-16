@@ -106,6 +106,9 @@ function SettingsContent() {
         <MascotGallery currentOutfit={currentOutfit} onChange={handleOutfitChange} />
       </div>
 
+      {/* Auto mascot per task scope */}
+      <AutoMascotSettings />
+
       {/* Sound & Vibration Presets */}
       <div>
         <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
