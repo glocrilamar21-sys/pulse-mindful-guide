@@ -10,7 +10,8 @@ import { CalendarView } from "@/components/CalendarView";
 import { ProjectsView } from "@/components/ProjectsView";
 import { HeroBanner } from "@/components/HeroBanner";
 import { BrainMascot } from "@/components/BrainMascot";
-import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban, BarChart3 } from "lucide-react";
+import { TipsView } from "@/components/TipsView";
+import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban, BarChart3, Lightbulb } from "lucide-react";
 import { WeeklyStats } from "@/components/WeeklyStats";
 import { format } from "date-fns";
 import { dateFnsLocales } from "@/lib/i18n";
@@ -24,7 +25,7 @@ function dateToStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type Tab = "enfoque" | "cronograma" | "proyectos" | "stats" | "recordatorios";
+type Tab = "enfoque" | "cronograma" | "proyectos" | "stats" | "consejos" | "recordatorios";
 
 export default function Index() {
   const { t, locale } = useI18n();
@@ -260,6 +261,9 @@ export default function Index() {
         </div>
       )}
 
+      {/* TAB: Consejos */}
+      {activeTab === "consejos" && <TipsView />}
+
       {/* TAB: Recordatorios/Config */}
       {activeTab === "recordatorios" && (
         <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl animate-fade-in">
@@ -280,11 +284,12 @@ export default function Index() {
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto max-w-lg flex items-center justify-around md:max-w-2xl">
+        <div className="mx-auto max-w-lg flex items-center justify-between px-1 md:max-w-2xl">
           <NavTab icon={<Target className="h-5 w-5" />} label={t("tabFocus")} active={activeTab === "enfoque"} onClick={() => { setActiveTab("enfoque"); setViewDate(new Date()); }} />
           <NavTab icon={<CalendarDays className="h-5 w-5" />} label={t("tabCalendar")} active={activeTab === "cronograma"} onClick={() => setActiveTab("cronograma")} />
           <NavTab icon={<FolderKanban className="h-5 w-5" />} label={t("tabProjects")} active={activeTab === "proyectos"} onClick={() => setActiveTab("proyectos")} />
           <NavTab icon={<BarChart3 className="h-5 w-5" />} label={t("tabStats")} active={activeTab === "stats"} onClick={() => setActiveTab("stats")} />
+          <NavTab icon={<Lightbulb className="h-5 w-5" />} label={t("tabTips")} active={activeTab === "consejos"} onClick={() => setActiveTab("consejos")} />
           <NavTab icon={<Bell className="h-5 w-5" />} label={t("tabSettings")} active={activeTab === "recordatorios"} onClick={() => setActiveTab("recordatorios")} />
         </div>
       </nav>
@@ -296,12 +301,12 @@ function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-2.5 px-4 cursor-pointer transition-all duration-200 ${
+      className={`flex flex-1 flex-col items-center gap-1 py-2.5 px-1 cursor-pointer transition-all duration-200 min-w-0 ${
         active ? "bottom-nav-active scale-105" : "bottom-nav-inactive"
       }`}
     >
       {icon}
-      <span className="text-[9px] font-bold tracking-wider">{label}</span>
+      <span className="text-[9px] font-bold tracking-wider truncate max-w-full">{label}</span>
     </button>
   );
 }
