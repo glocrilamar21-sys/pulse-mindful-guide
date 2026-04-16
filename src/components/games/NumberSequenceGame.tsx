@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Trophy, Play, RotateCcw, Eye } from "lucide-react";
 import { loadBestScores, maybeUpdateBest } from "@/lib/memoryGames";
 import { playGameSound } from "@/lib/gameSounds";
+import { numberSequenceMedal } from "@/lib/medals";
+import { Medal } from "@/components/games/Medal";
 
 type Phase = "idle" | "showing" | "input" | "lost";
 
@@ -114,6 +116,7 @@ export function NumberSequenceGame() {
           <span className="flex items-center gap-1 text-[hsl(var(--warning))]">
             <Trophy className="h-3 w-3" fill="currentColor" />
             {t("gameBest")}: {t("gameLevel")} {best.level}
+            <Medal tier={numberSequenceMedal(best.level)} size="sm" className="ml-0.5" />
           </span>
         )}
       </div>
@@ -169,6 +172,18 @@ export function NumberSequenceGame() {
                 {t("gameNewRecord")}
               </p>
             )}
+            {(() => {
+              const earned = numberSequenceMedal(level);
+              if (!earned) return null;
+              return (
+                <div className="flex flex-col items-center gap-0.5 pt-1">
+                  <Medal tier={earned} size="lg" />
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                    {t("medalEarned")}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
