@@ -62,6 +62,64 @@ export function WeeklyStats({ tasks }: WeeklyStatsProps) {
 
   const weekPercent = weekTotal > 0 ? Math.round((weekCompleted / weekTotal) * 100) : 0;
 
+  // Monthly cumulative data
+  const monthData = useMemo(() => {
+    const today = new Date();
+    const monthStart = startOfMonth(today);
+    const monthEnd = endOfMonth(today);
+    const allDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+    let cumulative = 0;
+    const points = allDays.map((day) => {
+      const dayStr = dateToStr(day);
+      const dayCompleted = tasks.filter((t) => t.date === dayStr && t.done).length;
+      const isFuture = day > today;
+      if (!isFuture) cumulative += dayCompleted;
+      return {
+        date: day,
+        dayNum: format(day, "d"),
+        completed: dayCompleted,
+        cumulative: isFuture ? null : cumulative,
+        isToday: isSameDay(day, today),
+        isFuture,
+      };
+    });
+
+    const monthCompleted = tasks.filter((t) => {
+      const taskDate = new Date(t.date + "T00:00:00");
+      return t.done && isSameMonth(taskDate, today);
+    }).length;
+    const monthTotal = tasks.filter((t) => {
+      const taskDate = new Date(t.date + "T00:00:00");
+      return isSameMonth(taskDate, today);
+    }).length;
+    const activeDays = points.filter((p) => p.completed > 0).length;
+    const dailyAvg = activeDays > 0 ? (monthCompleted / activeDays).toFixed(1) : "0";
+
+    return { points, monthCompleted, monthTotal, activeDays, dailyAvg };
+  }, [tasks]);
+
+  // SVG path for cumulative line chart
+  const chartPath = useMemo(() => {
+    const points = monthData.points.filter((p) => p.cumulative !== null);
+    if (points.length === 0) return { line: "", area: "", maxCum: 0 };
+    const maxCum = Math.max(...points.map((p) => p.cumulative as number), 1);
+    const w = 100;
+    const h = 100;
+    const stepX = points.length > 1 ? w / (points.length - 1) : 0;
+    const coords = points.map((p, i) => {
+      const x = i * stepX;
+      const y = h - ((p.cumulative as number) / maxCum) * h;
+      return { x, y };
+    });
+    const line = coords.map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(2)},${c.y.toFixed(2)}`).join(" ");
+    const area = `${line} L${coords[coords.length - 1].x.toFixed(2)},${h} L0,${h} Z`;
+    return { line, area, maxCum };
+  }, [monthData]);
+
+  const today = new Date();
+  const monthLabel = format(today, "MMMM yyyy", { locale: dateFnsLocale });
+
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Summary Cards */}
