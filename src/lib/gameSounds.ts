@@ -8,6 +8,8 @@
 export type GameSound = "flip" | "match" | "wrong" | "win" | "tap" | "correct";
 
 const STORAGE_KEY = "memoryGames.soundsEnabled.v1";
+const VOLUME_KEY = "memoryGames.volume.v1";
+const DEFAULT_VOLUME = 70; // 0-100
 
 let cachedCtx: AudioContext | null = null;
 
@@ -41,6 +43,28 @@ export function saveGameSoundsEnabled(enabled: boolean): void {
   }
 }
 
+/** Load volume 0-100. Defaults to 70. */
+export function loadGameVolume(): number {
+  try {
+    const v = localStorage.getItem(VOLUME_KEY);
+    if (v === null) return DEFAULT_VOLUME;
+    const n = Number(v);
+    if (!Number.isFinite(n)) return DEFAULT_VOLUME;
+    return Math.max(0, Math.min(100, Math.round(n)));
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+}
+
+export function saveGameVolume(volume: number): void {
+  try {
+    const clamped = Math.max(0, Math.min(100, Math.round(volume)));
+    localStorage.setItem(VOLUME_KEY, String(clamped));
+  } catch {
+    /* noop */
+  }
+}
+
 interface ToneSpec {
   freq: number;
   duration: number;
@@ -52,10 +76,10 @@ interface ToneSpec {
   delay?: number;
 }
 
-function playTone(ctx: AudioContext, spec: ToneSpec, startAt: number): void {
+function playTone(ctx: AudioContext, spec: ToneSpec, startAt: number, volumeScale: number): void {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  const peak = spec.gain ?? 0.05;
+  const peak = Math.max(0.0002, (spec.gain ?? 0.05) * volumeScale);
   const start = startAt + (spec.delay ?? 0);
   const end = start + spec.duration;
 
@@ -107,6 +131,8 @@ const SOUND_MAP: Record<GameSound, ToneSpec[]> = {
 
 export function playGameSound(sound: GameSound): void {
   if (!loadGameSoundsEnabled()) return;
+  const volume = loadGameVolume();
+  if (volume <= 0) return;
   const ctx = getCtx();
   if (!ctx) return;
 
@@ -117,7 +143,8 @@ export function playGameSound(sound: GameSound): void {
     });
   }
 
+  const volumeScale = volume / 100;
   const tones = SOUND_MAP[sound];
   const startAt = ctx.currentTime;
-  for (const t of tones) playTone(ctx, t, startAt);
+  for (const t of tones) playTone(ctx, t, startAt, volumeScale);
 }
