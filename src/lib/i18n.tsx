@@ -182,6 +182,7 @@ const translations = {
     scopeMascotMap: "Mascota por ámbito",
     scopeMascotMapDesc: "Asigna una mascota a cada tipo de tarea.",
     resetDefaults: "Restablecer",
+    suggestAutoMascot: "Sugerir",
   },
   en: {
     today: "Today",
@@ -359,6 +360,7 @@ const translations = {
     scopeMascotMap: "Mascot per scope",
     scopeMascotMapDesc: "Assign a mascot to each task type.",
     resetDefaults: "Reset",
+    suggestAutoMascot: "Suggest",
   },
   pt: {
     today: "Hoje",
@@ -536,6 +538,7 @@ const translations = {
     scopeMascotMap: "Mascote por âmbito",
     scopeMascotMapDesc: "Atribua um mascote a cada tipo de tarefa.",
     resetDefaults: "Restaurar",
+    suggestAutoMascot: "Sugerir",
   },
   fr: {
     today: "Aujourd'hui",
@@ -713,6 +716,7 @@ const translations = {
     scopeMascotMap: "Mascotte par domaine",
     scopeMascotMapDesc: "Assignez une mascotte à chaque type de tâche.",
     resetDefaults: "Réinitialiser",
+    suggestAutoMascot: "Suggérer",
   },
   it: {
     today: "Oggi",
@@ -890,6 +894,7 @@ const translations = {
     scopeMascotMap: "Mascotte per ambito",
     scopeMascotMapDesc: "Assegna una mascotte a ogni tipo di attività.",
     resetDefaults: "Ripristina",
+    suggestAutoMascot: "Suggerisci",
   },
 } as const;
 

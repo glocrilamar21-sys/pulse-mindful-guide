@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, RotateCcw } from "lucide-react";
+import { Sparkles, RotateCcw, Wand2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ import {
   getMascotImage,
   mascotOutfits,
   type TaskScope,
+  type MascotCategory,
 } from "@/lib/mascot";
 import { getMascotName } from "@/lib/mascotNames";
 import { MascotGallery } from "@/components/MascotGallery";
@@ -31,6 +32,21 @@ const SCOPES: ScopeDef[] = [
   { id: "salud", labelKey: "health", emoji: "❤️" },
   { id: "personal", labelKey: "personal", emoji: "✨" },
 ];
+
+// Affinity: which mascot categories suit each task scope.
+// Each scope picks randomly from any of its preferred categories.
+const SCOPE_AFFINITY: Record<TaskScope, MascotCategory[]> = {
+  trabajo: ["tech", "business", "engineering"],
+  estudio: ["education"],
+  hogar: ["service", "seasons"],
+  salud: ["health"],
+  personal: ["creative", "festive", "accessories", "original"],
+};
+
+function pickRandom<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) return undefined;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export function AutoMascotSettings() {
   const { t, locale } = useI18n();
@@ -53,6 +69,18 @@ export function AutoMascotSettings() {
 
   const handleReset = () => {
     const next = { ...DEFAULT_SCOPE_MAP };
+    setScopeMap(next);
+    saveScopeMap(next);
+  };
+
+  const handleSuggest = () => {
+    const next = { ...scopeMap };
+    (Object.keys(SCOPE_AFFINITY) as TaskScope[]).forEach((scope) => {
+      const cats = SCOPE_AFFINITY[scope];
+      const candidates = mascotOutfits.filter((o) => cats.includes(o.category));
+      const picked = pickRandom(candidates);
+      if (picked) next[scope] = picked.id;
+    });
     setScopeMap(next);
     saveScopeMap(next);
   };
@@ -84,20 +112,32 @@ export function AutoMascotSettings() {
           !enabled && "opacity-50 pointer-events-none",
         )}
       >
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-foreground">
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <span className="text-xs font-bold text-foreground min-w-0 truncate">
             {t("scopeMascotMap")}
           </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleReset}
-            disabled={!enabled}
-            className="h-6 px-2 text-[10px] font-bold gap-1 text-muted-foreground hover:text-foreground"
-          >
-            <RotateCcw className="h-3 w-3" />
-            {t("resetDefaults")}
-          </Button>
+          <div className="flex items-center gap-1 shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSuggest}
+              disabled={!enabled}
+              className="h-6 px-2 text-[10px] font-bold gap-1 text-primary hover:text-primary hover:bg-primary/10"
+            >
+              <Wand2 className="h-3 w-3" />
+              {t("suggestAutoMascot")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleReset}
+              disabled={!enabled}
+              className="h-6 px-2 text-[10px] font-bold gap-1 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="h-3 w-3" />
+              {t("resetDefaults")}
+            </Button>
+          </div>
         </div>
         <p className="text-[10px] text-muted-foreground mb-2">
           {t("scopeMascotMapDesc")}
