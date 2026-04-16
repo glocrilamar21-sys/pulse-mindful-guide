@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, RotateCcw } from "lucide-react";
+import { Sparkles, RotateCcw, Wand2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
