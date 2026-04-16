@@ -229,6 +229,11 @@ export const mascotOutfits: MascotOutfit[] = [
   { id: "autumn", name: "Otoño", emoji: "🍂", category: "seasons", happy: mascotHappyAutumn, worried: mascotWorriedAutumn, celebrating: mascotCelebratingAutumn },
   { id: "spring", name: "Primavera", emoji: "🌸", category: "seasons", happy: mascotHappySpring, worried: mascotWorriedSpring, celebrating: mascotCelebratingSpring },
   { id: "winter", name: "Invierno", emoji: "❄️", category: "seasons", happy: mascotHappyWinter, worried: mascotWorriedWinter, celebrating: mascotCelebratingWinter },
+  // Festive
+  { id: "halloween", name: "Halloween", emoji: "🎃", category: "festive", happy: mascotHappyHalloween, worried: mascotWorriedHalloween, celebrating: mascotCelebratingHalloween },
+  { id: "christmas", name: "Navidad", emoji: "🎄", category: "festive", happy: mascotHappyChristmas, worried: mascotWorriedChristmas, celebrating: mascotCelebratingChristmas },
+  { id: "diadelosmuertos", name: "Día de Muertos", emoji: "💀", category: "festive", happy: mascotHappyDiadelosmuertos, worried: mascotWorriedDiadelosmuertos, celebrating: mascotCelebratingDiadelosmuertos },
+  { id: "newyear", name: "Año Nuevo", emoji: "🎉", category: "festive", happy: mascotHappyNewyear, worried: mascotWorriedNewyear, celebrating: mascotCelebratingNewyear },
   // Accessories
   { id: "sunglasses", name: "Lentes de sol", emoji: "🕶️", category: "accessories", happy: mascotHappySunglasses, worried: mascotWorriedSunglasses, celebrating: mascotCelebratingSunglasses },
   { id: "readingglasses", name: "Lentes de lectura", emoji: "👓", category: "accessories", happy: mascotHappyReadingglasses, worried: mascotWorriedReadingglasses, celebrating: mascotCelebratingReadingglasses },
