@@ -86,7 +86,7 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
 
           <div className="space-y-2">
             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("contextDetails")}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("taskPlaceholder")} className="h-12 text-sm rounded-xl border-border" autoFocus />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("taskPlaceholder")} maxLength={200} className="h-12 text-sm rounded-xl border-border" autoFocus />
           </div>
 
           {/* Icon Picker */}

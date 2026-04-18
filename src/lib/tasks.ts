@@ -27,18 +27,38 @@ export function todayStr(): string {
 
 const STORAGE_KEY = "pulso-diario-tasks";
 
+/** Type guard: ensures a value matches the Task shape closely enough to render safely. */
+function isValidTask(v: unknown): v is Task {
+  if (!v || typeof v !== "object") return false;
+  const t = v as Record<string, unknown>;
+  return (
+    typeof t.id === "string" &&
+    typeof t.name === "string" &&
+    (t.category === "critical" || t.category === "flexible") &&
+    typeof t.time === "string" &&
+    typeof t.date === "string" &&
+    typeof t.done === "boolean"
+  );
+}
+
 export function loadTasks(): Task[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isValidTask);
   } catch {
     return [];
   }
 }
 
 export function saveTasks(tasks: Task[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch {
+    /* noop — quota exceeded or private mode */
+  }
 }
 
 export function generateId(): string {
