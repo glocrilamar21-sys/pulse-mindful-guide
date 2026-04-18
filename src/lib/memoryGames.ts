@@ -16,12 +16,64 @@ export interface BestScores {
   memoryPalace?: { score: number; total: number };
 }
 
+const VALID_DIFFICULTIES: ReadonlySet<CardMatchDifficulty> = new Set([
+  "easy",
+  "medium",
+  "hard",
+]);
+
+function isPositiveInt(v: unknown): v is number {
+  return typeof v === "number" && Number.isFinite(v) && v >= 0 && Number.isInteger(v);
+}
+
+function sanitizeCardMatchScore(v: unknown): CardMatchScore | undefined {
+  if (!v || typeof v !== "object") return undefined;
+  const s = v as Record<string, unknown>;
+  if (isPositiveInt(s.moves) && isPositiveInt(s.timeSec)) {
+    return { moves: s.moves, timeSec: s.timeSec };
+  }
+  return undefined;
+}
+
 export function loadBestScores(): BestScores {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
-    return typeof parsed === "object" && parsed ? parsed : {};
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    const out: BestScores = {};
+
+    // cardMatch: object keyed by difficulty
+    const cm = (parsed as Record<string, unknown>).cardMatch;
+    if (cm && typeof cm === "object" && !Array.isArray(cm)) {
+      const safeCm: NonNullable<BestScores["cardMatch"]> = {};
+      for (const [k, v] of Object.entries(cm)) {
+        if (VALID_DIFFICULTIES.has(k as CardMatchDifficulty)) {
+          const score = sanitizeCardMatchScore(v);
+          if (score) safeCm[k as CardMatchDifficulty] = score;
+        }
+      }
+      if (Object.keys(safeCm).length > 0) out.cardMatch = safeCm;
+    }
+
+    // numberSequence: { level: number }
+    const ns = (parsed as Record<string, unknown>).numberSequence;
+    if (ns && typeof ns === "object") {
+      const lvl = (ns as Record<string, unknown>).level;
+      if (isPositiveInt(lvl)) out.numberSequence = { level: lvl };
+    }
+
+    // memoryPalace: { score, total }
+    const mp = (parsed as Record<string, unknown>).memoryPalace;
+    if (mp && typeof mp === "object") {
+      const score = (mp as Record<string, unknown>).score;
+      const total = (mp as Record<string, unknown>).total;
+      if (isPositiveInt(score) && isPositiveInt(total)) {
+        out.memoryPalace = { score, total };
+      }
+    }
+
+    return out;
   } catch {
     return {};
   }
