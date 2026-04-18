@@ -62,6 +62,12 @@ function SettingsContent() {
   const [gameSoundsEnabled, setGameSoundsEnabled] = useState(loadGameSoundsEnabled);
   const [gameVolume, setGameVolume] = useState(loadGameVolume);
   const volumeDebounceRef = useRef<number | null>(null);
+  const { toast } = useToast();
+
+  const handleResetMedals = () => {
+    clearBestScores();
+    toast({ title: t("resetGameProgressDone") });
+  };
 
   const handleGameSoundsToggle = (enabled: boolean) => {
     setGameSoundsEnabled(enabled);
