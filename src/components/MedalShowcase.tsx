@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Award } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { loadBestScores, type BestScores, type CardMatchDifficulty } from "@/lib/memoryGames";
+import {
+  loadBestScores,
+  MEMORY_GAMES_RESET_EVENT,
+  type BestScores,
+  type CardMatchDifficulty,
+} from "@/lib/memoryGames";
 import {
   cardMatchMedal,
   numberSequenceMedal,
@@ -81,11 +86,14 @@ export function MedalShowcase() {
     const onVisibility = () => {
       if (document.visibilityState === "visible") setScores(loadBestScores());
     };
+    const onReset = () => setScores(loadBestScores());
     window.addEventListener("storage", onStorage);
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener(MEMORY_GAMES_RESET_EVENT, onReset);
     return () => {
       window.removeEventListener("storage", onStorage);
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener(MEMORY_GAMES_RESET_EVENT, onReset);
     };
   }, []);
 
