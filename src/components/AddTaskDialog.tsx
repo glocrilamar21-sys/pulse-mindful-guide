@@ -53,11 +53,11 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
   // When auto-icon changes and user hasn't manually selected, follow suggestion.
   // Intentionally excluded `selectedIcon` from deps: re-running on manual selection
   // would overwrite the user's choice with the auto-suggestion.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (autoIcon && !selectedIcon) {
       setSelectedIcon(autoIcon);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoIcon]);
 
   const handleSubmit = () => {
