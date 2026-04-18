@@ -35,6 +35,23 @@ export function saveBestScores(scores: BestScores): void {
   }
 }
 
+/** Custom event emitted whenever best scores are wiped. */
+export const MEMORY_GAMES_RESET_EVENT = "memoryGames:reset";
+
+/** Wipe every memory-game best score. Notifies same-tab listeners via custom event. */
+export function clearBestScores(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* noop */
+  }
+  try {
+    window.dispatchEvent(new CustomEvent(MEMORY_GAMES_RESET_EVENT));
+  } catch {
+    /* noop */
+  }
+}
+
 /** Update only if new is better. Returns true if replaced. */
 export function maybeUpdateBest<K extends GameId>(
   game: K,

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { playDemoSound, playPresetDemo } from "@/lib/tasks";
 import { useI18n, Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Clock, Volume2, VolumeX, Globe, Palette, Brain, Vibrate, Play, Gamepad2 } from "lucide-react";
+import { AlertTriangle, Clock, Volume2, VolumeX, Globe, Palette, Brain, Vibrate, Play, Gamepad2, Trash2, Award } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,19 @@ import {
   playGameSound,
 } from "@/lib/gameSounds";
 import { Slider } from "@/components/ui/slider";
+import { clearBestScores } from "@/lib/memoryGames";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface SettingsPanelProps {
   trigger?: React.ReactNode;
@@ -49,6 +62,12 @@ function SettingsContent() {
   const [gameSoundsEnabled, setGameSoundsEnabled] = useState(loadGameSoundsEnabled);
   const [gameVolume, setGameVolume] = useState(loadGameVolume);
   const volumeDebounceRef = useRef<number | null>(null);
+  const { toast } = useToast();
+
+  const handleResetMedals = () => {
+    clearBestScores();
+    toast({ title: t("resetGameProgressDone") });
+  };
 
   const handleGameSoundsToggle = (enabled: boolean) => {
     setGameSoundsEnabled(enabled);
@@ -316,6 +335,44 @@ function SettingsContent() {
             {t("flexibleAlert")}
           </Button>
         </div>
+      </div>
+
+      {/* Reset Game Progress */}
+      <div>
+        <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+          <Award className="h-4 w-4" />
+          {t("resetGameProgress")}
+        </h3>
+        <p className="text-xs text-muted-foreground mb-3">{t("resetGameProgressDesc")}</p>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 w-full gap-2 text-sm font-bold cursor-pointer rounded-lg active:scale-95 transition-transform border-[hsl(var(--critical))]/30 text-[hsl(var(--critical))] hover:bg-[hsl(var(--critical))]/10 hover:text-[hsl(var(--critical))]"
+            >
+              <Trash2 className="h-4 w-4" />
+              {t("resetGameProgressButton")}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("resetGameProgressConfirmTitle")}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t("resetGameProgressConfirmDesc")}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleResetMedals}
+                className="bg-[hsl(var(--critical))] text-[hsl(var(--critical-foreground))] hover:bg-[hsl(var(--critical))]/90"
+              >
+                {t("resetGameProgressConfirmAction")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       <div className="rounded-lg border p-4 bg-background">
