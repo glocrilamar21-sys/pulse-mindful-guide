@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Award, Share2, Loader2 } from "lucide-react";
 import { toPng } from "html-to-image";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 import {
   loadBestScores,
   MEMORY_GAMES_RESET_EVENT,
