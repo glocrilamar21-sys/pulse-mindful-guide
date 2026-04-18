@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { playDemoSound, playPresetDemo } from "@/lib/tasks";
-import { useI18n, Locale } from "@/lib/i18n";
+import { useI18n, Locale, type TranslationKey } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Clock, Volume2, VolumeX, Globe, Palette, Brain, Vibrate, Play, Gamepad2, Trash2, Award } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -157,7 +157,7 @@ function SettingsContent() {
                   )}
                 >
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  <span className="text-xs">{t(preset.nameKey as TranslationKey)}</span>
                   {isActive && <Play className="h-3 w-3 ml-auto text-[hsl(var(--critical))]" />}
                 </button>
               );
@@ -187,7 +187,7 @@ function SettingsContent() {
                   )}
                 >
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  <span className="text-xs">{t(preset.nameKey as TranslationKey)}</span>
                   {isActive && <Play className="h-3 w-3 ml-auto text-primary" />}
                 </button>
               );
