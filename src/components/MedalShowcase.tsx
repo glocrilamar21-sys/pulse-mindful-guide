@@ -33,7 +33,7 @@ const DIFFICULTIES: CardMatchDifficulty[] = ["easy", "medium", "hard"];
 
 function buildEntries(
   scores: BestScores,
-  t: (k: any) => string,
+  t: (k: TranslationKey) => string,
 ): ShowcaseEntry[] {
   const entries: ShowcaseEntry[] = [];
 
@@ -123,18 +123,22 @@ export function MedalShowcase() {
       const file = new File([blob], "pulse-medals.png", { type: "image/png" });
 
       // Try Web Share API with file support
-      const navAny = navigator as any;
-      if (navAny.canShare && navAny.canShare({ files: [file] }) && navAny.share) {
+      type ShareNavigator = Navigator & {
+        canShare?: (data: { files: File[] }) => boolean;
+        share?: (data: { files?: File[]; title?: string; text?: string }) => Promise<void>;
+      };
+      const nav = navigator as ShareNavigator;
+      if (nav.canShare && nav.canShare({ files: [file] }) && nav.share) {
         try {
-          await navAny.share({
+          await nav.share({
             files: [file],
             title: t("medalShareTitle"),
             text: t("medalShareCaption"),
           });
           return;
-        } catch (err: any) {
+        } catch (err) {
           // User cancelled — silent. Real errors fall through to download.
-          if (err?.name === "AbortError") return;
+          if (err instanceof Error && err.name === "AbortError") return;
         }
       }
 

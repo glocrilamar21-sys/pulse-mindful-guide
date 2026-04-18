@@ -157,7 +157,7 @@ function SettingsContent() {
                   )}
                 >
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  <span className="text-xs">{t(preset.nameKey as TranslationKey)}</span>
                   {isActive && <Play className="h-3 w-3 ml-auto text-[hsl(var(--critical))]" />}
                 </button>
               );
@@ -187,7 +187,7 @@ function SettingsContent() {
                   )}
                 >
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-xs">{t(preset.nameKey as any)}</span>
+                  <span className="text-xs">{t(preset.nameKey as TranslationKey)}</span>
                   {isActive && <Play className="h-3 w-3 ml-auto text-primary" />}
                 </button>
               );
