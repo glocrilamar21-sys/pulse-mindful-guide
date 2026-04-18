@@ -258,12 +258,32 @@ export const DEFAULT_SCOPE_MAP: Record<TaskScope, string> = {
   personal: "default",
 };
 
+/** Set of valid outfit ids derived from the catalog (plus the auto sentinel). */
+const VALID_OUTFIT_IDS: ReadonlySet<string> = new Set([
+  AUTO_MASCOT_ID,
+  ...mascotOutfits.map((o) => o.id),
+]);
+
+const VALID_SCOPES: ReadonlySet<TaskScope> = new Set(
+  Object.keys(DEFAULT_SCOPE_MAP) as TaskScope[],
+);
+
 export function loadMascotOutfit(): string {
-  return localStorage.getItem(MASCOT_KEY) || "default";
+  try {
+    const v = localStorage.getItem(MASCOT_KEY);
+    if (v && VALID_OUTFIT_IDS.has(v)) return v;
+    return "default";
+  } catch {
+    return "default";
+  }
 }
 
 export function saveMascotOutfit(id: string): void {
-  localStorage.setItem(MASCOT_KEY, id);
+  try {
+    localStorage.setItem(MASCOT_KEY, id);
+  } catch {
+    /* noop */
+  }
 }
 
 /** Whether automatic per-task mascot mode is enabled. */
@@ -288,7 +308,21 @@ export function loadScopeMap(): Record<TaskScope, string> {
     const raw = localStorage.getItem(SCOPE_MAP_KEY);
     if (!raw) return { ...DEFAULT_SCOPE_MAP };
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_SCOPE_MAP, ...parsed };
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ...DEFAULT_SCOPE_MAP };
+    }
+    // Whitelist: only accept known scope keys + valid outfit ids.
+    const safe: Record<TaskScope, string> = { ...DEFAULT_SCOPE_MAP };
+    for (const [k, v] of Object.entries(parsed)) {
+      if (
+        VALID_SCOPES.has(k as TaskScope) &&
+        typeof v === "string" &&
+        VALID_OUTFIT_IDS.has(v)
+      ) {
+        safe[k as TaskScope] = v;
+      }
+    }
+    return safe;
   } catch {
     return { ...DEFAULT_SCOPE_MAP };
   }
