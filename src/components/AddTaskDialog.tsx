@@ -146,10 +146,8 @@ export function AddTaskDialog({ onAdd, open, onOpenChange }: AddTaskDialogProps)
               <CalendarIcon className="h-5 w-5 text-muted-foreground shrink-0" />
               <div className="flex-1">
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="text-sm font-semibold text-foreground cursor-pointer hover:text-primary transition-colors">
-                      {format(selectedDate, "MMM d, yyyy", { locale: dateFnsLocale })}
-                    </button>
+                  <PopoverTrigger className="text-sm font-semibold text-foreground cursor-pointer hover:text-primary transition-colors">
+                    {format(selectedDate, "MMM d, yyyy", { locale: dateFnsLocale })}
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0 rounded-xl" align="start">
                     <Calendar mode="single" selected={selectedDate} onSelect={(d) => d && setSelectedDate(d)} initialFocus className="p-3 pointer-events-auto" />
