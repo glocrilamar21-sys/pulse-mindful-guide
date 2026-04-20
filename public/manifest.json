@@ -34,6 +34,21 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "1080x2337",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla principal de Memory Help en móvil con tareas críticas y flexibles"
+    },
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pantalla principal de Memory Help en escritorio con reflexión matutina"
+    }
+  ],
   "prefer_related_applications": false
 }
