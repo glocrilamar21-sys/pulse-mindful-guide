@@ -34,42 +34,5 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/mobile-home.png",
-      "sizes": "1080x2337",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Inicio: tareas críticas y flexibles del día"
-    },
-    {
-      "src": "/screenshots/mobile-calendar.png",
-      "sizes": "1080x2337",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Calendario: planifica y revisa tus tareas por día"
-    },
-    {
-      "src": "/screenshots/mobile-projects.png",
-      "sizes": "1080x2337",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Proyectos: organiza por categorías y mide tu progreso"
-    },
-    {
-      "src": "/screenshots/mobile-stats.png",
-      "sizes": "1080x2337",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Estadísticas: actividad semanal, eficiencia y racha"
-    },
-    {
-      "src": "/screenshots/desktop-home.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Memory Help en escritorio con reflexión matutina"
-    }
-  ],
   "prefer_related_applications": false
 }
