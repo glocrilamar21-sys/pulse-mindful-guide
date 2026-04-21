@@ -13,6 +13,7 @@ import { BrainMascot } from "@/components/BrainMascot";
 import { TipsView } from "@/components/TipsView";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { PwaAssetsStatus } from "@/components/PwaAssetsStatus";
+import { DeployStatusBanner } from "@/components/DeployStatusBanner";
 import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban, BarChart3, Lightbulb } from "lucide-react";
 import { WeeklyStats } from "@/components/WeeklyStats";
 import { format } from "date-fns";
@@ -147,6 +148,8 @@ export default function Index() {
           </div>
         </div>
       </header>
+
+      <DeployStatusBanner />
 
       {/* TAB: Enfoque */}
       {activeTab === "enfoque" && (
