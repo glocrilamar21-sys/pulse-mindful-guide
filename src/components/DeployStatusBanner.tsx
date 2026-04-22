@@ -150,13 +150,25 @@ export function DeployStatusBanner() {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={runCheck}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors"
-                >
-                  <RefreshCw className="h-3 w-3" />
-                  Reintentar verificación
-                </button>
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={runCheck}
+                    disabled={checking}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                  >
+                    {checking ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3 w-3" />
+                    )}
+                    Reintentar verificación
+                  </button>
+                  {lastChecked && (
+                    <span className="text-[10px] text-foreground/60">
+                      Auto-revisión cada 30s · última {lastChecked.toLocaleTimeString()}
+                    </span>
+                  )}
+                </div>
               </>
             )}
           </div>
