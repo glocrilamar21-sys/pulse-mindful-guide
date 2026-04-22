@@ -234,6 +234,41 @@ export function PwaAssetsStatus() {
         ))}
       </ul>
 
+      <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 space-y-2">
+        <div className="flex items-start gap-2">
+          <RotateCw className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-foreground">Forzar recarga del manifest</p>
+            <p className="text-xs text-muted-foreground leading-snug">
+              Re-pide el manifest y los iconos con <code className="font-mono">?v={ASSET_VERSION}</code>{" "}
+              para que el navegador y la PWA instalada muestren el nombre{" "}
+              <strong>"Memory Help"</strong> y los iconos nuevos sin esperar a que expire la caché.
+            </p>
+          </div>
+        </div>
+        <Button
+          size="sm"
+          variant="default"
+          onClick={handleForceRefresh}
+          disabled={refreshing || running}
+          className="w-full"
+        >
+          {refreshing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RotateCw className="h-4 w-4" />
+          )}
+          <span className="ml-1">
+            {refreshing ? "Actualizando…" : "Actualizar iconos en producción"}
+          </span>
+        </Button>
+        {lastRefresh && (
+          <p className="text-[10px] text-muted-foreground text-right">
+            Última recarga forzada: {lastRefresh.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
+
       {lastRun && (
         <p className="text-[10px] text-muted-foreground text-right">
           Última verificación: {lastRun.toLocaleTimeString()}
