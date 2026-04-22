@@ -1,7 +1,55 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, RefreshCw, Loader2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  RefreshCw,
+  Loader2,
+  X,
+  Rocket,
+} from "lucide-react";
 
 const POLL_INTERVAL_MS = 30_000;
+const RETRY_FLAG_KEY = "deploy-retry-pending";
+
+interface RetryFlag {
+  requestedAt: string;
+  failedAssets: string[];
+  failedCount: number;
+}
+
+function readRetryFlag(): RetryFlag | null {
+  try {
+    const raw = localStorage.getItem(RETRY_FLAG_KEY);
+    return raw ? (JSON.parse(raw) as RetryFlag) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeRetryFlag(flag: RetryFlag) {
+  try {
+    localStorage.setItem(RETRY_FLAG_KEY, JSON.stringify(flag));
+  } catch {
+    /* ignore quota errors */
+  }
+}
+
+function clearRetryFlag() {
+  try {
+    localStorage.removeItem(RETRY_FLAG_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function isProductionHost(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  // Production = published lovable.app domain (no "id-preview--" prefix) or custom domain.
+  if (host.includes("id-preview--")) return false;
+  if (host === "localhost" || host === "127.0.0.1") return false;
+  return true;
+}
 
 const ASSETS_TO_CHECK = [
   "/manifest.json",
@@ -36,6 +84,8 @@ export function DeployStatusBanner() {
   const [dismissed, setDismissed] = useState(false);
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [justRecovered, setJustRecovered] = useState(false);
+  const [retryFlag, setRetryFlag] = useState<RetryFlag | null>(() => readRetryFlag());
+  const [isProd] = useState<boolean>(() => isProductionHost());
   const prevFailedCountRef = useRef<number | null>(null);
   const inFlightRef = useRef(false);
 
@@ -57,9 +107,28 @@ export function DeployStatusBanner() {
     ) {
       setJustRecovered(true);
       setTimeout(() => setJustRecovered(false), 6000);
+      // All green again → clear the pending retry indicator
+      clearRetryFlag();
+      setRetryFlag(null);
     }
     prevFailedCountRef.current = failed.length;
   }, []);
+
+  const handleRetryDeploy = useCallback(() => {
+    const flag: RetryFlag = {
+      requestedAt: new Date().toISOString(),
+      failedAssets: failed,
+      failedCount: failed.length,
+    };
+    writeRetryFlag(flag);
+    setRetryFlag(flag);
+    try {
+      const w = window as unknown as { lovable?: { openPublish?: () => void } };
+      w.lovable?.openPublish?.();
+    } catch {
+      /* ignore — banner instructions are enough */
+    }
+  }, [failed]);
 
   // Initial + periodic background polling
   useEffect(() => {
@@ -136,9 +205,11 @@ export function DeployStatusBanner() {
             {!checking && (
               <>
                 <p className="text-xs text-foreground/80 mt-1 leading-relaxed">
-                  Los iconos están en el repositorio pero el CDN sigue sirviendo la versión vieja.
-                  Pulsa <strong>Publish → Update</strong> en la esquina superior derecha para subir
-                  los cambios.
+                  {isProd
+                    ? "Producción está sirviendo una versión vieja de los iconos. Pulsa "
+                    : "Los iconos están en el repositorio pero el CDN sigue sirviendo la versión vieja. Pulsa "}
+                  <strong>Publish → Update</strong> en la esquina superior derecha para subir los
+                  cambios.
                 </p>
                 <ul className="mt-2 space-y-0.5">
                   {failed.map((path) => (
@@ -150,18 +221,41 @@ export function DeployStatusBanner() {
                     </li>
                   ))}
                 </ul>
+
+                {retryFlag && (
+                  <div className="mt-3 rounded-lg border border-[hsl(var(--critical))]/40 bg-background/60 p-2.5">
+                    <p className="text-[11px] font-semibold text-[hsl(var(--critical))]">
+                      ⏳ Reintento de deploy pendiente
+                    </p>
+                    <p className="text-[10px] text-foreground/70 mt-0.5 leading-snug">
+                      Marcado el{" "}
+                      {new Date(retryFlag.requestedAt).toLocaleString()} ({retryFlag.failedCount}{" "}
+                      assets en 404). Sigue pendiente hasta que pulses{" "}
+                      <strong>Publish → Update</strong> y los assets respondan 200.
+                    </p>
+                  </div>
+                )}
+
                 <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={handleRetryDeploy}
+                    disabled={checking}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                  >
+                    <Rocket className="h-3 w-3" />
+                    Reintentar deploy
+                  </button>
                   <button
                     onClick={runCheck}
                     disabled={checking}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--critical))] bg-background px-3 py-1.5 text-xs font-bold text-[hsl(var(--critical))] hover:bg-[hsl(var(--critical))]/10 transition-colors disabled:opacity-60"
                   >
                     {checking ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <RefreshCw className="h-3 w-3" />
                     )}
-                    Reintentar verificación
+                    Verificar de nuevo
                   </button>
                   {lastChecked && (
                     <span className="text-[10px] text-foreground/60">
