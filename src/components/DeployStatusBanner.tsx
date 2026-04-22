@@ -1,7 +1,55 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, RefreshCw, Loader2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  RefreshCw,
+  Loader2,
+  X,
+  Rocket,
+} from "lucide-react";
 
 const POLL_INTERVAL_MS = 30_000;
+const RETRY_FLAG_KEY = "deploy-retry-pending";
+
+interface RetryFlag {
+  requestedAt: string;
+  failedAssets: string[];
+  failedCount: number;
+}
+
+function readRetryFlag(): RetryFlag | null {
+  try {
+    const raw = localStorage.getItem(RETRY_FLAG_KEY);
+    return raw ? (JSON.parse(raw) as RetryFlag) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeRetryFlag(flag: RetryFlag) {
+  try {
+    localStorage.setItem(RETRY_FLAG_KEY, JSON.stringify(flag));
+  } catch {
+    /* ignore quota errors */
+  }
+}
+
+function clearRetryFlag() {
+  try {
+    localStorage.removeItem(RETRY_FLAG_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function isProductionHost(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  // Production = published lovable.app domain (no "id-preview--" prefix) or custom domain.
+  if (host.includes("id-preview--")) return false;
+  if (host === "localhost" || host === "127.0.0.1") return false;
+  return true;
+}
 
 const ASSETS_TO_CHECK = [
   "/manifest.json",
