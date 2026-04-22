@@ -205,9 +205,11 @@ export function DeployStatusBanner() {
             {!checking && (
               <>
                 <p className="text-xs text-foreground/80 mt-1 leading-relaxed">
-                  Los iconos están en el repositorio pero el CDN sigue sirviendo la versión vieja.
-                  Pulsa <strong>Publish → Update</strong> en la esquina superior derecha para subir
-                  los cambios.
+                  {isProd
+                    ? "Producción está sirviendo una versión vieja de los iconos. Pulsa "
+                    : "Los iconos están en el repositorio pero el CDN sigue sirviendo la versión vieja. Pulsa "}
+                  <strong>Publish → Update</strong> en la esquina superior derecha para subir los
+                  cambios.
                 </p>
                 <ul className="mt-2 space-y-0.5">
                   {failed.map((path) => (
@@ -219,18 +221,41 @@ export function DeployStatusBanner() {
                     </li>
                   ))}
                 </ul>
+
+                {retryFlag && (
+                  <div className="mt-3 rounded-lg border border-[hsl(var(--critical))]/40 bg-background/60 p-2.5">
+                    <p className="text-[11px] font-semibold text-[hsl(var(--critical))]">
+                      ⏳ Reintento de deploy pendiente
+                    </p>
+                    <p className="text-[10px] text-foreground/70 mt-0.5 leading-snug">
+                      Marcado el{" "}
+                      {new Date(retryFlag.requestedAt).toLocaleString()} ({retryFlag.failedCount}{" "}
+                      assets en 404). Sigue pendiente hasta que pulses{" "}
+                      <strong>Publish → Update</strong> y los assets respondan 200.
+                    </p>
+                  </div>
+                )}
+
                 <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={handleRetryDeploy}
+                    disabled={checking}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                  >
+                    <Rocket className="h-3 w-3" />
+                    Reintentar deploy
+                  </button>
                   <button
                     onClick={runCheck}
                     disabled={checking}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--critical))] bg-background px-3 py-1.5 text-xs font-bold text-[hsl(var(--critical))] hover:bg-[hsl(var(--critical))]/10 transition-colors disabled:opacity-60"
                   >
                     {checking ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <RefreshCw className="h-3 w-3" />
                     )}
-                    Reintentar verificación
+                    Verificar de nuevo
                   </button>
                   {lastChecked && (
                     <span className="text-[10px] text-foreground/60">
