@@ -13,6 +13,7 @@ import { BrainMascot } from "@/components/BrainMascot";
 import { TipsView } from "@/components/TipsView";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { PwaAssetsStatus } from "@/components/PwaAssetsStatus";
+import { PublishGuide } from "@/components/PublishGuide";
 import { DeployStatusBanner } from "@/components/DeployStatusBanner";
 import { Plus, Target, CalendarDays, Bell, AlertTriangle, Sparkles, FolderKanban, BarChart3, Lightbulb } from "lucide-react";
 import { WeeklyStats } from "@/components/WeeklyStats";
@@ -280,6 +281,7 @@ export default function Index() {
       {activeTab === "recordatorios" && (
         <div className="mx-auto max-w-lg px-4 pt-4 md:max-w-2xl animate-fade-in space-y-4">
           <PwaAssetsStatus />
+          <PublishGuide />
           <SettingsPanel inline />
         </div>
       )}
