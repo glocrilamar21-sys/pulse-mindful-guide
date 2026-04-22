@@ -20,7 +20,7 @@ interface AssetCheck {
   error?: string;
 }
 
-const ASSET_VERSION = "6";
+const ASSET_VERSION = "7";
 
 const ASSETS: Omit<AssetCheck, "status">[] = [
   { path: "/manifest.json", label: "Manifest" },
