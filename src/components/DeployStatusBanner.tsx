@@ -84,6 +84,8 @@ export function DeployStatusBanner() {
   const [dismissed, setDismissed] = useState(false);
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [justRecovered, setJustRecovered] = useState(false);
+  const [retryFlag, setRetryFlag] = useState<RetryFlag | null>(() => readRetryFlag());
+  const [isProd] = useState<boolean>(() => isProductionHost());
   const prevFailedCountRef = useRef<number | null>(null);
   const inFlightRef = useRef(false);
 
@@ -105,9 +107,28 @@ export function DeployStatusBanner() {
     ) {
       setJustRecovered(true);
       setTimeout(() => setJustRecovered(false), 6000);
+      // All green again → clear the pending retry indicator
+      clearRetryFlag();
+      setRetryFlag(null);
     }
     prevFailedCountRef.current = failed.length;
   }, []);
+
+  const handleRetryDeploy = useCallback(() => {
+    const flag: RetryFlag = {
+      requestedAt: new Date().toISOString(),
+      failedAssets: failed,
+      failedCount: failed.length,
+    };
+    writeRetryFlag(flag);
+    setRetryFlag(flag);
+    try {
+      const w = window as unknown as { lovable?: { openPublish?: () => void } };
+      w.lovable?.openPublish?.();
+    } catch {
+      /* ignore — banner instructions are enough */
+    }
+  }, [failed]);
 
   // Initial + periodic background polling
   useEffect(() => {
