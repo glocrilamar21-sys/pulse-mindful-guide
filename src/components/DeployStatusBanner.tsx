@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { AlertTriangle, RefreshCw, Loader2, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AlertTriangle, CheckCircle2, RefreshCw, Loader2, X } from "lucide-react";
+
+const POLL_INTERVAL_MS = 30_000;
 
 const ASSETS_TO_CHECK = [
   "/manifest.json",
@@ -32,19 +34,87 @@ export function DeployStatusBanner() {
   const [failed, setFailed] = useState<string[]>([]);
   const [checking, setChecking] = useState(true);
   const [dismissed, setDismissed] = useState(false);
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
+  const [justRecovered, setJustRecovered] = useState(false);
+  const prevFailedCountRef = useRef<number | null>(null);
+  const inFlightRef = useRef(false);
 
-  const runCheck = async () => {
+  const runCheck = useCallback(async () => {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     setChecking(true);
     const { failed } = await countFailures();
     setFailed(failed);
+    setLastChecked(new Date());
     setChecking(false);
-  };
+    inFlightRef.current = false;
 
-  useEffect(() => {
-    runCheck();
+    // Detect recovery: previously had failures, now all green
+    if (
+      prevFailedCountRef.current !== null &&
+      prevFailedCountRef.current > 0 &&
+      failed.length === 0
+    ) {
+      setJustRecovered(true);
+      setTimeout(() => setJustRecovered(false), 6000);
+    }
+    prevFailedCountRef.current = failed.length;
   }, []);
 
-  if (dismissed || (!checking && failed.length === 0)) return null;
+  // Initial + periodic background polling
+  useEffect(() => {
+    runCheck();
+    const id = window.setInterval(runCheck, POLL_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [runCheck]);
+
+  // Re-check when tab becomes visible or connection comes back
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") runCheck();
+    };
+    const onOnline = () => runCheck();
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [runCheck]);
+
+  if (dismissed) return null;
+
+  // Show transient success banner when assets recover
+  if (justRecovered) {
+    return (
+      <div className="mx-auto max-w-lg px-4 pt-3 md:max-w-2xl">
+        <div className="rounded-2xl border-2 border-[hsl(var(--flexible))] bg-[hsl(var(--flexible))]/10 p-4 shadow-sm animate-fade-in">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="h-5 w-5 text-[hsl(var(--flexible))] shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-[hsl(var(--flexible-foreground))]">
+                ✓ Deploy actualizado: los 7 assets responden 200
+              </h3>
+              <p className="text-xs text-foreground/80 mt-1">
+                El CDN ya está sirviendo los iconos nuevos.
+              </p>
+            </div>
+            <button
+              onClick={() => setJustRecovered(false)}
+              className="shrink-0 -mr-1 -mt-1 h-7 w-7 rounded-full flex items-center justify-center hover:bg-[hsl(var(--flexible))]/20 transition-colors"
+              aria-label="Cerrar"
+            >
+              <X className="h-4 w-4 text-[hsl(var(--flexible-foreground))]" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!checking && failed.length === 0) return null;
 
   return (
     <div className="mx-auto max-w-lg px-4 pt-3 md:max-w-2xl">
@@ -80,13 +150,25 @@ export function DeployStatusBanner() {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={runCheck}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors"
-                >
-                  <RefreshCw className="h-3 w-3" />
-                  Reintentar verificación
-                </button>
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={runCheck}
+                    disabled={checking}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(var(--critical))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[hsl(var(--critical))]/90 transition-colors disabled:opacity-60"
+                  >
+                    {checking ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3 w-3" />
+                    )}
+                    Reintentar verificación
+                  </button>
+                  {lastChecked && (
+                    <span className="text-[10px] text-foreground/60">
+                      Auto-revisión cada 30s · última {lastChecked.toLocaleTimeString()}
+                    </span>
+                  )}
+                </div>
               </>
             )}
           </div>
