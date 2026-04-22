@@ -101,7 +101,9 @@ export function PwaAssetsStatus() {
     ASSETS.map((a) => ({ ...a, status: "pending" as AssetStatus })),
   );
   const [running, setRunning] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [lastRun, setLastRun] = useState<Date | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   const runChecks = useCallback(async () => {
     setRunning(true);
@@ -116,6 +118,29 @@ export function PwaAssetsStatus() {
     setLastRun(new Date());
     setRunning(false);
   }, []);
+
+  const handleForceRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const { refreshed, failed } = await forceRefreshIcons();
+    setLastRefresh(new Date());
+    setRefreshing(false);
+
+    if (failed === 0) {
+      toast({
+        title: "Iconos actualizados",
+        description: `${refreshed}/${ASSETS.length} assets recargados con ?v=${ASSET_VERSION}. El nombre "Memory Help" y los iconos están al día.`,
+      });
+    } else {
+      toast({
+        title: "Recarga parcial",
+        description: `${refreshed} OK · ${failed} fallaron. Si persiste, pulsa Publish → Update para actualizar el CDN.`,
+        variant: "destructive",
+      });
+    }
+
+    // Re-run the diagnostic to reflect the fresh state
+    await runChecks();
+  }, [runChecks]);
 
   useEffect(() => {
     runChecks();
