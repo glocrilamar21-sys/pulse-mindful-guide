@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, XCircle, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  RefreshCw,
+  ShieldCheck,
+  RotateCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 type AssetStatus = "pending" | "ok" | "fail";
 
@@ -12,6 +20,8 @@ interface AssetCheck {
   error?: string;
 }
 
+const ASSET_VERSION = "6";
+
 const ASSETS: Omit<AssetCheck, "status">[] = [
   { path: "/manifest.json", label: "Manifest" },
   { path: "/favicon.png", label: "Favicon" },
@@ -22,9 +32,13 @@ const ASSETS: Omit<AssetCheck, "status">[] = [
   { path: "/icon-maskable-512.png", label: "Icon Maskable 512" },
 ];
 
+function withVersion(path: string): string {
+  return `${path}${path.includes("?") ? "&" : "?"}v=${ASSET_VERSION}&t=${Date.now()}`;
+}
+
 async function checkAsset(path: string): Promise<{ status: AssetStatus; httpStatus?: number; error?: string }> {
   try {
-    const res = await fetch(path, { method: "GET", cache: "no-store" });
+    const res = await fetch(withVersion(path), { method: "GET", cache: "no-store" });
     if (res.ok) return { status: "ok", httpStatus: res.status };
     return { status: "fail", httpStatus: res.status };
   } catch (err) {
@@ -32,12 +46,64 @@ async function checkAsset(path: string): Promise<{ status: AssetStatus; httpStat
   }
 }
 
+/**
+ * Forces the browser (and any registered service worker) to re-fetch the
+ * manifest and icon assets with a fresh ?v=6 cache-bust. This does not change
+ * what the CDN serves — only ensures the current tab/PWA loads the latest
+ * version that production already has.
+ */
+async function forceRefreshIcons(): Promise<{ refreshed: number; failed: number }> {
+  let refreshed = 0;
+  let failed = 0;
+
+  // 1. Re-fetch each asset bypassing all caches
+  await Promise.all(
+    ASSETS.map(async (a) => {
+      try {
+        const res = await fetch(withVersion(a.path), { method: "GET", cache: "reload" });
+        if (res.ok) refreshed += 1;
+        else failed += 1;
+      } catch {
+        failed += 1;
+      }
+    }),
+  );
+
+  // 2. Swap the live <link rel="manifest"> href so the browser reloads it
+  const manifestLink = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+  if (manifestLink) {
+    manifestLink.href = withVersion("/manifest.json");
+  }
+
+  // 3. Swap favicon / apple-touch-icon hrefs to force the tab icon to refresh
+  document
+    .querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]')
+    .forEach((link) => {
+      const url = new URL(link.href, window.location.origin);
+      link.href = `${url.pathname}?v=${ASSET_VERSION}&t=${Date.now()}`;
+    });
+
+  // 4. If a service worker is active, ask it to update so it picks up new assets
+  if ("serviceWorker" in navigator) {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.update()));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return { refreshed, failed };
+}
+
 export function PwaAssetsStatus() {
   const [checks, setChecks] = useState<AssetCheck[]>(
     ASSETS.map((a) => ({ ...a, status: "pending" as AssetStatus })),
   );
   const [running, setRunning] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [lastRun, setLastRun] = useState<Date | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   const runChecks = useCallback(async () => {
     setRunning(true);
@@ -52,6 +118,29 @@ export function PwaAssetsStatus() {
     setLastRun(new Date());
     setRunning(false);
   }, []);
+
+  const handleForceRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const { refreshed, failed } = await forceRefreshIcons();
+    setLastRefresh(new Date());
+    setRefreshing(false);
+
+    if (failed === 0) {
+      toast({
+        title: "Iconos actualizados",
+        description: `${refreshed}/${ASSETS.length} assets recargados con ?v=${ASSET_VERSION}. El nombre "Memory Help" y los iconos están al día.`,
+      });
+    } else {
+      toast({
+        title: "Recarga parcial",
+        description: `${refreshed} OK · ${failed} fallaron. Si persiste, pulsa Publish → Update para actualizar el CDN.`,
+        variant: "destructive",
+      });
+    }
+
+    // Re-run the diagnostic to reflect the fresh state
+    await runChecks();
+  }, [runChecks]);
 
   useEffect(() => {
     runChecks();
@@ -144,6 +233,41 @@ export function PwaAssetsStatus() {
           </li>
         ))}
       </ul>
+
+      <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 space-y-2">
+        <div className="flex items-start gap-2">
+          <RotateCw className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-foreground">Forzar recarga del manifest</p>
+            <p className="text-xs text-muted-foreground leading-snug">
+              Re-pide el manifest y los iconos con <code className="font-mono">?v={ASSET_VERSION}</code>{" "}
+              para que el navegador y la PWA instalada muestren el nombre{" "}
+              <strong>"Memory Help"</strong> y los iconos nuevos sin esperar a que expire la caché.
+            </p>
+          </div>
+        </div>
+        <Button
+          size="sm"
+          variant="default"
+          onClick={handleForceRefresh}
+          disabled={refreshing || running}
+          className="w-full"
+        >
+          {refreshing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RotateCw className="h-4 w-4" />
+          )}
+          <span className="ml-1">
+            {refreshing ? "Actualizando…" : "Actualizar iconos en producción"}
+          </span>
+        </Button>
+        {lastRefresh && (
+          <p className="text-[10px] text-muted-foreground text-right">
+            Última recarga forzada: {lastRefresh.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
 
       {lastRun && (
         <p className="text-[10px] text-muted-foreground text-right">
