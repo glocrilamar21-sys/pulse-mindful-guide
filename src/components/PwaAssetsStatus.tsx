@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, XCircle, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  RefreshCw,
+  ShieldCheck,
+  RotateCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 type AssetStatus = "pending" | "ok" | "fail";
 
@@ -12,6 +20,8 @@ interface AssetCheck {
   error?: string;
 }
 
+const ASSET_VERSION = "6";
+
 const ASSETS: Omit<AssetCheck, "status">[] = [
   { path: "/manifest.json", label: "Manifest" },
   { path: "/favicon.png", label: "Favicon" },
@@ -22,14 +32,68 @@ const ASSETS: Omit<AssetCheck, "status">[] = [
   { path: "/icon-maskable-512.png", label: "Icon Maskable 512" },
 ];
 
+function withVersion(path: string): string {
+  return `${path}${path.includes("?") ? "&" : "?"}v=${ASSET_VERSION}&t=${Date.now()}`;
+}
+
 async function checkAsset(path: string): Promise<{ status: AssetStatus; httpStatus?: number; error?: string }> {
   try {
-    const res = await fetch(path, { method: "GET", cache: "no-store" });
+    const res = await fetch(withVersion(path), { method: "GET", cache: "no-store" });
     if (res.ok) return { status: "ok", httpStatus: res.status };
     return { status: "fail", httpStatus: res.status };
   } catch (err) {
     return { status: "fail", error: err instanceof Error ? err.message : "Network error" };
   }
+}
+
+/**
+ * Forces the browser (and any registered service worker) to re-fetch the
+ * manifest and icon assets with a fresh ?v=6 cache-bust. This does not change
+ * what the CDN serves — only ensures the current tab/PWA loads the latest
+ * version that production already has.
+ */
+async function forceRefreshIcons(): Promise<{ refreshed: number; failed: number }> {
+  let refreshed = 0;
+  let failed = 0;
+
+  // 1. Re-fetch each asset bypassing all caches
+  await Promise.all(
+    ASSETS.map(async (a) => {
+      try {
+        const res = await fetch(withVersion(a.path), { method: "GET", cache: "reload" });
+        if (res.ok) refreshed += 1;
+        else failed += 1;
+      } catch {
+        failed += 1;
+      }
+    }),
+  );
+
+  // 2. Swap the live <link rel="manifest"> href so the browser reloads it
+  const manifestLink = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+  if (manifestLink) {
+    manifestLink.href = withVersion("/manifest.json");
+  }
+
+  // 3. Swap favicon / apple-touch-icon hrefs to force the tab icon to refresh
+  document
+    .querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]')
+    .forEach((link) => {
+      const url = new URL(link.href, window.location.origin);
+      link.href = `${url.pathname}?v=${ASSET_VERSION}&t=${Date.now()}`;
+    });
+
+  // 4. If a service worker is active, ask it to update so it picks up new assets
+  if ("serviceWorker" in navigator) {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.update()));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return { refreshed, failed };
 }
 
 export function PwaAssetsStatus() {
