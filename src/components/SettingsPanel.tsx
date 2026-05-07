@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { playDemoSound, playPresetDemo } from "@/lib/tasks";
+import { playDemoSound, playPresetDemo, vibrateCritical, vibrateFlexible } from "@/lib/tasks";
+import { nativeHaptic, isNative } from "@/lib/nativeNotifications";
 import { useI18n, Locale, type TranslationKey } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Clock, Volume2, VolumeX, Globe, Palette, Brain, Vibrate, Play, Gamepad2, Trash2, Award } from "lucide-react";
