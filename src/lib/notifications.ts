@@ -79,7 +79,7 @@ export function checkAndNotify(tasks: Task[]): void {
     // Notify if task is within ADVANCE_MINUTES or already past due
     if (diff <= ADVANCE_MINUTES) {
       const isPastDue = diff <= 0;
-      const title = isPastDue ? "⚠️ ¡Tarea crítica vencida!" : "🔔 Tarea crítica próxima";
+      const title = isPastDue ? "⚠️ ¡Tarea vencida!" : "🔔 Recordatorio próximo";
       const body = isPastDue
         ? `"${task.name}" ya pasó su hora (${task.time})`
         : `"${task.name}" es en ${diff} minuto${diff !== 1 ? "s" : ""} (${task.time})`;
@@ -87,12 +87,15 @@ export function checkAndNotify(tasks: Task[]): void {
       try {
         new Notification(title, {
           body,
-          icon: "/placeholder.svg",
+          icon: "/icon-192.png",
           tag: task.id,
           requireInteraction: true,
         });
+        if ("vibrate" in navigator) {
+          navigator.vibrate(task.category === "critical" ? [400, 150, 400, 150, 400] : [200, 100, 200]);
+        }
       } catch {
-        // Fallback: some browsers don't support Notification constructor in this context
+        /* noop */
       }
 
       markNotified(task.id);
