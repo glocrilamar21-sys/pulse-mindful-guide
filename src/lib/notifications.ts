@@ -60,19 +60,21 @@ export function checkAndNotify(tasks: Task[]): void {
 
   const today = todayStr();
   const now = new Date();
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
   const notified = getNotifiedSet();
 
-  const todayTasks = tasks.filter(
-    (t) => t.date === today && t.category === "critical" && !t.done
+  // Include any pending task (critical or flexible) whose date is today or earlier.
+  const dueTasks = tasks.filter(
+    (t) => !t.done && t.date <= today
   );
 
-  for (const task of todayTasks) {
+  for (const task of dueTasks) {
     if (notified.has(task.id)) continue;
 
     const [h, m] = task.time.split(":").map(Number);
-    const taskMinutes = h * 60 + m;
-    const diff = taskMinutes - currentMinutes;
+    const [y, mo, d] = task.date.split("-").map(Number);
+    if (!y || Number.isNaN(h)) continue;
+    const taskTime = new Date(y, mo - 1, d, h, m).getTime();
+    const diff = Math.round((taskTime - now.getTime()) / 60000);
 
     // Notify if task is within ADVANCE_MINUTES or already past due
     if (diff <= ADVANCE_MINUTES) {
