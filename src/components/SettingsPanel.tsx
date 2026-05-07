@@ -338,6 +338,41 @@ function SettingsContent() {
         </div>
       </div>
 
+      {/* Test Vibration */}
+      <div>
+        <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+          <Vibrate className="h-4 w-4" />
+          {t("testVibration")}
+        </h3>
+        <p className="text-xs text-muted-foreground mb-3">{t("testVibrationDesc")}</p>
+        <div className="space-y-2">
+          <Button
+            onClick={() => {
+              vibrateCritical();
+              if (isNative()) nativeHaptic("critical");
+            }}
+            size="lg"
+            variant="outline"
+            className="h-12 w-full gap-2 text-sm font-bold cursor-pointer rounded-lg active:scale-95 transition-transform border-[hsl(var(--critical))]/40 text-[hsl(var(--critical))] hover:bg-[hsl(var(--critical))]/10 hover:text-[hsl(var(--critical))]"
+          >
+            <AlertTriangle className="h-4 w-4" />
+            {t("criticalVibration")}
+          </Button>
+          <Button
+            onClick={() => {
+              vibrateFlexible();
+              if (isNative()) nativeHaptic("flexible");
+            }}
+            size="lg"
+            variant="outline"
+            className="h-12 w-full gap-2 text-sm font-bold cursor-pointer rounded-lg active:scale-95 transition-transform border-primary/40 text-primary hover:bg-primary/10 hover:text-primary"
+          >
+            <Vibrate className="h-4 w-4" />
+            {t("flexibleVibration")}
+          </Button>
+        </div>
+      </div>
+
       {/* Reset Game Progress */}
       <div>
         <h3 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
