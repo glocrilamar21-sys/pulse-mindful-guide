@@ -55,6 +55,36 @@ export default function Index() {
 
   useEffect(() => {
     saveTasks(tasks);
+    // Sync native (Capacitor) local notifications for all future scheduled tasks
+    syncNativeNotifications(tasks).catch(() => {});
+  }, [tasks]);
+
+  // On mount: request native permission + enable web notifications fallback
+  useEffect(() => {
+    if (isNative()) {
+      ensureNativePermission().catch(() => {});
+    } else {
+      // Web: auto-enable + request permission once
+      if (!isNotificationsEnabled() && "Notification" in window && Notification.permission === "default") {
+        requestNotificationPermission().then((ok) => {
+          if (ok) setNotificationsEnabled(true);
+        });
+      } else if ("Notification" in window && Notification.permission === "granted") {
+        setNotificationsEnabled(true);
+      }
+    }
+  }, []);
+
+  // Web fallback: poll for due tasks every 30s while app is open
+  useEffect(() => {
+    if (isNative()) return;
+    clearNotifiedIfNewDay();
+    checkAndNotify(tasks);
+    const id = setInterval(() => {
+      clearNotifiedIfNewDay();
+      checkAndNotify(tasks);
+    }, 30000);
+    return () => clearInterval(id);
   }, [tasks]);
 
   const todayTasks = tasks.filter((t) => t.date === viewDateStr);
