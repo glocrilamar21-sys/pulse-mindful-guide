@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { Task, loadTasks, saveTasks, todayStr } from "@/lib/tasks";
-// notifications removed
+import { syncNativeNotifications, isNative, ensureNativePermission } from "@/lib/nativeNotifications";
+import { checkAndNotify, clearNotifiedIfNewDay, isNotificationsEnabled, setNotificationsEnabled, requestNotificationPermission } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
